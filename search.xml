@@ -172,24 +172,6 @@ Qt的安装参见官方文档：<a href="https://doc.qt.io/qt-5/windows.html#ins
       </tags>
   </entry>
   <entry>
-    <title>2023_NUEDC</title>
-    <url>/2024/03/16/2023-NUEDC/</url>
-    <content><![CDATA[<h1>2023 NUEDC Question C</h1>
-
-
-	<div class="row">
-    <embed src="review.pdf" width="100%" height="550" type="application/pdf">
-	</div>
-
-
-]]></content>
-      <tags>
-        <tag>NUEDC</tag>
-        <tag>精密仪器仪表</tag>
-        <tag>精密测量</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hi3861开发板使用与第六届全国大学生嵌入式竞赛海思赛道</title>
     <url>/2023/03/27/03-Hi3861-Embedded-Competition/</url>
     <content><![CDATA[<h1>参考资料</h1>
@@ -850,6 +832,24 @@ ref:<a href="https://item.taobao.com/item.htm?spm=a21n57.1.0.0.7b90523cKNbIy1&am
       </tags>
   </entry>
   <entry>
+    <title>2023_NUEDC</title>
+    <url>/2024/03/16/2023-NUEDC/</url>
+    <content><![CDATA[<h1>2023 NUEDC Question C</h1>
+
+
+	<div class="row">
+    <embed src="review.pdf" width="100%" height="550" type="application/pdf">
+	</div>
+
+
+]]></content>
+      <tags>
+        <tag>NUEDC</tag>
+        <tag>精密仪器仪表</tag>
+        <tag>精密测量</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>2023_SummerMiniCamp_走进机器人的世界</title>
     <url>/2023/07/03/2023-SummerMiniCamp/</url>
     <content><![CDATA[<h2 id="1-先修知识">1. 先修知识</h2>
@@ -945,6 +945,349 @@ ref:<a href="https://item.taobao.com/item.htm?spm=a21n57.1.0.0.7b90523cKNbIy1&am
       </categories>
       <tags>
         <tag>机器人</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Event-based VFI</title>
+    <url>/2024/07/13/Event-based-Video-Frame-Interpolation/</url>
+    <content><![CDATA[<h2 id="Reference">Reference</h2>
+<p>[1] 	H. Cho, T. Kim, Y. Jeong, and K.-J. Yoon, “TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2024, pp. 25701–25711.</p>
+<p>[2] 	J. Dong, K. Ota, and M. Dong, “Video Frame Interpolation: A Comprehensive Survey,” ACM Trans. Multimedia Comput. Commun. Appl., vol. 19, no. 2s, May 2023, doi: 10.1145/3556544.</p>
+<p>[3] 	O. S. Kılıç, A. Akman, and A. A. Alatan, “E-VFIA: Event-Based Video Frame Interpolation with Attention,” in 2023 IEEE International Conference on Robotics and Automation (ICRA), 2023, pp. 8284–8290. doi: 10.1109/ICRA48891.2023.10160276.</p>
+<p>[4] 	T. Kim, Y. Chae, H.-K. Jang, and K.-J. Yoon, “Event-Based Video Frame Interpolation With Cross-Modal Asymmetric Bidirectional Motion Fields,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, pp. 18032–18042.</p>
+<p>[5] 	L. Sun et al., “Event-Based Frame Interpolation with Ad-hoc Deblurring,” in 2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, pp. 18043–18052. doi: 10.1109/CVPR52729.2023.01730.</p>
+<p>[6] 	S. Tulyakov, A. Bochicchio, D. Gehrig, S. Georgoulis, Y. Li, and D. Scaramuzza, “Time Lens++: Event-based Frame Interpolation with Non-linear Parametric Flow and Multi-scale Fusion,” IEEE Conference on Computer Vision and Pattern Recognition, 2022.</p>
+<p>[7] 	S. Tulyakov et al., “TimeLens: Event-based Video Frame Interpolation,” IEEE Conference on Computer Vision and Pattern Recognition, 2021.</p>
+<p>[8] 	S. Lin et al., “Learning Event-Driven Video Deblurring and Interpolation,” ECCV, 2020.</p>
+<h2 id="概述">概述</h2>
+<p>VFI，全称Video Frame Interpolation，即视频插帧，在两个连续视频帧之间合成不存在的帧。传统的VFI解决方案分为两步：首先估计帧间的运动信息（通常基于光流/卷积核/光流-卷积核混合/相位变化），然后进行像素合成。插帧为很多下游任务（慢动作生成、帧率提升、视频压缩、新视图合成、视频修复、帧内预测等）提供了技术条件和应用基础。</p>
+<h2 id="Event-based-VFI方法对比">Event-based VFI方法对比</h2>
+<table>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Motivations</th>
+<th>Model</th>
+<th>Strategies</th>
+<th>Multimedia Resources</th>
+<th>Other Info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2020 ECCV Learning Event-Driven Video Deblurring and Interpolation</td>
+<td><font size=0.5>🔑 核心目的：捕捉高速运动，传统的相机做不到，只能通过<strong>去模糊化</strong>和<strong>插帧</strong>解决<br>🔑 大量工作将事件流直接转换为像素视频流。然而重建的视频往往缺乏纹理，并且在没有额外像素强度信息的情况下看起来不逼真<br>🔑 利用强度传感器（传统摄像头）和基于事件的传感器（事件相机）的优点进行高速视频生成是可取的，且即便有一小部分研究注意到了两种信源，这些工作没有把去模糊化考虑进来<br>🔑 前人工作中提出了EDI（Event-based Double Integral）模型将给定模糊帧和相应的事件流经过去模糊后，通过估计它们之间的残差，可以从上述初步去模糊的图像中插值出其他潜在视频帧。该方法自然地连接了强度图像和事件数据，在高帧率视频生成方面显示出不错的结果。但是由于事件相机的触发阈值随着硬件和场景条件在空间和时间上变化，会引入强烈的累积噪声</font></td>
+<td>IntegralNet+GateNet</td>
+<td><font size=0.5>✨残差估计<br>✨关键帧去模糊<br>✨插帧<br>✨帧融合</font></td>
+<td>None</td>
+<td><font size=0.5>主要聚焦<strong>高速视频重建</strong>任务，插帧作为该任务其中一个策略</font></td>
+</tr>
+<tr>
+<td>2021 CVPR Time Lens: Event-based Video Frame Interpolation</td>
+<td><font size=0.5>🔑 所有基于帧的VFI由于缺乏帧间盲区时间的视觉信息而必须<strong>假设简化的运动模型（例如线性）</strong>【根本限制】这些简化假设依赖于帧间亮度和外观的恒定性，限制了它们在高度动态场景中的适用性，例如（i）输入关键帧之间的<strong>非线性运动</strong>，（ii）<strong>光照变化</strong>或<strong>运动模糊</strong>的情况，以及（iii）关键帧之间场景中出现的<strong>新物体</strong>和<strong>非刚性运动</strong>。<br>🔑 具有不同的时空折衷（spatio-temporal trade-offs）的多相机方法克服这一限制，但存两份或多分同一个视频流（可能是高帧低分辨率和低帧高分辨率）会<strong>占用巨大的存储资源</strong>，视频流融合也需要<strong>更大的功耗</strong><br>🔑 单纯依赖事件相机(Events-only)的数据进行图像强度恢复不够完美，表现为1.插值帧的整体对比度通常会计算错误；2.插值结果强依赖于物体的运动情况（换言之对不运动的物体无法插值，也就无法完成VFI）<br>🔑 依赖事件数据和强度帧数据(Events-plus-frames)的方法虽然能有效估计非线性运动，但由于<strong>对比度阈值</strong>和<strong>传感器噪声</strong>的固有<strong>不稳定性</strong>，并非所有的亮度变化都能准确地被记录为事件。</font></td>
+<td>Time Lens(CNN-based)</td>
+<td><font size=0.5>✨从事件数据出发的基于变形(Warping-based)的插值方法<br>✨引入“变形优化”(warping refinement)步骤, 提高这些初始插值帧的质量<br>✨基于合成的(Synthesis-based)插帧方法, 利用两种信源(像素强度和事件流)融合生成新的帧<br>✨最后利用基于注意力机制的平均化(attention-baed averaging)模块组合两种方法的结果</font></td>
+<td><a href="https://rpg.ifi.uzh.ch/TimeLens.html">Project Demo</a><br></td>
+<td><font size=0.5>每一个单独的插帧策略不行，就两个一起用（有点<strong>大力出奇迹</strong>的味道）</font></td>
+</tr>
+<tr>
+<td>2022 CVPR Time Lens++: Event-based Frame Interpolation with Parametric Non-linear Flow and Multi-scale Fusion</td>
+<td><font size=0.5>结合帧和事件相机的视频帧插值方法仍存在如下问题<br>🔑 输入中存在伪影时，合成插值的“残影”会被传递到最终输出中<br>🔑 依赖于非参数运动估计，这一过程独立运行于每个插入的帧，计算成本为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span> 是插入的帧数，如果和时间对不上就会产生估计偏差<br>🔑 为利用非线性运动的信息，依赖于仅基于事件的运动估计，这在低对比度区域（没有事件）中会导致伪影</font></td>
+<td>🧩<strong>Multi-scale Feature Fusion Decoder</strong>(CNN-based)<br>🧩<strong>Motion spline estimator</strong>(Encoder-Decoder)</td>
+<td><font size=0.5>✨新引入的<strong>运动估计器</strong>(Motion spline estimator),除了利用事件外还使用边界图像<br>✨改进事件数据和图像数据的融合：<strong>多尺度特征融合解码器</strong>，引入新的<strong>门控机制</strong><br>✨Softmax Splatting变型插帧</font></td>
+<td><a href="https://uzh-rpg.github.io/timelens-pp/">Project Demo</a><br></td>
+<td><font size=0.5>程序源代码未开源，仅数据集开源</font></td>
+</tr>
+<tr>
+<td>2023 CVPR Event-Based Frame Interpolation with Ad-hoc Deblurring</td>
+<td><font size=0.5>前人方法虽认识到了异步事件数据的好，但忽略如下问题<br>🔑 运动是否会导致输入视频出现模糊，取决于<strong>帧的曝光时间长短</strong>和<strong>运动速度</strong>；<br>🔑 之前的工作要么假设输入视频是清晰的，仅限于帧插值，要么假设输入视频是模糊的，在插值之前包括一个显式的去模糊阶段；<br>🔑 与帧不同，事件不受运动模糊的影响。无论帧是清晰还是模糊，相应的事件都是相同的。事件驱动的VFI的理想状态是能够在清晰图像插值和模糊图像插值上均表现出稳健的性能。<br>🔑 我们提出将上述两个任务统一为一个问题：给定两个输入图像和对应的事件流，恢复在输入图像之间任意时间点的潜在清晰图像。<strong>输入图像可以是模糊的或清晰的。</strong></font></td>
+<td>🧩<strong>REFID</strong>(CNN&amp;RNN-based)</td>
+<td><font size=0.5>✨ EGACA(event-guided adaptive channel attention)<br>✨ bidirectional event recurrent (EVR) blocks</font></td>
+<td><a href="https://github.com/AHupuJR/REFID">Github Repo</a><br></td>
+<td><font size=0.5>数据集未开源，仅程序源代码开源</font></td>
+</tr>
+<tr>
+<td>2023 CVPR Event-based Video Frame Interpolation with Cross-Modal Asymmetric Bidirectional Motion Fields</td>
+<td><font size=0.5>🔑 现有方法仅通过<strong>事件</strong>或<strong>近似方法</strong>估计双向帧间运动场，这无法考虑现实世界场景中的复杂运动.<br>🔑 大多数基于 CNN 的帧合成方法由于受限的感受野大小，在长距离像素相关性上存在弱点.</font></td>
+<td>🧩<strong>EIF-BiOFNet</strong>(直接估计帧间运动场，而无需任何近似方法)<br>🧩<strong>基于交互注意的帧合成网络</strong>(Transformer Decoder-based)</td>
+<td><font size=0.5>✨ 锚帧特征预处理(Anchor Frame Feature Pre-processing)<br>✨ <strong>E-BiOF+I-BiOF+F-BiOF</strong></font></td>
+<td><a href="https://github.com/intelpro/CBMNet">Github Repo</a><br></td>
+<td><font size=0.5></font></td>
+</tr>
+<tr>
+<td>2023 ICRA E-VFIA : Event-Based Video Frame Interpolation with Attention</td>
+<td><font size=0.5>🔑 可变卷积（deformable convolutions, DCN）在合成中间帧方面的有效性也丰富了基于核的视频帧插值方法<br>🔑 DCN+注意力机制可能有奇效</font></td>
+<td>🧩 SmoothNet.<br>🧩 Spatio-temporal absPooling layers.<br>🧩 Parallel SynBlocks</td>
+<td><font size=0.5>✨ Synblock主要负责事件流和RGB融合.<br>✨ MSA用在计算时间维度的注意力值</font></td>
+<td><a href="https://github.com/ahmetakman/E-VFIA">Github Repo</a><br></td>
+<td><font size=0.5>相比前几篇的CVPR，这一篇的含金量就略显逊色，只做一个数据集的结果</font></td>
+</tr>
+<tr>
+<td>2024 CVPR TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation</td>
+<td><font size=0.5>🔑 事件相机数据的分布会根据相机设置和场景条件发生显著变化,弹性差<br>🔑 在线适应网络环境在实际应用中至关重要-&gt;测试时适应（Test-Time Adaptation, TTA）<br>🔑 无高帧率视频的适应：网络在目标域中需要适应场景，同时从低帧率数据中学习高帧率生成的知识。<br>🔑 在连续提供具有相似分布的数据时，网络可能会过拟合。</font></td>
+<td>🧩 TTA-EVF Framework</td>
+<td><font size=0.5>✨ Reliable Pixel Sampling (RPS)<br>✨Patch-Mixed Sampling (PMS)</font></td>
+<td><a href="https://github.com/Chohoonhee/TTA-EVF">Github Repo</a><br></td>
+<td><font size=0.5>没有关注插帧网络本身，侧重实际应用中面对不同场景插针算法的适应性和鲁棒性问题；程序源代码未开源，仅数据集开源</font></td>
+</tr>
+</tbody>
+</table>
+<h2 id="Event-based-VFI数据集">Event-based VFI数据集</h2>
+<table>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Multimedia Resources</th>
+<th>Other Info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2017 CVPR Deep Multi-scale Convolutional Neural Network for Dynamic Scene Deblurring</td>
+<td><a href="https://github.com/SeungjunNah/DeepDeblur_release">DeepDeblur</a></td>
+<td>GoPro相机拍摄，<strong>无事件流</strong></td>
+</tr>
+<tr>
+<td>2020 CVPR Learning Event-Based Motion Deblurring</td>
+<td><a href="">Blur-DVS</a></td>
+<td>未公开</td>
+</tr>
+<tr>
+<td>2021 CVPR Time Lens: Event-based Video Frame Interpolation</td>
+<td><a href="http://rpg.ifi.uzh.ch/timelens/data2/hs-ergb-dataset.zip">HS-ERGB</a></td>
+<td></td>
+</tr>
+<tr>
+<td>2022 CVPR Time Lens++: Event-based Frame Interpolation with Parametric Non-linear Flow and Multi-scale Fusion</td>
+<td><a href="https://rpg.ifi.uzh.ch/data/timelens_pp/bs_ergb.zip">BS-ERGB</a></td>
+<td></td>
+</tr>
+<tr>
+<td>2023 CVPR Event-Based Frame Interpolation with Ad-hoc Deblurring</td>
+<td><a href="">HighREV</a></td>
+<td><code>Because of the commercial reason, dataset download is allowed only with the authority of Alpsentek(锐思智芯®).</code>还在等作者回邮件中</td>
+</tr>
+<tr>
+<td>2023 CVPR Event-based Video Frame Interpolation with Cross-Modal Asymmetric Bidirectional Motion Fields</td>
+<td><a href="https://drive.google.com/file/d/1Bsf9qreziPcVEuf0_v3kjdPUh27zsFXK/view">ERF-X170FPS_train</a><br><a href="https://drive.google.com/file/d/1Dk7jVQD29HqRVV11e8vxg5bDOh6KxrzL/view">ERF-X170FPS_test</a></td>
+<td></td>
+</tr>
+<tr>
+<td>2024 CVPR TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation</td>
+<td><a href="https://drive.google.com/drive/folders/1tTU625ZmXEz2Ngyjf4lq3Yv0ZgMxlgsC">ERDS</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="Event-based-VFI评价指标">Event-based VFI评价指标</h2>
+<ol>
+<li>PSNR:Peak Signal-to-Noise Ratio，中文译为<strong>峰值信噪比</strong></li>
+</ol>
+<p><img src="Event-based-Video-Frame-Interpolation%5Cpsnr.png" alt=""></p>
+<ol start="2">
+<li>SSIM:Structural Similarity，中文译为<strong>结构相似性</strong></li>
+</ol>
+<p><img src="Event-based-Video-Frame-Interpolation%5Cssim.png" alt=""></p>
+]]></content>
+      <tags>
+        <tag>VFI</tag>
+        <tag>Event-based CV</tag>
+        <tag>前沿论文阅读</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>FPGA_System_Design</title>
+    <url>/2024/06/29/FPGA-System-Design/</url>
+    <content><![CDATA[<h2 id="00-学习在PL端使用OV7725摄像头">00. 学习在PL端使用OV7725摄像头</h2>
+<p>拿到摄像头，我们先来研究它的引脚：<br>
+<img src="ov7725_block_design.png" alt="OV7725功能框图"></p>
+<p>输入端口：</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XCLK</td>
+<td>系统时钟输入</td>
+</tr>
+<tr>
+<td>FSIN</td>
+<td>帧同步信号输入</td>
+</tr>
+<tr>
+<td>RSTB</td>
+<td>系统reset信号输入，低电平有效</td>
+</tr>
+<tr>
+<td>PWDN</td>
+<td>关机模式选择</td>
+</tr>
+<tr>
+<td>SCL</td>
+<td>SCCB协议时钟输入(类似IIC)</td>
+</tr>
+<tr>
+<td>SDA</td>
+<td>SCCB协议数据输入(类似IIC)</td>
+</tr>
+</tbody>
+</table>
+<p>输出端口：</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HREF</td>
+<td>行同步信号输出</td>
+</tr>
+<tr>
+<td>PCLK</td>
+<td>像素时钟输出</td>
+</tr>
+<tr>
+<td>VSYNC</td>
+<td>垂直同步信号输出</td>
+</tr>
+<tr>
+<td>D[9:0]</td>
+<td>10-bit RGB数据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Step-1-读出OV7725的RGB数据并拼成一帧图像">Step 1. 读出OV7725的RGB数据并拼成一帧图像</h3>
+<p>假设摄像头正常工作，自身产生的24MHz的PCLK作为输出给到读取数据的模块中。一系列像素同步信号（VSYNC，HREF）和本身的RGB像素信息也同样传给模块中。作为时序控制电路应有RST_n信号。所以该Verilog模块的输入输出端口就很清晰了（如下图）</p>
+<p><img src="ov7725_data.svg" alt="Diagram" title="Diagram"></p>
+<h4 id="Ports">Ports</h4>
+<table>
+<thead>
+<tr>
+<th>Port name</th>
+<th>Direction</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sys_rst_n</td>
+<td>input</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_pclk</td>
+<td>input</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_href</td>
+<td>input</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_vsync</td>
+<td>input</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_data</td>
+<td>input</td>
+<td>wire [ 7:0]</td>
+</tr>
+<tr>
+<td>ov7725_wr_en</td>
+<td>output</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_data_out</td>
+<td>output</td>
+<td>wire [15:0]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Signals">Signals</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pic_flag</td>
+<td>wire</td>
+<td></td>
+</tr>
+<tr>
+<td>ov7725_vsync_dly</td>
+<td>reg</td>
+<td></td>
+</tr>
+<tr>
+<td>cnt_pic</td>
+<td>reg [3:0]</td>
+<td></td>
+</tr>
+<tr>
+<td>pic_valid</td>
+<td>reg</td>
+<td></td>
+</tr>
+<tr>
+<td>pic_data_reg</td>
+<td>reg [7:0]</td>
+<td></td>
+</tr>
+<tr>
+<td>data_out_reg</td>
+<td>reg [15:0]</td>
+<td></td>
+</tr>
+<tr>
+<td>data_flag</td>
+<td>reg</td>
+<td></td>
+</tr>
+<tr>
+<td>data_flag_dly1</td>
+<td>reg</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="Constants">Constants</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PIC_WAIT</td>
+<td></td>
+<td>4’d10</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+]]></content>
+      <tags>
+        <tag>FPGA</tag>
+        <tag>系统设计</tag>
       </tags>
   </entry>
   <entry>
@@ -2248,349 +2591,6 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </tags>
   </entry>
   <entry>
-    <title>FPGA_System_Design</title>
-    <url>/2024/06/29/FPGA-System-Design/</url>
-    <content><![CDATA[<h2 id="00-学习在PL端使用OV7725摄像头">00. 学习在PL端使用OV7725摄像头</h2>
-<p>拿到摄像头，我们先来研究它的引脚：<br>
-<img src="ov7725_block_design.png" alt="OV7725功能框图"></p>
-<p>输入端口：</p>
-<table>
-<thead>
-<tr>
-<th>Port</th>
-<th>Function</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>XCLK</td>
-<td>系统时钟输入</td>
-</tr>
-<tr>
-<td>FSIN</td>
-<td>帧同步信号输入</td>
-</tr>
-<tr>
-<td>RSTB</td>
-<td>系统reset信号输入，低电平有效</td>
-</tr>
-<tr>
-<td>PWDN</td>
-<td>关机模式选择</td>
-</tr>
-<tr>
-<td>SCL</td>
-<td>SCCB协议时钟输入(类似IIC)</td>
-</tr>
-<tr>
-<td>SDA</td>
-<td>SCCB协议数据输入(类似IIC)</td>
-</tr>
-</tbody>
-</table>
-<p>输出端口：</p>
-<table>
-<thead>
-<tr>
-<th>Port</th>
-<th>Function</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>HREF</td>
-<td>行同步信号输出</td>
-</tr>
-<tr>
-<td>PCLK</td>
-<td>像素时钟输出</td>
-</tr>
-<tr>
-<td>VSYNC</td>
-<td>垂直同步信号输出</td>
-</tr>
-<tr>
-<td>D[9:0]</td>
-<td>10-bit RGB数据</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Step-1-读出OV7725的RGB数据并拼成一帧图像">Step 1. 读出OV7725的RGB数据并拼成一帧图像</h3>
-<p>假设摄像头正常工作，自身产生的24MHz的PCLK作为输出给到读取数据的模块中。一系列像素同步信号（VSYNC，HREF）和本身的RGB像素信息也同样传给模块中。作为时序控制电路应有RST_n信号。所以该Verilog模块的输入输出端口就很清晰了（如下图）</p>
-<p><img src="ov7725_data.svg" alt="Diagram" title="Diagram"></p>
-<h4 id="Ports">Ports</h4>
-<table>
-<thead>
-<tr>
-<th>Port name</th>
-<th>Direction</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>sys_rst_n</td>
-<td>input</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_pclk</td>
-<td>input</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_href</td>
-<td>input</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_vsync</td>
-<td>input</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_data</td>
-<td>input</td>
-<td>wire [ 7:0]</td>
-</tr>
-<tr>
-<td>ov7725_wr_en</td>
-<td>output</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_data_out</td>
-<td>output</td>
-<td>wire [15:0]</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Signals">Signals</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pic_flag</td>
-<td>wire</td>
-<td></td>
-</tr>
-<tr>
-<td>ov7725_vsync_dly</td>
-<td>reg</td>
-<td></td>
-</tr>
-<tr>
-<td>cnt_pic</td>
-<td>reg [3:0]</td>
-<td></td>
-</tr>
-<tr>
-<td>pic_valid</td>
-<td>reg</td>
-<td></td>
-</tr>
-<tr>
-<td>pic_data_reg</td>
-<td>reg [7:0]</td>
-<td></td>
-</tr>
-<tr>
-<td>data_out_reg</td>
-<td>reg [15:0]</td>
-<td></td>
-</tr>
-<tr>
-<td>data_flag</td>
-<td>reg</td>
-<td></td>
-</tr>
-<tr>
-<td>data_flag_dly1</td>
-<td>reg</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h4 id="Constants">Constants</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Value</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PIC_WAIT</td>
-<td></td>
-<td>4’d10</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-]]></content>
-      <tags>
-        <tag>FPGA</tag>
-        <tag>系统设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Event-based VFI</title>
-    <url>/2024/07/13/Event-based-Video-Frame-Interpolation/</url>
-    <content><![CDATA[<h2 id="Reference">Reference</h2>
-<p>[1] 	H. Cho, T. Kim, Y. Jeong, and K.-J. Yoon, “TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2024, pp. 25701–25711.</p>
-<p>[2] 	J. Dong, K. Ota, and M. Dong, “Video Frame Interpolation: A Comprehensive Survey,” ACM Trans. Multimedia Comput. Commun. Appl., vol. 19, no. 2s, May 2023, doi: 10.1145/3556544.</p>
-<p>[3] 	O. S. Kılıç, A. Akman, and A. A. Alatan, “E-VFIA: Event-Based Video Frame Interpolation with Attention,” in 2023 IEEE International Conference on Robotics and Automation (ICRA), 2023, pp. 8284–8290. doi: 10.1109/ICRA48891.2023.10160276.</p>
-<p>[4] 	T. Kim, Y. Chae, H.-K. Jang, and K.-J. Yoon, “Event-Based Video Frame Interpolation With Cross-Modal Asymmetric Bidirectional Motion Fields,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, pp. 18032–18042.</p>
-<p>[5] 	L. Sun et al., “Event-Based Frame Interpolation with Ad-hoc Deblurring,” in 2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, pp. 18043–18052. doi: 10.1109/CVPR52729.2023.01730.</p>
-<p>[6] 	S. Tulyakov, A. Bochicchio, D. Gehrig, S. Georgoulis, Y. Li, and D. Scaramuzza, “Time Lens++: Event-based Frame Interpolation with Non-linear Parametric Flow and Multi-scale Fusion,” IEEE Conference on Computer Vision and Pattern Recognition, 2022.</p>
-<p>[7] 	S. Tulyakov et al., “TimeLens: Event-based Video Frame Interpolation,” IEEE Conference on Computer Vision and Pattern Recognition, 2021.</p>
-<p>[8] 	S. Lin et al., “Learning Event-Driven Video Deblurring and Interpolation,” ECCV, 2020.</p>
-<h2 id="概述">概述</h2>
-<p>VFI，全称Video Frame Interpolation，即视频插帧，在两个连续视频帧之间合成不存在的帧。传统的VFI解决方案分为两步：首先估计帧间的运动信息（通常基于光流/卷积核/光流-卷积核混合/相位变化），然后进行像素合成。插帧为很多下游任务（慢动作生成、帧率提升、视频压缩、新视图合成、视频修复、帧内预测等）提供了技术条件和应用基础。</p>
-<h2 id="Event-based-VFI方法对比">Event-based VFI方法对比</h2>
-<table>
-<thead>
-<tr>
-<th>Citation</th>
-<th>Motivations</th>
-<th>Model</th>
-<th>Strategies</th>
-<th>Multimedia Resources</th>
-<th>Other Info</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2020 ECCV Learning Event-Driven Video Deblurring and Interpolation</td>
-<td><font size=0.5>🔑 核心目的：捕捉高速运动，传统的相机做不到，只能通过<strong>去模糊化</strong>和<strong>插帧</strong>解决<br>🔑 大量工作将事件流直接转换为像素视频流。然而重建的视频往往缺乏纹理，并且在没有额外像素强度信息的情况下看起来不逼真<br>🔑 利用强度传感器（传统摄像头）和基于事件的传感器（事件相机）的优点进行高速视频生成是可取的，且即便有一小部分研究注意到了两种信源，这些工作没有把去模糊化考虑进来<br>🔑 前人工作中提出了EDI（Event-based Double Integral）模型将给定模糊帧和相应的事件流经过去模糊后，通过估计它们之间的残差，可以从上述初步去模糊的图像中插值出其他潜在视频帧。该方法自然地连接了强度图像和事件数据，在高帧率视频生成方面显示出不错的结果。但是由于事件相机的触发阈值随着硬件和场景条件在空间和时间上变化，会引入强烈的累积噪声</font></td>
-<td>IntegralNet+GateNet</td>
-<td><font size=0.5>✨残差估计<br>✨关键帧去模糊<br>✨插帧<br>✨帧融合</font></td>
-<td>None</td>
-<td><font size=0.5>主要聚焦<strong>高速视频重建</strong>任务，插帧作为该任务其中一个策略</font></td>
-</tr>
-<tr>
-<td>2021 CVPR Time Lens: Event-based Video Frame Interpolation</td>
-<td><font size=0.5>🔑 所有基于帧的VFI由于缺乏帧间盲区时间的视觉信息而必须<strong>假设简化的运动模型（例如线性）</strong>【根本限制】这些简化假设依赖于帧间亮度和外观的恒定性，限制了它们在高度动态场景中的适用性，例如（i）输入关键帧之间的<strong>非线性运动</strong>，（ii）<strong>光照变化</strong>或<strong>运动模糊</strong>的情况，以及（iii）关键帧之间场景中出现的<strong>新物体</strong>和<strong>非刚性运动</strong>。<br>🔑 具有不同的时空折衷（spatio-temporal trade-offs）的多相机方法克服这一限制，但存两份或多分同一个视频流（可能是高帧低分辨率和低帧高分辨率）会<strong>占用巨大的存储资源</strong>，视频流融合也需要<strong>更大的功耗</strong><br>🔑 单纯依赖事件相机(Events-only)的数据进行图像强度恢复不够完美，表现为1.插值帧的整体对比度通常会计算错误；2.插值结果强依赖于物体的运动情况（换言之对不运动的物体无法插值，也就无法完成VFI）<br>🔑 依赖事件数据和强度帧数据(Events-plus-frames)的方法虽然能有效估计非线性运动，但由于<strong>对比度阈值</strong>和<strong>传感器噪声</strong>的固有<strong>不稳定性</strong>，并非所有的亮度变化都能准确地被记录为事件。</font></td>
-<td>Time Lens(CNN-based)</td>
-<td><font size=0.5>✨从事件数据出发的基于变形(Warping-based)的插值方法<br>✨引入“变形优化”(warping refinement)步骤, 提高这些初始插值帧的质量<br>✨基于合成的(Synthesis-based)插帧方法, 利用两种信源(像素强度和事件流)融合生成新的帧<br>✨最后利用基于注意力机制的平均化(attention-baed averaging)模块组合两种方法的结果</font></td>
-<td><a href="https://rpg.ifi.uzh.ch/TimeLens.html">Project Demo</a><br></td>
-<td><font size=0.5>每一个单独的插帧策略不行，就两个一起用（有点<strong>大力出奇迹</strong>的味道）</font></td>
-</tr>
-<tr>
-<td>2022 CVPR Time Lens++: Event-based Frame Interpolation with Parametric Non-linear Flow and Multi-scale Fusion</td>
-<td><font size=0.5>结合帧和事件相机的视频帧插值方法仍存在如下问题<br>🔑 输入中存在伪影时，合成插值的“残影”会被传递到最终输出中<br>🔑 依赖于非参数运动估计，这一过程独立运行于每个插入的帧，计算成本为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span> 是插入的帧数，如果和时间对不上就会产生估计偏差<br>🔑 为利用非线性运动的信息，依赖于仅基于事件的运动估计，这在低对比度区域（没有事件）中会导致伪影</font></td>
-<td>🧩<strong>Multi-scale Feature Fusion Decoder</strong>(CNN-based)<br>🧩<strong>Motion spline estimator</strong>(Encoder-Decoder)</td>
-<td><font size=0.5>✨新引入的<strong>运动估计器</strong>(Motion spline estimator),除了利用事件外还使用边界图像<br>✨改进事件数据和图像数据的融合：<strong>多尺度特征融合解码器</strong>，引入新的<strong>门控机制</strong><br>✨Softmax Splatting变型插帧</font></td>
-<td><a href="https://uzh-rpg.github.io/timelens-pp/">Project Demo</a><br></td>
-<td><font size=0.5>程序源代码未开源，仅数据集开源</font></td>
-</tr>
-<tr>
-<td>2023 CVPR Event-Based Frame Interpolation with Ad-hoc Deblurring</td>
-<td><font size=0.5>前人方法虽认识到了异步事件数据的好，但忽略如下问题<br>🔑 运动是否会导致输入视频出现模糊，取决于<strong>帧的曝光时间长短</strong>和<strong>运动速度</strong>；<br>🔑 之前的工作要么假设输入视频是清晰的，仅限于帧插值，要么假设输入视频是模糊的，在插值之前包括一个显式的去模糊阶段；<br>🔑 与帧不同，事件不受运动模糊的影响。无论帧是清晰还是模糊，相应的事件都是相同的。事件驱动的VFI的理想状态是能够在清晰图像插值和模糊图像插值上均表现出稳健的性能。<br>🔑 我们提出将上述两个任务统一为一个问题：给定两个输入图像和对应的事件流，恢复在输入图像之间任意时间点的潜在清晰图像。<strong>输入图像可以是模糊的或清晰的。</strong></font></td>
-<td>🧩<strong>REFID</strong>(CNN&amp;RNN-based)</td>
-<td><font size=0.5>✨ EGACA(event-guided adaptive channel attention)<br>✨ bidirectional event recurrent (EVR) blocks</font></td>
-<td><a href="https://github.com/AHupuJR/REFID">Github Repo</a><br></td>
-<td><font size=0.5>数据集未开源，仅程序源代码开源</font></td>
-</tr>
-<tr>
-<td>2023 CVPR Event-based Video Frame Interpolation with Cross-Modal Asymmetric Bidirectional Motion Fields</td>
-<td><font size=0.5>🔑 现有方法仅通过<strong>事件</strong>或<strong>近似方法</strong>估计双向帧间运动场，这无法考虑现实世界场景中的复杂运动.<br>🔑 大多数基于 CNN 的帧合成方法由于受限的感受野大小，在长距离像素相关性上存在弱点.</font></td>
-<td>🧩<strong>EIF-BiOFNet</strong>(直接估计帧间运动场，而无需任何近似方法)<br>🧩<strong>基于交互注意的帧合成网络</strong>(Transformer Decoder-based)</td>
-<td><font size=0.5>✨ 锚帧特征预处理(Anchor Frame Feature Pre-processing)<br>✨ <strong>E-BiOF+I-BiOF+F-BiOF</strong></font></td>
-<td><a href="https://github.com/intelpro/CBMNet">Github Repo</a><br></td>
-<td><font size=0.5></font></td>
-</tr>
-<tr>
-<td>2023 ICRA E-VFIA : Event-Based Video Frame Interpolation with Attention</td>
-<td><font size=0.5>🔑 可变卷积（deformable convolutions, DCN）在合成中间帧方面的有效性也丰富了基于核的视频帧插值方法<br>🔑 DCN+注意力机制可能有奇效</font></td>
-<td>🧩 SmoothNet.<br>🧩 Spatio-temporal absPooling layers.<br>🧩 Parallel SynBlocks</td>
-<td><font size=0.5>✨ Synblock主要负责事件流和RGB融合.<br>✨ MSA用在计算时间维度的注意力值</font></td>
-<td><a href="https://github.com/ahmetakman/E-VFIA">Github Repo</a><br></td>
-<td><font size=0.5>相比前几篇的CVPR，这一篇的含金量就略显逊色，只做一个数据集的结果</font></td>
-</tr>
-<tr>
-<td>2024 CVPR TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation</td>
-<td><font size=0.5>🔑 事件相机数据的分布会根据相机设置和场景条件发生显著变化,弹性差<br>🔑 在线适应网络环境在实际应用中至关重要-&gt;测试时适应（Test-Time Adaptation, TTA）<br>🔑 无高帧率视频的适应：网络在目标域中需要适应场景，同时从低帧率数据中学习高帧率生成的知识。<br>🔑 在连续提供具有相似分布的数据时，网络可能会过拟合。</font></td>
-<td>🧩 TTA-EVF Framework</td>
-<td><font size=0.5>✨ Reliable Pixel Sampling (RPS)<br>✨Patch-Mixed Sampling (PMS)</font></td>
-<td><a href="https://github.com/Chohoonhee/TTA-EVF">Github Repo</a><br></td>
-<td><font size=0.5>没有关注插帧网络本身，侧重实际应用中面对不同场景插针算法的适应性和鲁棒性问题；程序源代码未开源，仅数据集开源</font></td>
-</tr>
-</tbody>
-</table>
-<h2 id="Event-based-VFI数据集">Event-based VFI数据集</h2>
-<table>
-<thead>
-<tr>
-<th>Citation</th>
-<th>Multimedia Resources</th>
-<th>Other Info</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2017 CVPR Deep Multi-scale Convolutional Neural Network for Dynamic Scene Deblurring</td>
-<td><a href="https://github.com/SeungjunNah/DeepDeblur_release">DeepDeblur</a></td>
-<td>GoPro相机拍摄，<strong>无事件流</strong></td>
-</tr>
-<tr>
-<td>2020 CVPR Learning Event-Based Motion Deblurring</td>
-<td><a href="">Blur-DVS</a></td>
-<td>未公开</td>
-</tr>
-<tr>
-<td>2021 CVPR Time Lens: Event-based Video Frame Interpolation</td>
-<td><a href="http://rpg.ifi.uzh.ch/timelens/data2/hs-ergb-dataset.zip">HS-ERGB</a></td>
-<td></td>
-</tr>
-<tr>
-<td>2022 CVPR Time Lens++: Event-based Frame Interpolation with Parametric Non-linear Flow and Multi-scale Fusion</td>
-<td><a href="https://rpg.ifi.uzh.ch/data/timelens_pp/bs_ergb.zip">BS-ERGB</a></td>
-<td></td>
-</tr>
-<tr>
-<td>2023 CVPR Event-Based Frame Interpolation with Ad-hoc Deblurring</td>
-<td><a href="">HighREV</a></td>
-<td><code>Because of the commercial reason, dataset download is allowed only with the authority of Alpsentek(锐思智芯®).</code>还在等作者回邮件中</td>
-</tr>
-<tr>
-<td>2023 CVPR Event-based Video Frame Interpolation with Cross-Modal Asymmetric Bidirectional Motion Fields</td>
-<td><a href="https://drive.google.com/file/d/1Bsf9qreziPcVEuf0_v3kjdPUh27zsFXK/view">ERF-X170FPS_train</a><br><a href="https://drive.google.com/file/d/1Dk7jVQD29HqRVV11e8vxg5bDOh6KxrzL/view">ERF-X170FPS_test</a></td>
-<td></td>
-</tr>
-<tr>
-<td>2024 CVPR TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation</td>
-<td><a href="https://drive.google.com/drive/folders/1tTU625ZmXEz2Ngyjf4lq3Yv0ZgMxlgsC">ERDS</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="Event-based-VFI评价指标">Event-based VFI评价指标</h2>
-<ol>
-<li>PSNR:Peak Signal-to-Noise Ratio，中文译为<strong>峰值信噪比</strong></li>
-</ol>
-<p><img src="Event-based-Video-Frame-Interpolation%5Cpsnr.png" alt=""></p>
-<ol start="2">
-<li>SSIM:Structural Similarity，中文译为<strong>结构相似性</strong></li>
-</ol>
-<p><img src="Event-based-Video-Frame-Interpolation%5Cssim.png" alt=""></p>
-]]></content>
-      <tags>
-        <tag>VFI</tag>
-        <tag>Event-based CV</tag>
-        <tag>前沿论文阅读</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>FireFly-v1-FPGA Simulation</title>
     <url>/2024/04/30/FireFly-v1-FPGA-Simulation/</url>
     <content><![CDATA[<h3 id="参考文献">参考文献</h3>
@@ -2657,23 +2657,6 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
     <title>Graduation_Project_Design</title>
     <url>/2024/06/30/Graduation-Project-Design/</url>
     <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>OneOS 启物 v1.2 开发板的Wifi模块开发</title>
-    <url>/2023/03/28/OneOS-%E5%90%AF%E7%89%A9-v1-2-%E5%BC%80%E5%8F%91%E6%9D%BF%E7%9A%84Wifi%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91/</url>
-    <content><![CDATA[<h1>一 IAR 开发环境搭建</h1>
-<p>不得不说，Mindmotion这家公司是真的令人迷惑，v1.0.6的固件包只有F3270，v1.0.5的固件包我能找到的只有F3273G和3273E系列，根本没有F3277的影子，所以果断弃之用IAR。</p>
-<h1>二 亿些使用中的问题</h1>
-<h2 id="ESP8266无法连接WiFi">ESP8266无法连接WiFi</h2>
-<p>因为自己的手机热点没有把AP band调成2.4GHz</p>
-]]></content>
-      <categories>
-        <category>项目记录</category>
-      </categories>
-      <tags>
-        <tag>OneOS</tag>
-        <tag>ESP8266</tag>
-      </tags>
   </entry>
   <entry>
     <title>Notes for Comp_Network</title>
@@ -2800,14 +2783,20 @@ PSK：相移键控:</p>
       </tags>
   </entry>
   <entry>
-    <title>STELLAR_HPCA_2024</title>
-    <url>/2024/06/17/STELLAR-HPCA-2024/</url>
-    <content><![CDATA[]]></content>
+    <title>OneOS 启物 v1.2 开发板的Wifi模块开发</title>
+    <url>/2023/03/28/OneOS-%E5%90%AF%E7%89%A9-v1-2-%E5%BC%80%E5%8F%91%E6%9D%BF%E7%9A%84Wifi%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91/</url>
+    <content><![CDATA[<h1>一 IAR 开发环境搭建</h1>
+<p>不得不说，Mindmotion这家公司是真的令人迷惑，v1.0.6的固件包只有F3270，v1.0.5的固件包我能找到的只有F3273G和3273E系列，根本没有F3277的影子，所以果断弃之用IAR。</p>
+<h1>二 亿些使用中的问题</h1>
+<h2 id="ESP8266无法连接WiFi">ESP8266无法连接WiFi</h2>
+<p>因为自己的手机热点没有把AP band调成2.4GHz</p>
+]]></content>
+      <categories>
+        <category>项目记录</category>
+      </categories>
       <tags>
-        <tag>FPGA</tag>
-        <tag>前沿论文阅读</tag>
-        <tag>SNN</tag>
-        <tag>计算机体系架构</tag>
+        <tag>OneOS</tag>
+        <tag>ESP8266</tag>
       </tags>
   </entry>
   <entry>
@@ -3270,37 +3259,14 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </tags>
   </entry>
   <entry>
-    <title>Spike-Driven Transformer</title>
-    <url>/2024/01/04/Spike-Driven-Transformer/</url>
-    <content><![CDATA[<h2 id="1-注意力机制（Attention）">1.注意力机制（Attention）</h2>
-<h3 id="1-1-自注意力机制-（Self-Attention）">1.1 自注意力机制 （Self-Attention）</h3>
-<p>为了处理序列数据，自注意力采取的策略是，吃一整个序列，再根据输入的向量（一段序列）决定输出一个向量，再进入传统的FC，换言之，是考虑了整个序列之后输出一个结果。Self-Attention也可以与FC交替做很多次：</p>
-<p><img src="https://picss.sunbangyan.cn/2024/01/06/24f707204a6f2386a0dc0f26a84ddbe9.jpeg" alt=""></p>
-<p>那Self-Attention如何运作？</p>
-<p>Self-Attention块的输入可以是一开始的输入层，也可以是中间的某个hidden layer的输出。考虑了所有的输入，输出与输入长度相等的一系列向量。例如<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>b</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">b^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>考虑了<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msup><mi>a</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">a^1, \dots , a^4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span>。</p>
-<p><img src="https://picss.sunbangyan.cn/2024/01/06/4c362abaad258fff2580054d6cf42ad2.jpeg" alt=""></p>
-<p>以上图为例，怎么产生<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>b</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">b^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>这个输出呢？</p>
-<p><img src="https://picdl.sunbangyan.cn/2024/01/06/0c06f1d7f85cf7dcc826c1dad3efaac5.jpeg" alt=""></p>
-<p>有两种方法，其中Method 1是如今Transformer架构中用到的，也是注意力机制的主流架构，通过点积计算两向量的关联度。</p>
-<p>应用中，把一个向量当作query（问询值），其余的所有当作key（键），进行关联度计算，得到Attention Score，再经过Softmax层进行归一化，得到最终的attention-score矩阵。（其实也不一定要softmax，只是前人试出来的）</p>
-<p><img src="https://picdm.sunbangyan.cn/2024/01/06/3f0ae61e461f48d620d11ed43d8b8fee.jpeg" alt=""></p>
-<p>根据Attention score, 再将每一个向量乘上矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold">W</mi><mi mathvariant="bold">v</mi></msup></mrow><annotation encoding="application/x-tex">\bold{W^v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6741em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathbf mtight" style="margin-right:0.01597em;">v</span></span></span></span></span></span></span></span></span></span></span>得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold">v</mi><mi mathvariant="bold">i</mi></msup></mrow><annotation encoding="application/x-tex">\bold{v^i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">v</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathbf mtight">i</span></span></span></span></span></span></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi><msup><mi mathvariant="bold-italic">b</mi><mn mathvariant="bold">1</mn></msup></mi><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msubsup><mi>α</mi><mrow><mn>1</mn><mo separator="true">,</mo><mi>i</mi></mrow><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msubsup><mi><msup><mi mathvariant="bold-italic">v</mi><mi mathvariant="bold-italic">i</mi></msup></mi></mrow><annotation encoding="application/x-tex">\boldsymbol{b^{1}}=\sum_i\alpha_{1,i}^{\prime}\boldsymbol{v^{i}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathbf mtight">1</span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2431em;vertical-align:-0.3948em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.162em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-2.4413em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">i</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.03704em;">v</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8483em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord boldsymbol mtight">i</span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
-<p><img src="https://picst.sunbangyan.cn/2024/01/06/8aba1917ff8d456f95e7946750a4b531.jpeg" alt=""></p>
-<p>看起来，每一个向量都要产生一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">q</mi><mo separator="true">,</mo><mi mathvariant="bold">k</mi><mo separator="true">,</mo><mi mathvariant="bold">v</mi></mrow><annotation encoding="application/x-tex">\bold{q}, \bold{k}, \bold{v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathbf">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">k</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span></span></span></span>, 那么我们完全可以用矩阵拼接的想法，将一连串的输入向量看作一个大矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">I</mi></mrow><annotation encoding="application/x-tex">\bold{I}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord mathbf">I</span></span></span></span>, 像下面这样简记为：</p>
-<p><img src="https://picdm.sunbangyan.cn/2024/01/06/97f1cf81f7145f7b325d7883bc44f559.jpeg" alt=""></p>
-<p>得到Q，K，V，如何去得到attention score呢？像下面展示的一样，A(attention score的信息矩阵)=<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>K</mi><mi>T</mi></msup><mi>Q</mi></mrow><annotation encoding="application/x-tex">K^TQ</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0358em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal">Q</span></span></span></span></p>
-<p><img src="https://picdl.sunbangyan.cn/2024/01/06/58942e469ab7b8959027da90652375c4.jpeg" alt=""></p>
-<p><img src="https://picdl.sunbangyan.cn/2024/01/06/cf6ccc1ac8388277612373d3ee88fe5f.jpeg" alt=""></p>
-<p>整个的Self-Attention运作的过程中，唯一需要学的三个参数就是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mi>q</mi></msup><mo separator="true">,</mo><msup><mi>W</mi><mi>k</mi></msup><mo separator="true">,</mo><msup><mi>W</mi><mi>v</mi></msup></mrow><annotation encoding="application/x-tex">W^q, W^k, W^v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0435em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span></span></span></span></span></span></span></span></p>
-<p>在此基础上，对原始Attention架构更改，得到Multihead Self-Attention：</p>
-<p><img src="https://picss.sunbangyan.cn/2024/01/06/a9c343e5a4ab540db551635e85401930.jpeg" alt=""></p>
-<h3 id="1-2-Self-Attention的不足之处">1.2 Self-Attention的不足之处</h3>
-]]></content>
-      <categories>
-        <category>学习日志</category>
-      </categories>
+    <title>STELLAR_HPCA_2024</title>
+    <url>/2024/06/17/STELLAR-HPCA-2024/</url>
+    <content><![CDATA[]]></content>
       <tags>
+        <tag>前沿论文阅读</tag>
+        <tag>FPGA</tag>
         <tag>SNN</tag>
+        <tag>计算机体系架构</tag>
       </tags>
   </entry>
   <entry>
@@ -3617,6 +3583,40 @@ s_0(t) &amp;= T\frac{sin \pi kT(1- \frac{|t|}{T})t}{\pi kTt}rect(\frac{t}{2T})\\
       </categories>
       <tags>
         <tag>信号与系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spike-Driven Transformer</title>
+    <url>/2024/01/04/Spike-Driven-Transformer/</url>
+    <content><![CDATA[<h2 id="1-注意力机制（Attention）">1.注意力机制（Attention）</h2>
+<h3 id="1-1-自注意力机制-（Self-Attention）">1.1 自注意力机制 （Self-Attention）</h3>
+<p>为了处理序列数据，自注意力采取的策略是，吃一整个序列，再根据输入的向量（一段序列）决定输出一个向量，再进入传统的FC，换言之，是考虑了整个序列之后输出一个结果。Self-Attention也可以与FC交替做很多次：</p>
+<p><img src="https://picss.sunbangyan.cn/2024/01/06/24f707204a6f2386a0dc0f26a84ddbe9.jpeg" alt=""></p>
+<p>那Self-Attention如何运作？</p>
+<p>Self-Attention块的输入可以是一开始的输入层，也可以是中间的某个hidden layer的输出。考虑了所有的输入，输出与输入长度相等的一系列向量。例如<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>b</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">b^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>考虑了<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msup><mi>a</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">a^1, \dots , a^4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span>。</p>
+<p><img src="https://picss.sunbangyan.cn/2024/01/06/4c362abaad258fff2580054d6cf42ad2.jpeg" alt=""></p>
+<p>以上图为例，怎么产生<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>b</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">b^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>这个输出呢？</p>
+<p><img src="https://picdl.sunbangyan.cn/2024/01/06/0c06f1d7f85cf7dcc826c1dad3efaac5.jpeg" alt=""></p>
+<p>有两种方法，其中Method 1是如今Transformer架构中用到的，也是注意力机制的主流架构，通过点积计算两向量的关联度。</p>
+<p>应用中，把一个向量当作query（问询值），其余的所有当作key（键），进行关联度计算，得到Attention Score，再经过Softmax层进行归一化，得到最终的attention-score矩阵。（其实也不一定要softmax，只是前人试出来的）</p>
+<p><img src="https://picdm.sunbangyan.cn/2024/01/06/3f0ae61e461f48d620d11ed43d8b8fee.jpeg" alt=""></p>
+<p>根据Attention score, 再将每一个向量乘上矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold">W</mi><mi mathvariant="bold">v</mi></msup></mrow><annotation encoding="application/x-tex">\bold{W^v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6741em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathbf mtight" style="margin-right:0.01597em;">v</span></span></span></span></span></span></span></span></span></span></span>得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold">v</mi><mi mathvariant="bold">i</mi></msup></mrow><annotation encoding="application/x-tex">\bold{v^i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">v</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathbf mtight">i</span></span></span></span></span></span></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi><msup><mi mathvariant="bold-italic">b</mi><mn mathvariant="bold">1</mn></msup></mi><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msubsup><mi>α</mi><mrow><mn>1</mn><mo separator="true">,</mo><mi>i</mi></mrow><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msubsup><mi><msup><mi mathvariant="bold-italic">v</mi><mi mathvariant="bold-italic">i</mi></msup></mi></mrow><annotation encoding="application/x-tex">\boldsymbol{b^{1}}=\sum_i\alpha_{1,i}^{\prime}\boldsymbol{v^{i}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathbf mtight">1</span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2431em;vertical-align:-0.3948em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.162em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-2.4413em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">i</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.03704em;">v</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8483em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord boldsymbol mtight">i</span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><img src="https://picst.sunbangyan.cn/2024/01/06/8aba1917ff8d456f95e7946750a4b531.jpeg" alt=""></p>
+<p>看起来，每一个向量都要产生一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">q</mi><mo separator="true">,</mo><mi mathvariant="bold">k</mi><mo separator="true">,</mo><mi mathvariant="bold">v</mi></mrow><annotation encoding="application/x-tex">\bold{q}, \bold{k}, \bold{v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathbf">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">k</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span></span></span></span>, 那么我们完全可以用矩阵拼接的想法，将一连串的输入向量看作一个大矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">I</mi></mrow><annotation encoding="application/x-tex">\bold{I}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord mathbf">I</span></span></span></span>, 像下面这样简记为：</p>
+<p><img src="https://picdm.sunbangyan.cn/2024/01/06/97f1cf81f7145f7b325d7883bc44f559.jpeg" alt=""></p>
+<p>得到Q，K，V，如何去得到attention score呢？像下面展示的一样，A(attention score的信息矩阵)=<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>K</mi><mi>T</mi></msup><mi>Q</mi></mrow><annotation encoding="application/x-tex">K^TQ</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0358em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal">Q</span></span></span></span></p>
+<p><img src="https://picdl.sunbangyan.cn/2024/01/06/58942e469ab7b8959027da90652375c4.jpeg" alt=""></p>
+<p><img src="https://picdl.sunbangyan.cn/2024/01/06/cf6ccc1ac8388277612373d3ee88fe5f.jpeg" alt=""></p>
+<p>整个的Self-Attention运作的过程中，唯一需要学的三个参数就是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mi>q</mi></msup><mo separator="true">,</mo><msup><mi>W</mi><mi>k</mi></msup><mo separator="true">,</mo><msup><mi>W</mi><mi>v</mi></msup></mrow><annotation encoding="application/x-tex">W^q, W^k, W^v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0435em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span></span></span></span></span></span></span></span></p>
+<p>在此基础上，对原始Attention架构更改，得到Multihead Self-Attention：</p>
+<p><img src="https://picss.sunbangyan.cn/2024/01/06/a9c343e5a4ab540db551635e85401930.jpeg" alt=""></p>
+<h3 id="1-2-Self-Attention的不足之处">1.2 Self-Attention的不足之处</h3>
+]]></content>
+      <categories>
+        <category>学习日志</category>
+      </categories>
+      <tags>
+        <tag>SNN</tag>
       </tags>
   </entry>
   <entry>
@@ -4374,26 +4374,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       </tags>
   </entry>
   <entry>
-    <title>For Starters——WELCOME! and some basic operations of Hexo</title>
-    <url>/2024/07/23/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="ericzhang1412.github.io">EricZhang’s Blog</a>!</p>
-<h2 id="Quick-Start">Quick Start</h2>
-<span id="more"></span>
-<h3 id="Create-a-new-post">Create a new post</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;My New Post&quot;</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server">Run server</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files">Generate static files</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>ARM-Linux-MQTT移植</title>
     <url>/2024/04/30/arm-linux-mqtt/</url>
     <content><![CDATA[<h2 id="在ZYNQ-7020-PS端使用paho-mqtt实现设备侧开发连接华为云IoTDA服务">在ZYNQ 7020 PS端使用paho.mqtt实现设备侧开发连接华为云IoTDA服务</h2>
@@ -4507,6 +4487,26 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <tag>ZYNQ</tag>
         <tag>Linux</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>For Starters——WELCOME! and some basic operations of Hexo</title>
+    <url>/2024/07/23/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="ericzhang1412.github.io">EricZhang’s Blog</a>!</p>
+<h2 id="Quick-Start">Quick Start</h2>
+<span id="more"></span>
+<h3 id="Create-a-new-post">Create a new post</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;My New Post&quot;</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server">Run server</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files">Generate static files</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites">Deploy to remote sites</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
   </entry>
   <entry>
     <title>《互联网设计与演化》阅读笔记</title>
@@ -4751,17 +4751,6 @@ GN 允许两个或多个蓝牙设备成为 ad-hoc 网络的一部分。</p>
       </categories>
       <tags>
         <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于振荡电路</title>
-    <url>/2023/04/16/%E5%85%B3%E4%BA%8E%E6%8C%AF%E8%8D%A1%E7%94%B5%E8%B7%AF/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>学习日志</category>
-      </categories>
-      <tags>
-        <tag>电子设计</tag>
       </tags>
   </entry>
   <entry>
@@ -5150,6 +5139,17 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </tags>
   </entry>
   <entry>
+    <title>关于振荡电路</title>
+    <url>/2023/04/16/%E5%85%B3%E4%BA%8E%E6%8C%AF%E8%8D%A1%E7%94%B5%E8%B7%AF/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>学习日志</category>
+      </categories>
+      <tags>
+        <tag>电子设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>明月湖二三事</title>
     <url>/2023/04/06/%E6%98%8E%E6%9C%88%E6%B9%96/</url>
     <content><![CDATA[<h1><strong>学院派创业者</strong>面临的<strong>挑战</strong></h1>
@@ -5402,6 +5402,11 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </tags>
   </entry>
   <entry>
+    <title>album</title>
+    <url>/album/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>about</title>
     <url>/about/index.html</url>
     <content><![CDATA[]]></content>
@@ -5412,18 +5417,13 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>dailyPhoto</title>
-    <url>/dailyPhoto/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>album</title>
-    <url>/album/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>essay</title>
     <url>/essay/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>dailyPhoto</title>
+    <url>/dailyPhoto/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -5442,23 +5442,23 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
     <content><![CDATA[[{"name":"青花瓷","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/青花瓷/青花瓷.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002eFUFm2XYZ7z_2.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/青花瓷/青花瓷.lrc"},{"name":"稻香","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/稻香/稻香.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/稻香/稻香.lrc"},{"name":"晴天","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/晴天/晴天.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000MkMni19ClKG_3.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/晴天/晴天.lrc"},{"name":"七里香","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/七里香/七里香.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000003DFRzD192KKD_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/七里香/七里香.lrc"},{"name":"花海","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/花海/花海.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/花海/花海.lrc"},{"name":"反方向的钟","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/反方向的钟/反方向的钟.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000f01724fd7TH_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/反方向的钟/反方向的钟.lrc"},{"name":"兰亭序","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/兰亭序/兰亭序.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/兰亭序/兰亭序.lrc"},{"name":"说好的辛福呢","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/说好的辛福呢/说好的辛福呢.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/说好的辛福呢/说好的幸福呢.lrc"},{"name":"等你下课 (with 杨瑞代)","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/等你下课/等你下课.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000003bSL0v4bpKAx_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/等你下课/等你下课.lrc"},{"name":"我落泪情绪零碎","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/我落泪情绪零碎/我落泪情绪零碎.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000bviBl4FjTpO_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/我落泪情绪零碎/我落泪情绪零碎.lrc"},{"name":"听妈妈的话","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/听妈妈的话/听妈妈的话.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002jLGWe16Tf1H_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/听妈妈的话/听妈妈的话.lrc"},{"name":"明明就","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/明明就/明明就.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000003Ow85E3pnoqi_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/明明就/明明就.lrc"},{"name":"我是如此相信","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/我是如此相信/我是如此相信.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000001hGx1Z0so1YX_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/我是如此相信/我是如此相信.lrc"},{"name":"发如雪","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/发如雪/发如雪.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M0000024bjiL2aocxT_3.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/发如雪/发如雪.lrc"},{"name":"以父之名","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/以父之名/以父之名.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000MkMni19ClKG_3.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/以父之名/以父之名.lrc"},{"name":"园游会","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/园游会/园游会.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000003DFRzD192KKD_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/园游会/园游会.lrc"},{"name":"本草纲目","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/本草纲目/本草纲目.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002jLGWe16Tf1H_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/本草纲目/本草纲目.lrc"},{"name":"龙卷风","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/龙卷风/龙卷风.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000f01724fd7TH_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/龙卷风/龙卷风.lrc"}]]]></content>
   </entry>
   <entry>
-    <title>music</title>
-    <url>/music/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>link</title>
     <url>/link/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>tags</title>
-    <url>/tags/index.html</url>
+    <title>music</title>
+    <url>/music/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>worldScenery</title>
     <url>/wordScenery/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>tags</title>
+    <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
