@@ -25,13 +25,18 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>album</title>
-    <url>/album/index.html</url>
+    <title>categories</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>dailyPhoto</title>
     <url>/dailyPhoto/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>album</title>
+    <url>/album/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -42,11 +47,6 @@
   <entry>
     <title>fcircle</title>
     <url>/fcircle/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>categories</title>
-    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
