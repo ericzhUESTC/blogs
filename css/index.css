@@ -1960,9 +1960,6 @@ figure.highlight pre .javascript .function {
     filter: alpha(opacity=60);
   }
 }
-#icat-about-page {
-  max-width: 1400px;
-}
 #icat-about-page .about-layout {
   border-radius: 12px;
   background: var(--icat-card-bg);
