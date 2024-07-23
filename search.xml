@@ -20,8 +20,8 @@
 ]]></content>
   </entry>
   <entry>
-    <title>about</title>
-    <url>/about/index.html</url>
+    <title>album</title>
+    <url>/album/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -30,8 +30,8 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>album</title>
-    <url>/album/index.html</url>
+    <title>about</title>
+    <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -40,24 +40,24 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>dailyPhoto</title>
-    <url>/dailyPhoto/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>fcircle</title>
     <url>/fcircle/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>link</title>
-    <url>/link/index.html</url>
+    <title>dailyPhoto</title>
+    <url>/dailyPhoto/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title></title>
     <url>/json/album_detail.json</url>
     <content><![CDATA[[{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0556.jpg","alt":"IMG_0556.jpg","title":"这是title"},{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0472.jpg","alt":"IMG_0472.jpg"},{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0453.jpg","alt":""},{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0931.jpg","alt":""}]]]></content>
+  </entry>
+  <entry>
+    <title>link</title>
+    <url>/link/index.html</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title></title>
@@ -70,13 +70,13 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>tags</title>
-    <url>/tags/index.html</url>
+    <title>worldScenery</title>
+    <url>/wordScenery/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>worldScenery</title>
-    <url>/wordScenery/index.html</url>
+    <title>tags</title>
+    <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
