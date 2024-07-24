@@ -172,242 +172,21 @@ Qt的安装参见官方文档：<a href="https://doc.qt.io/qt-5/windows.html#ins
       </tags>
   </entry>
   <entry>
-    <title>遗传算法与模型优化</title>
-    <url>/2023/03/26/02-GA/</url>
-    <content><![CDATA[<h1>概述</h1>
-<p>遗传算法（GA，genetic algorithm）是一种基于种群的元启发式算法（metaheuristic algorithms）。（关于元启发式算法参见<a href="https://blog.csdn.net/weixin_41313851/article/details/116045159">各种元启发式算法（Metaheuristics）介绍</a>），其灵感来自<strong>生物进化过程</strong>。</p>
-<span id="more"></span>
-<h2 id="遗传算法的基本要素">遗传算法的基本要素</h2>
-<pre><code>1.染色体表示（chromosome representation），
-2.适应度选择（fitness selection），
-3.仿生算子（biological-inspired operators）
-</code></pre>
-<h2 id="遗传算法的工作方式">遗传算法的工作方式</h2>
-<p>问题参数编码为染色体，再利用迭代的方式进行选择，交叉以及变异等运算来交换种群中的染色体信息，生成符合优化目标的染色体。染色体即对应数据/数组（串式结构）。</p>
-<h2 id="遗传算法的基本步骤">遗传算法的基本步骤</h2>
-<pre><code>1. 编码：GA进行搜索之前对解空间的解数据表示成遗传空间的基因型串结构数据，这些串结构数据的不同组合构成了不同的点。
-2. 生成初始群体：随机产生N个初始串结构数据，每个串结构数据生成一个个体，N个个体构成一个群体。GA算法以这个群体为初始点开始进化。
-3. 适应度评估：依据实际的问题构造适应性函数。
-4. 选择：从当前群体中选出优良个体，使他们有机会作为父代为下一代繁殖子孙。（体现达尔文的适者生存法则）
-5. 交叉：（最主要的遗传操作）通过交叉操作得到新一代个体，新个体组合了父辈的个体特性，体现信息交换的思想。
-6. 变异：群体中随机选择一个个体，以一定概率随机改变串结构数据中的某个串的值。类比生物界的基因突变，GA算法的变异概率很低，通常取值很小。
-</code></pre>
-<h1>GA算法的基本结构与遗传算子</h1>
-<p>此部分将对GA算法的基本结构及其遗传算子进行讨论。</p>
-<h2 id="Classical-GA-Alg">Classical GA Alg</h2>
-<p>GA算法的伪代码描述如下（Hexo貌似不支持VSCode + Markdown Preview Enhanced + pseudocode.js文件魔改之后的伪代码渲染，只好放图了，显得直观些，想了解如何在markdown中写伪代码块参见<a href="https://zhuanlan.zhihu.com/p/406649966">在 Markdown 中书写伪代码</a>）<br>
-<img src="01.png" alt="fig01: Classical Genetic Algorithm Pseuducode"></p>
-<p>简单总结：GA的过程就是生成群体-&gt;群体繁衍（交叉互换）-&gt;子代基因突变-&gt;子代成为新群体-&gt;不停迭代，是不是和生物种群的繁衍一模一样。（<s>这就是交叉学科吗</s>）</p>
-<p>那么，怎么去确定染色体交叉的概率？论文中给出了公式：$$R=\frac{G+2\sqrt{g}}{3G}$$<br>
-参数解释：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Variants</th>
-<th style="text-align:center">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span></td>
-<td style="text-align:center">世代数</td>
-</tr>
-<tr>
-<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi></mrow><annotation encoding="application/x-tex">G</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">G</span></span></span></span></td>
-<td style="text-align:center">种群集合的进化世代总数</td>
-</tr>
-</tbody>
-</table>
-<p>在 GA 的初始阶段，个体之间的相似性很低。R的取值要低，以保证新种群不会破坏个体优良的遗传图式。在进化的末期，个体之间的相似度很高，R 的值也应该很高。</p>
-<h2 id="GA-算子">GA 算子</h2>
-<p><img src="02.png" alt="fig02: GA 中使用的算子/运算规则"></p>
-<h3 id="对染色体上的基因（数据串）的编码方案">对染色体上的基因（数据串）的编码方案</h3>
-<p><strong>二进制</strong>、<strong>八进制</strong>、<strong>十六进制</strong>、<strong>排列</strong>、<strong>基于值</strong>和<strong>树</strong>。（注：原论文中的这一节对基因和染色体这两个概念有混用的现象，不过生物学也存在这种混用，问题不大）。几种编码方式各有优劣，具体对比见如下表格：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">编码方式</th>
-<th style="text-align:center">优点</th>
-<th style="text-align:center">缺点</th>
-<th style="text-align:center">应用场景</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">二进制</td>
-<td style="text-align:center">易于实施，执行更快</td>
-<td style="text-align:center">不支持反转运算符</td>
-<td style="text-align:center">支持二进制编码的问题</td>
-</tr>
-<tr>
-<td style="text-align:center">八进制</td>
-<td style="text-align:center">易于实施</td>
-<td style="text-align:center">不支持反转运算符</td>
-<td style="text-align:center">受限</td>
-</tr>
-<tr>
-<td style="text-align:center">十六进制</td>
-<td style="text-align:center">易于实施</td>
-<td style="text-align:center">不支持反转运算符</td>
-<td style="text-align:center">受限</td>
-</tr>
-<tr>
-<td style="text-align:center">排列</td>
-<td style="text-align:center">支持反转算子</td>
-<td style="text-align:center">不支持二元运算符</td>
-<td style="text-align:center">任务排序问题</td>
-</tr>
-<tr>
-<td style="text-align:center">基于值</td>
-<td style="text-align:center">无需数值换算</td>
-<td style="text-align:center">需要特定的交叉和变异</td>
-<td style="text-align:center">神经网络问题</td>
-</tr>
-<tr>
-<td style="text-align:center">基于值</td>
-<td style="text-align:center">无需数值换算</td>
-<td style="text-align:center">需要特定的交叉和变异</td>
-<td style="text-align:center">神经网络找权值问题</td>
-</tr>
-<tr>
-<td style="text-align:center">树</td>
-<td style="text-align:center">操作员可以轻松应用</td>
-<td style="text-align:center">一些问题很难设计树</td>
-<td style="text-align:center">不断进化/发展的问题</td>
-</tr>
-</tbody>
-</table>
-<h3 id="优良个体选择方法">优良个体选择方法</h3>
-<p>类比进化生物学，进化压力越大，生物受到“物竞天择”的强度越大。GA的收敛速度也取决于选择压力。<br>
-常见的选择方法有：<strong>轮盘赌</strong>、<strong>等级排序</strong>、<strong>锦标赛</strong>、<strong>玻尔兹曼法</strong>、<strong>随机通用抽样</strong>。具体对比见如下表格：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">选择方式</th>
-<th style="text-align:center">优点</th>
-<th style="text-align:center">缺点</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">轮盘赌</td>
-<td style="text-align:center">易于实施，简单，没有偏差</td>
-<td style="text-align:center">有过早收敛的风险，取决于适应度函数中存在的方差</td>
-</tr>
-<tr>
-<td style="text-align:center">等级排序</td>
-<td style="text-align:center">保持多样性，没有偏差</td>
-<td style="text-align:center">收敛慢，需要排序，计算量大</td>
-</tr>
-<tr>
-<td style="text-align:center">锦标赛</td>
-<td style="text-align:center">保持多样性，并行执行，无需排序</td>
-<td style="text-align:center">锦标赛规模大时多样性的损失</td>
-</tr>
-<tr>
-<td style="text-align:center">玻尔兹曼法</td>
-<td style="text-align:center">全局最优</td>
-<td style="text-align:center">计算量大</td>
-</tr>
-<tr>
-<td style="text-align:center">随机通用抽样</td>
-<td style="text-align:center">无偏差，快速</td>
-<td style="text-align:center">需要特定的交叉和变异</td>
-</tr>
-<tr>
-<td style="text-align:center">精英主义</td>
-<td style="text-align:center">保留种群中最好的个体</td>
-<td style="text-align:center">由于交叉和变异算子，最佳个体可能会丢失</td>
-</tr>
-</tbody>
-</table>
-<h3 id="交叉运算">交叉运算</h3>
-<p>通过组合两个或多个父母的遗传信息来生成后代。常见的交叉运算方法有：<strong>单点交叉</strong>、<strong>两点交叉</strong>、<strong>k点交叉</strong>、<strong>均匀交叉</strong>、<strong>部分匹配交叉 (Partially matched crossover (PMX) )</strong>、<strong>顺序交叉(Order crossover (OX) )</strong>、<strong>优先保留交叉(Precedence preserving crossover (PPX) )</strong>、<strong>随机交叉(Shuffle crossover)</strong>、<strong>减少代理交叉(Reduced surrogate crossover (RCX) )</strong>、<strong>循环交叉</strong>。具体对比见如下表格：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">交叉运算方式</th>
-<th style="text-align:center">优点</th>
-<th style="text-align:center">缺点</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">单点交叉</td>
-<td style="text-align:center">易于实施，简单</td>
-<td style="text-align:center">不太多样化</td>
-</tr>
-<tr>
-<td style="text-align:center">两点交叉\k点交叉</td>
-<td style="text-align:center">易于实施</td>
-<td style="text-align:center">适用于小子集、不太多样化</td>
-</tr>
-<tr>
-<td style="text-align:center">减少代理交叉</td>
-<td style="text-align:center">在小的优化问题上有更好的性能</td>
-<td style="text-align:center">过早收敛</td>
-</tr>
-<tr>
-<td style="text-align:center">均匀交叉</td>
-<td style="text-align:center">无偏检索、适用于大型子集、更好的重组潜力</td>
-<td style="text-align:center">不太多样化</td>
-</tr>
-<tr>
-<td style="text-align:center">优先保留交叉</td>
-<td style="text-align:center">更好的后代</td>
-<td style="text-align:center">冗余</td>
-</tr>
-<tr>
-<td style="text-align:center">顺序交叉</td>
-<td style="text-align:center">更好的探索</td>
-<td style="text-align:center">以前个体的信息丢失</td>
-</tr>
-<tr>
-<td style="text-align:center">循环交叉</td>
-<td style="text-align:center">无偏检索</td>
-<td style="text-align:center">过早收敛</td>
-</tr>
-<tr>
-<td style="text-align:center">部分匹配交叉</td>
-<td style="text-align:center">更好的收敛率、优于其他交叉</td>
-<td style="text-align:center">NA</td>
-</tr>
-</tbody>
-</table>
-<h3 id="变异运算">变异运算</h3>
-<p>用于维持从一个种群到下一个种群的遗传多样性的算子。常见的交叉运算方法有：<strong>移位突变（Displacement mutation，DM）、单一反转突变（simple inversion mutation，SIM）、乱码突变（Scramble Mutation，SM）</strong>。具体对比见如下表格：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">变异运算方式</th>
-<th style="text-align:center">优点</th>
-<th style="text-align:center">缺点</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">移位突变</td>
-<td style="text-align:center">易于实施，适用于小问题实例</td>
-<td style="text-align:center">有可能过早收敛</td>
-</tr>
-<tr>
-<td style="text-align:center">单一反转突变</td>
-<td style="text-align:center">易于实施</td>
-<td style="text-align:center">过早收敛</td>
-</tr>
-<tr>
-<td style="text-align:center">乱码突变</td>
-<td style="text-align:center">影响大量的基因、适用于大型问题实例</td>
-<td style="text-align:center">对种群干扰大、某些问题的解决方案质量下降</td>
-</tr>
-</tbody>
-</table>
+    <title>2023_NUEDC</title>
+    <url>/2024/03/16/2023-NUEDC/</url>
+    <content><![CDATA[<h1>2023 NUEDC Question C</h1>
+
+
+	<div class="row">
+    <embed src="review.pdf" width="100%" height="550" type="application/pdf">
+	</div>
+
+
 ]]></content>
-      <categories>
-        <category>项目记录</category>
-      </categories>
       <tags>
-        <tag>大创</tag>
+        <tag>NUEDC</tag>
+        <tag>精密仪器仪表</tag>
+        <tag>精密测量</tag>
       </tags>
   </entry>
   <entry>
@@ -832,21 +611,242 @@ ref:<a href="https://item.taobao.com/item.htm?spm=a21n57.1.0.0.7b90523cKNbIy1&am
       </tags>
   </entry>
   <entry>
-    <title>2023_NUEDC</title>
-    <url>/2024/03/16/2023-NUEDC/</url>
-    <content><![CDATA[<h1>2023 NUEDC Question C</h1>
-
-
-	<div class="row">
-    <embed src="review.pdf" width="100%" height="550" type="application/pdf">
-	</div>
-
-
+    <title>遗传算法与模型优化</title>
+    <url>/2023/03/26/02-GA/</url>
+    <content><![CDATA[<h1>概述</h1>
+<p>遗传算法（GA，genetic algorithm）是一种基于种群的元启发式算法（metaheuristic algorithms）。（关于元启发式算法参见<a href="https://blog.csdn.net/weixin_41313851/article/details/116045159">各种元启发式算法（Metaheuristics）介绍</a>），其灵感来自<strong>生物进化过程</strong>。</p>
+<span id="more"></span>
+<h2 id="遗传算法的基本要素">遗传算法的基本要素</h2>
+<pre><code>1.染色体表示（chromosome representation），
+2.适应度选择（fitness selection），
+3.仿生算子（biological-inspired operators）
+</code></pre>
+<h2 id="遗传算法的工作方式">遗传算法的工作方式</h2>
+<p>问题参数编码为染色体，再利用迭代的方式进行选择，交叉以及变异等运算来交换种群中的染色体信息，生成符合优化目标的染色体。染色体即对应数据/数组（串式结构）。</p>
+<h2 id="遗传算法的基本步骤">遗传算法的基本步骤</h2>
+<pre><code>1. 编码：GA进行搜索之前对解空间的解数据表示成遗传空间的基因型串结构数据，这些串结构数据的不同组合构成了不同的点。
+2. 生成初始群体：随机产生N个初始串结构数据，每个串结构数据生成一个个体，N个个体构成一个群体。GA算法以这个群体为初始点开始进化。
+3. 适应度评估：依据实际的问题构造适应性函数。
+4. 选择：从当前群体中选出优良个体，使他们有机会作为父代为下一代繁殖子孙。（体现达尔文的适者生存法则）
+5. 交叉：（最主要的遗传操作）通过交叉操作得到新一代个体，新个体组合了父辈的个体特性，体现信息交换的思想。
+6. 变异：群体中随机选择一个个体，以一定概率随机改变串结构数据中的某个串的值。类比生物界的基因突变，GA算法的变异概率很低，通常取值很小。
+</code></pre>
+<h1>GA算法的基本结构与遗传算子</h1>
+<p>此部分将对GA算法的基本结构及其遗传算子进行讨论。</p>
+<h2 id="Classical-GA-Alg">Classical GA Alg</h2>
+<p>GA算法的伪代码描述如下（Hexo貌似不支持VSCode + Markdown Preview Enhanced + pseudocode.js文件魔改之后的伪代码渲染，只好放图了，显得直观些，想了解如何在markdown中写伪代码块参见<a href="https://zhuanlan.zhihu.com/p/406649966">在 Markdown 中书写伪代码</a>）<br>
+<img src="01.png" alt="fig01: Classical Genetic Algorithm Pseuducode"></p>
+<p>简单总结：GA的过程就是生成群体-&gt;群体繁衍（交叉互换）-&gt;子代基因突变-&gt;子代成为新群体-&gt;不停迭代，是不是和生物种群的繁衍一模一样。（<s>这就是交叉学科吗</s>）</p>
+<p>那么，怎么去确定染色体交叉的概率？论文中给出了公式：$$R=\frac{G+2\sqrt{g}}{3G}$$<br>
+参数解释：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Variants</th>
+<th style="text-align:center">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span></td>
+<td style="text-align:center">世代数</td>
+</tr>
+<tr>
+<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi></mrow><annotation encoding="application/x-tex">G</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">G</span></span></span></span></td>
+<td style="text-align:center">种群集合的进化世代总数</td>
+</tr>
+</tbody>
+</table>
+<p>在 GA 的初始阶段，个体之间的相似性很低。R的取值要低，以保证新种群不会破坏个体优良的遗传图式。在进化的末期，个体之间的相似度很高，R 的值也应该很高。</p>
+<h2 id="GA-算子">GA 算子</h2>
+<p><img src="02.png" alt="fig02: GA 中使用的算子/运算规则"></p>
+<h3 id="对染色体上的基因（数据串）的编码方案">对染色体上的基因（数据串）的编码方案</h3>
+<p><strong>二进制</strong>、<strong>八进制</strong>、<strong>十六进制</strong>、<strong>排列</strong>、<strong>基于值</strong>和<strong>树</strong>。（注：原论文中的这一节对基因和染色体这两个概念有混用的现象，不过生物学也存在这种混用，问题不大）。几种编码方式各有优劣，具体对比见如下表格：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">编码方式</th>
+<th style="text-align:center">优点</th>
+<th style="text-align:center">缺点</th>
+<th style="text-align:center">应用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">二进制</td>
+<td style="text-align:center">易于实施，执行更快</td>
+<td style="text-align:center">不支持反转运算符</td>
+<td style="text-align:center">支持二进制编码的问题</td>
+</tr>
+<tr>
+<td style="text-align:center">八进制</td>
+<td style="text-align:center">易于实施</td>
+<td style="text-align:center">不支持反转运算符</td>
+<td style="text-align:center">受限</td>
+</tr>
+<tr>
+<td style="text-align:center">十六进制</td>
+<td style="text-align:center">易于实施</td>
+<td style="text-align:center">不支持反转运算符</td>
+<td style="text-align:center">受限</td>
+</tr>
+<tr>
+<td style="text-align:center">排列</td>
+<td style="text-align:center">支持反转算子</td>
+<td style="text-align:center">不支持二元运算符</td>
+<td style="text-align:center">任务排序问题</td>
+</tr>
+<tr>
+<td style="text-align:center">基于值</td>
+<td style="text-align:center">无需数值换算</td>
+<td style="text-align:center">需要特定的交叉和变异</td>
+<td style="text-align:center">神经网络问题</td>
+</tr>
+<tr>
+<td style="text-align:center">基于值</td>
+<td style="text-align:center">无需数值换算</td>
+<td style="text-align:center">需要特定的交叉和变异</td>
+<td style="text-align:center">神经网络找权值问题</td>
+</tr>
+<tr>
+<td style="text-align:center">树</td>
+<td style="text-align:center">操作员可以轻松应用</td>
+<td style="text-align:center">一些问题很难设计树</td>
+<td style="text-align:center">不断进化/发展的问题</td>
+</tr>
+</tbody>
+</table>
+<h3 id="优良个体选择方法">优良个体选择方法</h3>
+<p>类比进化生物学，进化压力越大，生物受到“物竞天择”的强度越大。GA的收敛速度也取决于选择压力。<br>
+常见的选择方法有：<strong>轮盘赌</strong>、<strong>等级排序</strong>、<strong>锦标赛</strong>、<strong>玻尔兹曼法</strong>、<strong>随机通用抽样</strong>。具体对比见如下表格：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">选择方式</th>
+<th style="text-align:center">优点</th>
+<th style="text-align:center">缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">轮盘赌</td>
+<td style="text-align:center">易于实施，简单，没有偏差</td>
+<td style="text-align:center">有过早收敛的风险，取决于适应度函数中存在的方差</td>
+</tr>
+<tr>
+<td style="text-align:center">等级排序</td>
+<td style="text-align:center">保持多样性，没有偏差</td>
+<td style="text-align:center">收敛慢，需要排序，计算量大</td>
+</tr>
+<tr>
+<td style="text-align:center">锦标赛</td>
+<td style="text-align:center">保持多样性，并行执行，无需排序</td>
+<td style="text-align:center">锦标赛规模大时多样性的损失</td>
+</tr>
+<tr>
+<td style="text-align:center">玻尔兹曼法</td>
+<td style="text-align:center">全局最优</td>
+<td style="text-align:center">计算量大</td>
+</tr>
+<tr>
+<td style="text-align:center">随机通用抽样</td>
+<td style="text-align:center">无偏差，快速</td>
+<td style="text-align:center">需要特定的交叉和变异</td>
+</tr>
+<tr>
+<td style="text-align:center">精英主义</td>
+<td style="text-align:center">保留种群中最好的个体</td>
+<td style="text-align:center">由于交叉和变异算子，最佳个体可能会丢失</td>
+</tr>
+</tbody>
+</table>
+<h3 id="交叉运算">交叉运算</h3>
+<p>通过组合两个或多个父母的遗传信息来生成后代。常见的交叉运算方法有：<strong>单点交叉</strong>、<strong>两点交叉</strong>、<strong>k点交叉</strong>、<strong>均匀交叉</strong>、<strong>部分匹配交叉 (Partially matched crossover (PMX) )</strong>、<strong>顺序交叉(Order crossover (OX) )</strong>、<strong>优先保留交叉(Precedence preserving crossover (PPX) )</strong>、<strong>随机交叉(Shuffle crossover)</strong>、<strong>减少代理交叉(Reduced surrogate crossover (RCX) )</strong>、<strong>循环交叉</strong>。具体对比见如下表格：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">交叉运算方式</th>
+<th style="text-align:center">优点</th>
+<th style="text-align:center">缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">单点交叉</td>
+<td style="text-align:center">易于实施，简单</td>
+<td style="text-align:center">不太多样化</td>
+</tr>
+<tr>
+<td style="text-align:center">两点交叉\k点交叉</td>
+<td style="text-align:center">易于实施</td>
+<td style="text-align:center">适用于小子集、不太多样化</td>
+</tr>
+<tr>
+<td style="text-align:center">减少代理交叉</td>
+<td style="text-align:center">在小的优化问题上有更好的性能</td>
+<td style="text-align:center">过早收敛</td>
+</tr>
+<tr>
+<td style="text-align:center">均匀交叉</td>
+<td style="text-align:center">无偏检索、适用于大型子集、更好的重组潜力</td>
+<td style="text-align:center">不太多样化</td>
+</tr>
+<tr>
+<td style="text-align:center">优先保留交叉</td>
+<td style="text-align:center">更好的后代</td>
+<td style="text-align:center">冗余</td>
+</tr>
+<tr>
+<td style="text-align:center">顺序交叉</td>
+<td style="text-align:center">更好的探索</td>
+<td style="text-align:center">以前个体的信息丢失</td>
+</tr>
+<tr>
+<td style="text-align:center">循环交叉</td>
+<td style="text-align:center">无偏检索</td>
+<td style="text-align:center">过早收敛</td>
+</tr>
+<tr>
+<td style="text-align:center">部分匹配交叉</td>
+<td style="text-align:center">更好的收敛率、优于其他交叉</td>
+<td style="text-align:center">NA</td>
+</tr>
+</tbody>
+</table>
+<h3 id="变异运算">变异运算</h3>
+<p>用于维持从一个种群到下一个种群的遗传多样性的算子。常见的交叉运算方法有：<strong>移位突变（Displacement mutation，DM）、单一反转突变（simple inversion mutation，SIM）、乱码突变（Scramble Mutation，SM）</strong>。具体对比见如下表格：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">变异运算方式</th>
+<th style="text-align:center">优点</th>
+<th style="text-align:center">缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">移位突变</td>
+<td style="text-align:center">易于实施，适用于小问题实例</td>
+<td style="text-align:center">有可能过早收敛</td>
+</tr>
+<tr>
+<td style="text-align:center">单一反转突变</td>
+<td style="text-align:center">易于实施</td>
+<td style="text-align:center">过早收敛</td>
+</tr>
+<tr>
+<td style="text-align:center">乱码突变</td>
+<td style="text-align:center">影响大量的基因、适用于大型问题实例</td>
+<td style="text-align:center">对种群干扰大、某些问题的解决方案质量下降</td>
+</tr>
+</tbody>
+</table>
 ]]></content>
+      <categories>
+        <category>项目记录</category>
+      </categories>
       <tags>
-        <tag>NUEDC</tag>
-        <tag>精密仪器仪表</tag>
-        <tag>精密测量</tag>
+        <tag>大创</tag>
       </tags>
   </entry>
   <entry>
@@ -2248,154 +2248,6 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </tags>
   </entry>
   <entry>
-    <title>Event-based VFI</title>
-    <url>/2024/07/13/Event-based-Video-Frame-Interpolation/</url>
-    <content><![CDATA[<h2 id="Reference">Reference</h2>
-<p>[1] 	H. Cho, T. Kim, Y. Jeong, and K.-J. Yoon, “TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2024, pp. 25701–25711.</p>
-<p>[2] 	J. Dong, K. Ota, and M. Dong, “Video Frame Interpolation: A Comprehensive Survey,” ACM Trans. Multimedia Comput. Commun. Appl., vol. 19, no. 2s, May 2023, doi: 10.1145/3556544.</p>
-<p>[3] 	O. S. Kılıç, A. Akman, and A. A. Alatan, “E-VFIA: Event-Based Video Frame Interpolation with Attention,” in 2023 IEEE International Conference on Robotics and Automation (ICRA), 2023, pp. 8284–8290. doi: 10.1109/ICRA48891.2023.10160276.</p>
-<p>[4] 	T. Kim, Y. Chae, H.-K. Jang, and K.-J. Yoon, “Event-Based Video Frame Interpolation With Cross-Modal Asymmetric Bidirectional Motion Fields,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, pp. 18032–18042.</p>
-<p>[5] 	L. Sun et al., “Event-Based Frame Interpolation with Ad-hoc Deblurring,” in 2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, pp. 18043–18052. doi: 10.1109/CVPR52729.2023.01730.</p>
-<p>[6] 	S. Tulyakov, A. Bochicchio, D. Gehrig, S. Georgoulis, Y. Li, and D. Scaramuzza, “Time Lens++: Event-based Frame Interpolation with Non-linear Parametric Flow and Multi-scale Fusion,” IEEE Conference on Computer Vision and Pattern Recognition, 2022.</p>
-<p>[7] 	S. Tulyakov et al., “TimeLens: Event-based Video Frame Interpolation,” IEEE Conference on Computer Vision and Pattern Recognition, 2021.</p>
-<p>[8] 	S. Lin et al., “Learning Event-Driven Video Deblurring and Interpolation,” ECCV, 2020.</p>
-<h2 id="概述">概述</h2>
-<p>VFI，全称Video Frame Interpolation，即视频插帧，在两个连续视频帧之间合成不存在的帧。传统的VFI解决方案分为两步：首先估计帧间的运动信息（通常基于光流/卷积核/光流-卷积核混合/相位变化），然后进行像素合成。插帧为很多下游任务（慢动作生成、帧率提升、视频压缩、新视图合成、视频修复、帧内预测等）提供了技术条件和应用基础。</p>
-<h2 id="Event-based-VFI方法对比">Event-based VFI方法对比</h2>
-<table>
-<thead>
-<tr>
-<th>Citation</th>
-<th>Motivations</th>
-<th>Model</th>
-<th>Strategies</th>
-<th>Multimedia Resources</th>
-<th>Other Info</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2020 ECCV Learning Event-Driven Video Deblurring and Interpolation</td>
-<td><font size=0.5>🔑 核心目的：捕捉高速运动，传统的相机做不到，只能通过<strong>去模糊化</strong>和<strong>插帧</strong>解决<br>🔑 大量工作将事件流直接转换为像素视频流。然而重建的视频往往缺乏纹理，并且在没有额外像素强度信息的情况下看起来不逼真<br>🔑 利用强度传感器（传统摄像头）和基于事件的传感器（事件相机）的优点进行高速视频生成是可取的，且即便有一小部分研究注意到了两种信源，这些工作没有把去模糊化考虑进来<br>🔑 前人工作中提出了EDI（Event-based Double Integral）模型将给定模糊帧和相应的事件流经过去模糊后，通过估计它们之间的残差，可以从上述初步去模糊的图像中插值出其他潜在视频帧。该方法自然地连接了强度图像和事件数据，在高帧率视频生成方面显示出不错的结果。但是由于事件相机的触发阈值随着硬件和场景条件在空间和时间上变化，会引入强烈的累积噪声</font></td>
-<td>IntegralNet+GateNet</td>
-<td><font size=0.5>✨残差估计<br>✨关键帧去模糊<br>✨插帧<br>✨帧融合</font></td>
-<td>None</td>
-<td><font size=0.5>主要聚焦<strong>高速视频重建</strong>任务，插帧作为该任务其中一个策略</font></td>
-</tr>
-<tr>
-<td>2021 CVPR Time Lens: Event-based Video Frame Interpolation</td>
-<td><font size=0.5>🔑 所有基于帧的VFI由于缺乏帧间盲区时间的视觉信息而必须<strong>假设简化的运动模型（例如线性）</strong>【根本限制】这些简化假设依赖于帧间亮度和外观的恒定性，限制了它们在高度动态场景中的适用性，例如（i）输入关键帧之间的<strong>非线性运动</strong>，（ii）<strong>光照变化</strong>或<strong>运动模糊</strong>的情况，以及（iii）关键帧之间场景中出现的<strong>新物体</strong>和<strong>非刚性运动</strong>。<br>🔑 具有不同的时空折衷（spatio-temporal trade-offs）的多相机方法克服这一限制，但存两份或多分同一个视频流（可能是高帧低分辨率和低帧高分辨率）会<strong>占用巨大的存储资源</strong>，视频流融合也需要<strong>更大的功耗</strong><br>🔑 单纯依赖事件相机(Events-only)的数据进行图像强度恢复不够完美，表现为1.插值帧的整体对比度通常会计算错误；2.插值结果强依赖于物体的运动情况（换言之对不运动的物体无法插值，也就无法完成VFI）<br>🔑 依赖事件数据和强度帧数据(Events-plus-frames)的方法虽然能有效估计非线性运动，但由于<strong>对比度阈值</strong>和<strong>传感器噪声</strong>的固有<strong>不稳定性</strong>，并非所有的亮度变化都能准确地被记录为事件。</font></td>
-<td>Time Lens(CNN-based)</td>
-<td><font size=0.5>✨从事件数据出发的基于变形(Warping-based)的插值方法<br>✨引入“变形优化”(warping refinement)步骤, 提高这些初始插值帧的质量<br>✨基于合成的(Synthesis-based)插帧方法, 利用两种信源(像素强度和事件流)融合生成新的帧<br>✨最后利用基于注意力机制的平均化(attention-baed averaging)模块组合两种方法的结果</font></td>
-<td><a href="https://rpg.ifi.uzh.ch/TimeLens.html">Project Demo</a><br></td>
-<td><font size=0.5>每一个单独的插帧策略不行，就两个一起用（有点<strong>大力出奇迹</strong>的味道）</font></td>
-</tr>
-<tr>
-<td>2022 CVPR Time Lens++: Event-based Frame Interpolation with Parametric Non-linear Flow and Multi-scale Fusion</td>
-<td><font size=0.5>结合帧和事件相机的视频帧插值方法仍存在如下问题<br>🔑 输入中存在伪影时，合成插值的“残影”会被传递到最终输出中<br>🔑 依赖于非参数运动估计，这一过程独立运行于每个插入的帧，计算成本为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span> 是插入的帧数，如果和时间对不上就会产生估计偏差<br>🔑 为利用非线性运动的信息，依赖于仅基于事件的运动估计，这在低对比度区域（没有事件）中会导致伪影</font></td>
-<td>🧩<strong>Multi-scale Feature Fusion Decoder</strong>(CNN-based)<br>🧩<strong>Motion spline estimator</strong>(Encoder-Decoder)</td>
-<td><font size=0.5>✨新引入的<strong>运动估计器</strong>(Motion spline estimator),除了利用事件外还使用边界图像<br>✨改进事件数据和图像数据的融合：<strong>多尺度特征融合解码器</strong>，引入新的<strong>门控机制</strong><br>✨Softmax Splatting变型插帧</font></td>
-<td><a href="https://uzh-rpg.github.io/timelens-pp/">Project Demo</a><br></td>
-<td><font size=0.5>程序源代码未开源，仅数据集开源</font></td>
-</tr>
-<tr>
-<td>2023 CVPR Event-Based Frame Interpolation with Ad-hoc Deblurring</td>
-<td><font size=0.5>前人方法虽认识到了异步事件数据的好，但忽略如下问题<br>🔑 运动是否会导致输入视频出现模糊，取决于<strong>帧的曝光时间长短</strong>和<strong>运动速度</strong>；<br>🔑 之前的工作要么假设输入视频是清晰的，仅限于帧插值，要么假设输入视频是模糊的，在插值之前包括一个显式的去模糊阶段；<br>🔑 与帧不同，事件不受运动模糊的影响。无论帧是清晰还是模糊，相应的事件都是相同的。事件驱动的VFI的理想状态是能够在清晰图像插值和模糊图像插值上均表现出稳健的性能。<br>🔑 我们提出将上述两个任务统一为一个问题：给定两个输入图像和对应的事件流，恢复在输入图像之间任意时间点的潜在清晰图像。<strong>输入图像可以是模糊的或清晰的。</strong></font></td>
-<td>🧩<strong>REFID</strong>(CNN&amp;RNN-based)</td>
-<td><font size=0.5>✨ EGACA(event-guided adaptive channel attention)<br>✨ bidirectional event recurrent (EVR) blocks</font></td>
-<td><a href="https://github.com/AHupuJR/REFID">Github Repo</a><br></td>
-<td><font size=0.5>数据集未开源，仅程序源代码开源</font></td>
-</tr>
-<tr>
-<td>2023 CVPR Event-based Video Frame Interpolation with Cross-Modal Asymmetric Bidirectional Motion Fields</td>
-<td><font size=0.5>🔑 现有方法仅通过<strong>事件</strong>或<strong>近似方法</strong>估计双向帧间运动场，这无法考虑现实世界场景中的复杂运动.<br>🔑 大多数基于 CNN 的帧合成方法由于受限的感受野大小，在长距离像素相关性上存在弱点.</font></td>
-<td>🧩<strong>EIF-BiOFNet</strong>(直接估计帧间运动场，而无需任何近似方法)<br>🧩<strong>基于交互注意的帧合成网络</strong>(Transformer Decoder-based)</td>
-<td><font size=0.5>✨ 锚帧特征预处理(Anchor Frame Feature Pre-processing)<br>✨ <strong>E-BiOF+I-BiOF+F-BiOF</strong></font></td>
-<td><a href="https://github.com/intelpro/CBMNet">Github Repo</a><br></td>
-<td><font size=0.5></font></td>
-</tr>
-<tr>
-<td>2023 ICRA E-VFIA : Event-Based Video Frame Interpolation with Attention</td>
-<td><font size=0.5>🔑 可变卷积（deformable convolutions, DCN）在合成中间帧方面的有效性也丰富了基于核的视频帧插值方法<br>🔑 DCN+注意力机制可能有奇效</font></td>
-<td>🧩 SmoothNet.<br>🧩 Spatio-temporal absPooling layers.<br>🧩 Parallel SynBlocks</td>
-<td><font size=0.5>✨ Synblock主要负责事件流和RGB融合.<br>✨ MSA用在计算时间维度的注意力值</font></td>
-<td><a href="https://github.com/ahmetakman/E-VFIA">Github Repo</a><br></td>
-<td><font size=0.5>相比前几篇的CVPR，这一篇的含金量就略显逊色，只做一个数据集的结果</font></td>
-</tr>
-<tr>
-<td>2024 CVPR TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation</td>
-<td><font size=0.5>🔑 事件相机数据的分布会根据相机设置和场景条件发生显著变化,弹性差<br>🔑 在线适应网络环境在实际应用中至关重要-&gt;测试时适应（Test-Time Adaptation, TTA）<br>🔑 无高帧率视频的适应：网络在目标域中需要适应场景，同时从低帧率数据中学习高帧率生成的知识。<br>🔑 在连续提供具有相似分布的数据时，网络可能会过拟合。</font></td>
-<td>🧩 TTA-EVF Framework</td>
-<td><font size=0.5>✨ Reliable Pixel Sampling (RPS)<br>✨Patch-Mixed Sampling (PMS)</font></td>
-<td><a href="https://github.com/Chohoonhee/TTA-EVF">Github Repo</a><br></td>
-<td><font size=0.5>没有关注插帧网络本身，侧重实际应用中面对不同场景插针算法的适应性和鲁棒性问题；程序源代码未开源，仅数据集开源</font></td>
-</tr>
-</tbody>
-</table>
-<h2 id="Event-based-VFI数据集">Event-based VFI数据集</h2>
-<table>
-<thead>
-<tr>
-<th>Citation</th>
-<th>Multimedia Resources</th>
-<th>Other Info</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2017 CVPR Deep Multi-scale Convolutional Neural Network for Dynamic Scene Deblurring</td>
-<td><a href="https://github.com/SeungjunNah/DeepDeblur_release">DeepDeblur</a></td>
-<td>GoPro相机拍摄，<strong>无事件流</strong></td>
-</tr>
-<tr>
-<td>2020 CVPR Learning Event-Based Motion Deblurring</td>
-<td><a href="">Blur-DVS</a></td>
-<td>未公开</td>
-</tr>
-<tr>
-<td>2021 CVPR Time Lens: Event-based Video Frame Interpolation</td>
-<td><a href="http://rpg.ifi.uzh.ch/timelens/data2/hs-ergb-dataset.zip">HS-ERGB</a></td>
-<td></td>
-</tr>
-<tr>
-<td>2022 CVPR Time Lens++: Event-based Frame Interpolation with Parametric Non-linear Flow and Multi-scale Fusion</td>
-<td><a href="https://rpg.ifi.uzh.ch/data/timelens_pp/bs_ergb.zip">BS-ERGB</a></td>
-<td></td>
-</tr>
-<tr>
-<td>2023 CVPR Event-Based Frame Interpolation with Ad-hoc Deblurring</td>
-<td><a href="">HighREV</a></td>
-<td><code>Because of the commercial reason, dataset download is allowed only with the authority of Alpsentek(锐思智芯®).</code>还在等作者回邮件中</td>
-</tr>
-<tr>
-<td>2023 CVPR Event-based Video Frame Interpolation with Cross-Modal Asymmetric Bidirectional Motion Fields</td>
-<td><a href="https://drive.google.com/file/d/1Bsf9qreziPcVEuf0_v3kjdPUh27zsFXK/view">ERF-X170FPS_train</a><br><a href="https://drive.google.com/file/d/1Dk7jVQD29HqRVV11e8vxg5bDOh6KxrzL/view">ERF-X170FPS_test</a></td>
-<td></td>
-</tr>
-<tr>
-<td>2024 CVPR TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation</td>
-<td><a href="https://drive.google.com/drive/folders/1tTU625ZmXEz2Ngyjf4lq3Yv0ZgMxlgsC">ERDS</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="Event-based-VFI评价指标">Event-based VFI评价指标</h2>
-<ol>
-<li>PSNR:Peak Signal-to-Noise Ratio，中文译为<strong>峰值信噪比</strong></li>
-</ol>
-<p><img src="Event-based-Video-Frame-Interpolation%5Cpsnr.png" alt=""></p>
-<ol start="2">
-<li>SSIM:Structural Similarity，中文译为<strong>结构相似性</strong></li>
-</ol>
-<p><img src="Event-based-Video-Frame-Interpolation%5Cssim.png" alt=""></p>
-]]></content>
-      <tags>
-        <tag>VFI</tag>
-        <tag>Event-based CV</tag>
-        <tag>前沿论文阅读</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>FPGA_System_Design</title>
     <url>/2024/06/29/FPGA-System-Design/</url>
     <content><![CDATA[<h2 id="00-学习在PL端使用OV7725摄像头">00. 学习在PL端使用OV7725摄像头</h2>
@@ -2588,6 +2440,154 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       <tags>
         <tag>FPGA</tag>
         <tag>系统设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Event-based VFI</title>
+    <url>/2024/07/13/Event-based-Video-Frame-Interpolation/</url>
+    <content><![CDATA[<h2 id="Reference">Reference</h2>
+<p>[1] 	H. Cho, T. Kim, Y. Jeong, and K.-J. Yoon, “TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2024, pp. 25701–25711.</p>
+<p>[2] 	J. Dong, K. Ota, and M. Dong, “Video Frame Interpolation: A Comprehensive Survey,” ACM Trans. Multimedia Comput. Commun. Appl., vol. 19, no. 2s, May 2023, doi: 10.1145/3556544.</p>
+<p>[3] 	O. S. Kılıç, A. Akman, and A. A. Alatan, “E-VFIA: Event-Based Video Frame Interpolation with Attention,” in 2023 IEEE International Conference on Robotics and Automation (ICRA), 2023, pp. 8284–8290. doi: 10.1109/ICRA48891.2023.10160276.</p>
+<p>[4] 	T. Kim, Y. Chae, H.-K. Jang, and K.-J. Yoon, “Event-Based Video Frame Interpolation With Cross-Modal Asymmetric Bidirectional Motion Fields,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, pp. 18032–18042.</p>
+<p>[5] 	L. Sun et al., “Event-Based Frame Interpolation with Ad-hoc Deblurring,” in 2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, pp. 18043–18052. doi: 10.1109/CVPR52729.2023.01730.</p>
+<p>[6] 	S. Tulyakov, A. Bochicchio, D. Gehrig, S. Georgoulis, Y. Li, and D. Scaramuzza, “Time Lens++: Event-based Frame Interpolation with Non-linear Parametric Flow and Multi-scale Fusion,” IEEE Conference on Computer Vision and Pattern Recognition, 2022.</p>
+<p>[7] 	S. Tulyakov et al., “TimeLens: Event-based Video Frame Interpolation,” IEEE Conference on Computer Vision and Pattern Recognition, 2021.</p>
+<p>[8] 	S. Lin et al., “Learning Event-Driven Video Deblurring and Interpolation,” ECCV, 2020.</p>
+<h2 id="概述">概述</h2>
+<p>VFI，全称Video Frame Interpolation，即视频插帧，在两个连续视频帧之间合成不存在的帧。传统的VFI解决方案分为两步：首先估计帧间的运动信息（通常基于光流/卷积核/光流-卷积核混合/相位变化），然后进行像素合成。插帧为很多下游任务（慢动作生成、帧率提升、视频压缩、新视图合成、视频修复、帧内预测等）提供了技术条件和应用基础。</p>
+<h2 id="Event-based-VFI方法对比">Event-based VFI方法对比</h2>
+<table>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Motivations</th>
+<th>Model</th>
+<th>Strategies</th>
+<th>Multimedia Resources</th>
+<th>Other Info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2020 ECCV Learning Event-Driven Video Deblurring and Interpolation</td>
+<td><font size=0.5>🔑 核心目的：捕捉高速运动，传统的相机做不到，只能通过<strong>去模糊化</strong>和<strong>插帧</strong>解决<br>🔑 大量工作将事件流直接转换为像素视频流。然而重建的视频往往缺乏纹理，并且在没有额外像素强度信息的情况下看起来不逼真<br>🔑 利用强度传感器（传统摄像头）和基于事件的传感器（事件相机）的优点进行高速视频生成是可取的，且即便有一小部分研究注意到了两种信源，这些工作没有把去模糊化考虑进来<br>🔑 前人工作中提出了EDI（Event-based Double Integral）模型将给定模糊帧和相应的事件流经过去模糊后，通过估计它们之间的残差，可以从上述初步去模糊的图像中插值出其他潜在视频帧。该方法自然地连接了强度图像和事件数据，在高帧率视频生成方面显示出不错的结果。但是由于事件相机的触发阈值随着硬件和场景条件在空间和时间上变化，会引入强烈的累积噪声</font></td>
+<td>IntegralNet+GateNet</td>
+<td><font size=0.5>✨残差估计<br>✨关键帧去模糊<br>✨插帧<br>✨帧融合</font></td>
+<td>None</td>
+<td><font size=0.5>主要聚焦<strong>高速视频重建</strong>任务，插帧作为该任务其中一个策略</font></td>
+</tr>
+<tr>
+<td>2021 CVPR Time Lens: Event-based Video Frame Interpolation</td>
+<td><font size=0.5>🔑 所有基于帧的VFI由于缺乏帧间盲区时间的视觉信息而必须<strong>假设简化的运动模型（例如线性）</strong>【根本限制】这些简化假设依赖于帧间亮度和外观的恒定性，限制了它们在高度动态场景中的适用性，例如（i）输入关键帧之间的<strong>非线性运动</strong>，（ii）<strong>光照变化</strong>或<strong>运动模糊</strong>的情况，以及（iii）关键帧之间场景中出现的<strong>新物体</strong>和<strong>非刚性运动</strong>。<br>🔑 具有不同的时空折衷（spatio-temporal trade-offs）的多相机方法克服这一限制，但存两份或多分同一个视频流（可能是高帧低分辨率和低帧高分辨率）会<strong>占用巨大的存储资源</strong>，视频流融合也需要<strong>更大的功耗</strong><br>🔑 单纯依赖事件相机(Events-only)的数据进行图像强度恢复不够完美，表现为1.插值帧的整体对比度通常会计算错误；2.插值结果强依赖于物体的运动情况（换言之对不运动的物体无法插值，也就无法完成VFI）<br>🔑 依赖事件数据和强度帧数据(Events-plus-frames)的方法虽然能有效估计非线性运动，但由于<strong>对比度阈值</strong>和<strong>传感器噪声</strong>的固有<strong>不稳定性</strong>，并非所有的亮度变化都能准确地被记录为事件。</font></td>
+<td>Time Lens(CNN-based)</td>
+<td><font size=0.5>✨从事件数据出发的基于变形(Warping-based)的插值方法<br>✨引入“变形优化”(warping refinement)步骤, 提高这些初始插值帧的质量<br>✨基于合成的(Synthesis-based)插帧方法, 利用两种信源(像素强度和事件流)融合生成新的帧<br>✨最后利用基于注意力机制的平均化(attention-baed averaging)模块组合两种方法的结果</font></td>
+<td><a href="https://rpg.ifi.uzh.ch/TimeLens.html">Project Demo</a><br></td>
+<td><font size=0.5>每一个单独的插帧策略不行，就两个一起用（有点<strong>大力出奇迹</strong>的味道）</font></td>
+</tr>
+<tr>
+<td>2022 CVPR Time Lens++: Event-based Frame Interpolation with Parametric Non-linear Flow and Multi-scale Fusion</td>
+<td><font size=0.5>结合帧和事件相机的视频帧插值方法仍存在如下问题<br>🔑 输入中存在伪影时，合成插值的“残影”会被传递到最终输出中<br>🔑 依赖于非参数运动估计，这一过程独立运行于每个插入的帧，计算成本为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span> 是插入的帧数，如果和时间对不上就会产生估计偏差<br>🔑 为利用非线性运动的信息，依赖于仅基于事件的运动估计，这在低对比度区域（没有事件）中会导致伪影</font></td>
+<td>🧩<strong>Multi-scale Feature Fusion Decoder</strong>(CNN-based)<br>🧩<strong>Motion spline estimator</strong>(Encoder-Decoder)</td>
+<td><font size=0.5>✨新引入的<strong>运动估计器</strong>(Motion spline estimator),除了利用事件外还使用边界图像<br>✨改进事件数据和图像数据的融合：<strong>多尺度特征融合解码器</strong>，引入新的<strong>门控机制</strong><br>✨Softmax Splatting变型插帧</font></td>
+<td><a href="https://uzh-rpg.github.io/timelens-pp/">Project Demo</a><br></td>
+<td><font size=0.5>程序源代码未开源，仅数据集开源</font></td>
+</tr>
+<tr>
+<td>2023 CVPR Event-Based Frame Interpolation with Ad-hoc Deblurring</td>
+<td><font size=0.5>前人方法虽认识到了异步事件数据的好，但忽略如下问题<br>🔑 运动是否会导致输入视频出现模糊，取决于<strong>帧的曝光时间长短</strong>和<strong>运动速度</strong>；<br>🔑 之前的工作要么假设输入视频是清晰的，仅限于帧插值，要么假设输入视频是模糊的，在插值之前包括一个显式的去模糊阶段；<br>🔑 与帧不同，事件不受运动模糊的影响。无论帧是清晰还是模糊，相应的事件都是相同的。事件驱动的VFI的理想状态是能够在清晰图像插值和模糊图像插值上均表现出稳健的性能。<br>🔑 我们提出将上述两个任务统一为一个问题：给定两个输入图像和对应的事件流，恢复在输入图像之间任意时间点的潜在清晰图像。<strong>输入图像可以是模糊的或清晰的。</strong></font></td>
+<td>🧩<strong>REFID</strong>(CNN&amp;RNN-based)</td>
+<td><font size=0.5>✨ EGACA(event-guided adaptive channel attention)<br>✨ bidirectional event recurrent (EVR) blocks</font></td>
+<td><a href="https://github.com/AHupuJR/REFID">Github Repo</a><br></td>
+<td><font size=0.5>数据集未开源，仅程序源代码开源</font></td>
+</tr>
+<tr>
+<td>2023 CVPR Event-based Video Frame Interpolation with Cross-Modal Asymmetric Bidirectional Motion Fields</td>
+<td><font size=0.5>🔑 现有方法仅通过<strong>事件</strong>或<strong>近似方法</strong>估计双向帧间运动场，这无法考虑现实世界场景中的复杂运动.<br>🔑 大多数基于 CNN 的帧合成方法由于受限的感受野大小，在长距离像素相关性上存在弱点.</font></td>
+<td>🧩<strong>EIF-BiOFNet</strong>(直接估计帧间运动场，而无需任何近似方法)<br>🧩<strong>基于交互注意的帧合成网络</strong>(Transformer Decoder-based)</td>
+<td><font size=0.5>✨ 锚帧特征预处理(Anchor Frame Feature Pre-processing)<br>✨ <strong>E-BiOF+I-BiOF+F-BiOF</strong></font></td>
+<td><a href="https://github.com/intelpro/CBMNet">Github Repo</a><br></td>
+<td><font size=0.5></font></td>
+</tr>
+<tr>
+<td>2023 ICRA E-VFIA : Event-Based Video Frame Interpolation with Attention</td>
+<td><font size=0.5>🔑 可变卷积（deformable convolutions, DCN）在合成中间帧方面的有效性也丰富了基于核的视频帧插值方法<br>🔑 DCN+注意力机制可能有奇效</font></td>
+<td>🧩 SmoothNet.<br>🧩 Spatio-temporal absPooling layers.<br>🧩 Parallel SynBlocks</td>
+<td><font size=0.5>✨ Synblock主要负责事件流和RGB融合.<br>✨ MSA用在计算时间维度的注意力值</font></td>
+<td><a href="https://github.com/ahmetakman/E-VFIA">Github Repo</a><br></td>
+<td><font size=0.5>相比前几篇的CVPR，这一篇的含金量就略显逊色，只做一个数据集的结果</font></td>
+</tr>
+<tr>
+<td>2024 CVPR TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation</td>
+<td><font size=0.5>🔑 事件相机数据的分布会根据相机设置和场景条件发生显著变化,弹性差<br>🔑 在线适应网络环境在实际应用中至关重要-&gt;测试时适应（Test-Time Adaptation, TTA）<br>🔑 无高帧率视频的适应：网络在目标域中需要适应场景，同时从低帧率数据中学习高帧率生成的知识。<br>🔑 在连续提供具有相似分布的数据时，网络可能会过拟合。</font></td>
+<td>🧩 TTA-EVF Framework</td>
+<td><font size=0.5>✨ Reliable Pixel Sampling (RPS)<br>✨Patch-Mixed Sampling (PMS)</font></td>
+<td><a href="https://github.com/Chohoonhee/TTA-EVF">Github Repo</a><br></td>
+<td><font size=0.5>没有关注插帧网络本身，侧重实际应用中面对不同场景插针算法的适应性和鲁棒性问题；程序源代码未开源，仅数据集开源</font></td>
+</tr>
+</tbody>
+</table>
+<h2 id="Event-based-VFI数据集">Event-based VFI数据集</h2>
+<table>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Multimedia Resources</th>
+<th>Other Info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2017 CVPR Deep Multi-scale Convolutional Neural Network for Dynamic Scene Deblurring</td>
+<td><a href="https://github.com/SeungjunNah/DeepDeblur_release">DeepDeblur</a></td>
+<td>GoPro相机拍摄，<strong>无事件流</strong></td>
+</tr>
+<tr>
+<td>2020 CVPR Learning Event-Based Motion Deblurring</td>
+<td><a href="">Blur-DVS</a></td>
+<td>未公开</td>
+</tr>
+<tr>
+<td>2021 CVPR Time Lens: Event-based Video Frame Interpolation</td>
+<td><a href="http://rpg.ifi.uzh.ch/timelens/data2/hs-ergb-dataset.zip">HS-ERGB</a></td>
+<td></td>
+</tr>
+<tr>
+<td>2022 CVPR Time Lens++: Event-based Frame Interpolation with Parametric Non-linear Flow and Multi-scale Fusion</td>
+<td><a href="https://rpg.ifi.uzh.ch/data/timelens_pp/bs_ergb.zip">BS-ERGB</a></td>
+<td></td>
+</tr>
+<tr>
+<td>2023 CVPR Event-Based Frame Interpolation with Ad-hoc Deblurring</td>
+<td><a href="">HighREV</a></td>
+<td><code>Because of the commercial reason, dataset download is allowed only with the authority of Alpsentek(锐思智芯®).</code>还在等作者回邮件中</td>
+</tr>
+<tr>
+<td>2023 CVPR Event-based Video Frame Interpolation with Cross-Modal Asymmetric Bidirectional Motion Fields</td>
+<td><a href="https://drive.google.com/file/d/1Bsf9qreziPcVEuf0_v3kjdPUh27zsFXK/view">ERF-X170FPS_train</a><br><a href="https://drive.google.com/file/d/1Dk7jVQD29HqRVV11e8vxg5bDOh6KxrzL/view">ERF-X170FPS_test</a></td>
+<td></td>
+</tr>
+<tr>
+<td>2024 CVPR TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation</td>
+<td><a href="https://drive.google.com/drive/folders/1tTU625ZmXEz2Ngyjf4lq3Yv0ZgMxlgsC">ERDS</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="Event-based-VFI评价指标">Event-based VFI评价指标</h2>
+<ol>
+<li>PSNR:Peak Signal-to-Noise Ratio，中文译为<strong>峰值信噪比</strong></li>
+</ol>
+<p><img src="Event-based-Video-Frame-Interpolation%5Cpsnr.png" alt=""></p>
+<ol start="2">
+<li>SSIM:Structural Similarity，中文译为<strong>结构相似性</strong></li>
+</ol>
+<p><img src="Event-based-Video-Frame-Interpolation%5Cssim.png" alt=""></p>
+]]></content>
+      <tags>
+        <tag>VFI</tag>
+        <tag>Event-based CV</tag>
+        <tag>前沿论文阅读</tag>
       </tags>
   </entry>
   <entry>
@@ -3259,14 +3259,37 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </tags>
   </entry>
   <entry>
-    <title>STELLAR_HPCA_2024</title>
-    <url>/2024/06/17/STELLAR-HPCA-2024/</url>
-    <content><![CDATA[]]></content>
+    <title>Spike-Driven Transformer</title>
+    <url>/2024/01/04/Spike-Driven-Transformer/</url>
+    <content><![CDATA[<h2 id="1-注意力机制（Attention）">1.注意力机制（Attention）</h2>
+<h3 id="1-1-自注意力机制-（Self-Attention）">1.1 自注意力机制 （Self-Attention）</h3>
+<p>为了处理序列数据，自注意力采取的策略是，吃一整个序列，再根据输入的向量（一段序列）决定输出一个向量，再进入传统的FC，换言之，是考虑了整个序列之后输出一个结果。Self-Attention也可以与FC交替做很多次：</p>
+<p><img src="https://picss.sunbangyan.cn/2024/01/06/24f707204a6f2386a0dc0f26a84ddbe9.jpeg" alt=""></p>
+<p>那Self-Attention如何运作？</p>
+<p>Self-Attention块的输入可以是一开始的输入层，也可以是中间的某个hidden layer的输出。考虑了所有的输入，输出与输入长度相等的一系列向量。例如<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>b</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">b^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>考虑了<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msup><mi>a</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">a^1, \dots , a^4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span>。</p>
+<p><img src="https://picss.sunbangyan.cn/2024/01/06/4c362abaad258fff2580054d6cf42ad2.jpeg" alt=""></p>
+<p>以上图为例，怎么产生<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>b</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">b^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>这个输出呢？</p>
+<p><img src="https://picdl.sunbangyan.cn/2024/01/06/0c06f1d7f85cf7dcc826c1dad3efaac5.jpeg" alt=""></p>
+<p>有两种方法，其中Method 1是如今Transformer架构中用到的，也是注意力机制的主流架构，通过点积计算两向量的关联度。</p>
+<p>应用中，把一个向量当作query（问询值），其余的所有当作key（键），进行关联度计算，得到Attention Score，再经过Softmax层进行归一化，得到最终的attention-score矩阵。（其实也不一定要softmax，只是前人试出来的）</p>
+<p><img src="https://picdm.sunbangyan.cn/2024/01/06/3f0ae61e461f48d620d11ed43d8b8fee.jpeg" alt=""></p>
+<p>根据Attention score, 再将每一个向量乘上矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold">W</mi><mi mathvariant="bold">v</mi></msup></mrow><annotation encoding="application/x-tex">\bold{W^v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6741em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathbf mtight" style="margin-right:0.01597em;">v</span></span></span></span></span></span></span></span></span></span></span>得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold">v</mi><mi mathvariant="bold">i</mi></msup></mrow><annotation encoding="application/x-tex">\bold{v^i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">v</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathbf mtight">i</span></span></span></span></span></span></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi><msup><mi mathvariant="bold-italic">b</mi><mn mathvariant="bold">1</mn></msup></mi><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msubsup><mi>α</mi><mrow><mn>1</mn><mo separator="true">,</mo><mi>i</mi></mrow><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msubsup><mi><msup><mi mathvariant="bold-italic">v</mi><mi mathvariant="bold-italic">i</mi></msup></mi></mrow><annotation encoding="application/x-tex">\boldsymbol{b^{1}}=\sum_i\alpha_{1,i}^{\prime}\boldsymbol{v^{i}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathbf mtight">1</span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2431em;vertical-align:-0.3948em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.162em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-2.4413em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">i</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.03704em;">v</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8483em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord boldsymbol mtight">i</span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><img src="https://picst.sunbangyan.cn/2024/01/06/8aba1917ff8d456f95e7946750a4b531.jpeg" alt=""></p>
+<p>看起来，每一个向量都要产生一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">q</mi><mo separator="true">,</mo><mi mathvariant="bold">k</mi><mo separator="true">,</mo><mi mathvariant="bold">v</mi></mrow><annotation encoding="application/x-tex">\bold{q}, \bold{k}, \bold{v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathbf">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">k</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span></span></span></span>, 那么我们完全可以用矩阵拼接的想法，将一连串的输入向量看作一个大矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">I</mi></mrow><annotation encoding="application/x-tex">\bold{I}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord mathbf">I</span></span></span></span>, 像下面这样简记为：</p>
+<p><img src="https://picdm.sunbangyan.cn/2024/01/06/97f1cf81f7145f7b325d7883bc44f559.jpeg" alt=""></p>
+<p>得到Q，K，V，如何去得到attention score呢？像下面展示的一样，A(attention score的信息矩阵)=<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>K</mi><mi>T</mi></msup><mi>Q</mi></mrow><annotation encoding="application/x-tex">K^TQ</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0358em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal">Q</span></span></span></span></p>
+<p><img src="https://picdl.sunbangyan.cn/2024/01/06/58942e469ab7b8959027da90652375c4.jpeg" alt=""></p>
+<p><img src="https://picdl.sunbangyan.cn/2024/01/06/cf6ccc1ac8388277612373d3ee88fe5f.jpeg" alt=""></p>
+<p>整个的Self-Attention运作的过程中，唯一需要学的三个参数就是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mi>q</mi></msup><mo separator="true">,</mo><msup><mi>W</mi><mi>k</mi></msup><mo separator="true">,</mo><msup><mi>W</mi><mi>v</mi></msup></mrow><annotation encoding="application/x-tex">W^q, W^k, W^v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0435em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span></span></span></span></span></span></span></span></p>
+<p>在此基础上，对原始Attention架构更改，得到Multihead Self-Attention：</p>
+<p><img src="https://picss.sunbangyan.cn/2024/01/06/a9c343e5a4ab540db551635e85401930.jpeg" alt=""></p>
+<h3 id="1-2-Self-Attention的不足之处">1.2 Self-Attention的不足之处</h3>
+]]></content>
+      <categories>
+        <category>学习日志</category>
+      </categories>
       <tags>
-        <tag>前沿论文阅读</tag>
-        <tag>FPGA</tag>
         <tag>SNN</tag>
-        <tag>计算机体系架构</tag>
       </tags>
   </entry>
   <entry>
@@ -3586,37 +3609,102 @@ s_0(t) &amp;= T\frac{sin \pi kT(1- \frac{|t|}{T})t}{\pi kTt}rect(\frac{t}{2T})\\
       </tags>
   </entry>
   <entry>
-    <title>Spike-Driven Transformer</title>
-    <url>/2024/01/04/Spike-Driven-Transformer/</url>
-    <content><![CDATA[<h2 id="1-注意力机制（Attention）">1.注意力机制（Attention）</h2>
-<h3 id="1-1-自注意力机制-（Self-Attention）">1.1 自注意力机制 （Self-Attention）</h3>
-<p>为了处理序列数据，自注意力采取的策略是，吃一整个序列，再根据输入的向量（一段序列）决定输出一个向量，再进入传统的FC，换言之，是考虑了整个序列之后输出一个结果。Self-Attention也可以与FC交替做很多次：</p>
-<p><img src="https://picss.sunbangyan.cn/2024/01/06/24f707204a6f2386a0dc0f26a84ddbe9.jpeg" alt=""></p>
-<p>那Self-Attention如何运作？</p>
-<p>Self-Attention块的输入可以是一开始的输入层，也可以是中间的某个hidden layer的输出。考虑了所有的输入，输出与输入长度相等的一系列向量。例如<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>b</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">b^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>考虑了<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>1</mn></msup><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msup><mi>a</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">a^1, \dots , a^4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span>。</p>
-<p><img src="https://picss.sunbangyan.cn/2024/01/06/4c362abaad258fff2580054d6cf42ad2.jpeg" alt=""></p>
-<p>以上图为例，怎么产生<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>b</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">b^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span>这个输出呢？</p>
-<p><img src="https://picdl.sunbangyan.cn/2024/01/06/0c06f1d7f85cf7dcc826c1dad3efaac5.jpeg" alt=""></p>
-<p>有两种方法，其中Method 1是如今Transformer架构中用到的，也是注意力机制的主流架构，通过点积计算两向量的关联度。</p>
-<p>应用中，把一个向量当作query（问询值），其余的所有当作key（键），进行关联度计算，得到Attention Score，再经过Softmax层进行归一化，得到最终的attention-score矩阵。（其实也不一定要softmax，只是前人试出来的）</p>
-<p><img src="https://picdm.sunbangyan.cn/2024/01/06/3f0ae61e461f48d620d11ed43d8b8fee.jpeg" alt=""></p>
-<p>根据Attention score, 再将每一个向量乘上矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold">W</mi><mi mathvariant="bold">v</mi></msup></mrow><annotation encoding="application/x-tex">\bold{W^v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6741em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathbf mtight" style="margin-right:0.01597em;">v</span></span></span></span></span></span></span></span></span></span></span>得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold">v</mi><mi mathvariant="bold">i</mi></msup></mrow><annotation encoding="application/x-tex">\bold{v^i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">v</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathbf mtight">i</span></span></span></span></span></span></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi><msup><mi mathvariant="bold-italic">b</mi><mn mathvariant="bold">1</mn></msup></mi><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msubsup><mi>α</mi><mrow><mn>1</mn><mo separator="true">,</mo><mi>i</mi></mrow><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msubsup><mi><msup><mi mathvariant="bold-italic">v</mi><mi mathvariant="bold-italic">i</mi></msup></mi></mrow><annotation encoding="application/x-tex">\boldsymbol{b^{1}}=\sum_i\alpha_{1,i}^{\prime}\boldsymbol{v^{i}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathbf mtight">1</span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2431em;vertical-align:-0.3948em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.162em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-2.4413em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">i</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.03704em;">v</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8483em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord boldsymbol mtight">i</span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
-<p><img src="https://picst.sunbangyan.cn/2024/01/06/8aba1917ff8d456f95e7946750a4b531.jpeg" alt=""></p>
-<p>看起来，每一个向量都要产生一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">q</mi><mo separator="true">,</mo><mi mathvariant="bold">k</mi><mo separator="true">,</mo><mi mathvariant="bold">v</mi></mrow><annotation encoding="application/x-tex">\bold{q}, \bold{k}, \bold{v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathbf">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">k</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span></span></span></span>, 那么我们完全可以用矩阵拼接的想法，将一连串的输入向量看作一个大矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">I</mi></mrow><annotation encoding="application/x-tex">\bold{I}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord mathbf">I</span></span></span></span>, 像下面这样简记为：</p>
-<p><img src="https://picdm.sunbangyan.cn/2024/01/06/97f1cf81f7145f7b325d7883bc44f559.jpeg" alt=""></p>
-<p>得到Q，K，V，如何去得到attention score呢？像下面展示的一样，A(attention score的信息矩阵)=<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>K</mi><mi>T</mi></msup><mi>Q</mi></mrow><annotation encoding="application/x-tex">K^TQ</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0358em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal">Q</span></span></span></span></p>
-<p><img src="https://picdl.sunbangyan.cn/2024/01/06/58942e469ab7b8959027da90652375c4.jpeg" alt=""></p>
-<p><img src="https://picdl.sunbangyan.cn/2024/01/06/cf6ccc1ac8388277612373d3ee88fe5f.jpeg" alt=""></p>
-<p>整个的Self-Attention运作的过程中，唯一需要学的三个参数就是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mi>q</mi></msup><mo separator="true">,</mo><msup><mi>W</mi><mi>k</mi></msup><mo separator="true">,</mo><msup><mi>W</mi><mi>v</mi></msup></mrow><annotation encoding="application/x-tex">W^q, W^k, W^v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0435em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span></span></span></span></span></span></span></span></p>
-<p>在此基础上，对原始Attention架构更改，得到Multihead Self-Attention：</p>
-<p><img src="https://picss.sunbangyan.cn/2024/01/06/a9c343e5a4ab540db551635e85401930.jpeg" alt=""></p>
-<h3 id="1-2-Self-Attention的不足之处">1.2 Self-Attention的不足之处</h3>
-]]></content>
-      <categories>
-        <category>学习日志</category>
-      </categories>
+    <title>STELLAR_HPCA_2024</title>
+    <url>/2024/06/17/STELLAR-HPCA-2024/</url>
+    <content><![CDATA[]]></content>
       <tags>
+        <tag>FPGA</tag>
+        <tag>前沿论文阅读</tag>
         <tag>SNN</tag>
+        <tag>计算机体系架构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VIT_Need_Regs_ICLR_2024</title>
+    <url>/2024/06/17/VIT-Need-Regs-ICLR-2024/</url>
+    <content><![CDATA[<h2 id="如何生成有一定可解释性的Attention-Map">如何生成有一定可解释性的Attention Map</h2>
+<p>参考Github Repo: <a href="https://github.com/jeonsworld/ViT-pytorch">jeonsworld/ViT-pytorch</a></p>
+<p><a href="http://xn--train-fg1hh3cxf22smm4b39h947dz8bu76j0hgba934o.py">我们先试着跑一跑仓库里的train.py</a>，本人写了一个脚本方便快速运行，作者也提供了预训练权重(.npz)。这里以ViT-B-16的模型为例：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">python train.py \</span><br><span class="line">    --dataset cifar10 \</span><br><span class="line">    --model_type ViT-B_16 \</span><br><span class="line">    --pretrained_dir &quot;checkpoint/imagenet21k+imagenet2012_ViT-B_16.npz&quot; \</span><br><span class="line">    --output_dir &quot;./outputs&quot; \</span><br><span class="line">    --img_size 224 \</span><br><span class="line">    --train_batch_size 256 \</span><br><span class="line">    --eval_batch_size 4 \</span><br><span class="line">    --name &quot;exp_1&quot; \</span><br><span class="line">    --eval_every 100 \</span><br><span class="line">    --learning_rate 3e-2 \</span><br><span class="line">    --weight_decay 0 \</span><br><span class="line">    --num_steps 10000 \</span><br><span class="line">    --decay_type cosine \</span><br><span class="line">    --warmup_steps 500 \</span><br><span class="line">    --max_grad_norm 1.0 \</span><br><span class="line">    --local_rank -1 \</span><br><span class="line">    --seed 42 \</span><br><span class="line">    --gradient_accumulation_steps 1 \</span><br><span class="line">    --fp16 \</span><br><span class="line">    --fp16_opt_level O2 \</span><br><span class="line">    --loss_scale 0</span><br></pre></td></tr></table></figure>
+<p>实践证明是能跑的，成功了第一步。</p>
+<p>下面就着重研究如何可视化.</p>
+<p>首先放出可视化脚本的代码:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> typing</span><br><span class="line"><span class="keyword">import</span> io</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> urllib.request <span class="keyword">import</span> urlretrieve</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> models.modeling <span class="keyword">import</span> VisionTransformer, CONFIGS</span><br><span class="line"></span><br><span class="line">os.makedirs(<span class="string">&quot;attention_data&quot;</span>, exist_ok=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(<span class="string">&quot;attention_data/ilsvrc2012_wordnet_lemmas.txt&quot;</span>):</span><br><span class="line">    urlretrieve(<span class="string">&quot;https://storage.googleapis.com/bit_models/ilsvrc2012_wordnet_lemmas.txt&quot;</span>, <span class="string">&quot;attention_data/ilsvrc2012_wordnet_lemmas.txt&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(<span class="string">&quot;attention_data/ViT-B_16-224.npz&quot;</span>):</span><br><span class="line">    urlretrieve(<span class="string">&quot;https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/ViT-B_16-224.npz&quot;</span>, <span class="string">&quot;attention_data/ViT-B_16-224.npz&quot;</span>)</span><br><span class="line"></span><br><span class="line">imagenet_labels = <span class="built_in">dict</span>(<span class="built_in">enumerate</span>(<span class="built_in">open</span>(<span class="string">&#x27;attention_data/ilsvrc2012_wordnet_lemmas.txt&#x27;</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># # Test Image</span></span><br><span class="line"><span class="comment"># img_url = &quot;https://images.mypetlife.co.kr/content/uploads/2019/04/09192811/welsh-corgi-1581119_960_720.jpg&quot;</span></span><br><span class="line"><span class="comment"># urlretrieve(img_url, &quot;attention_data/img.jpg&quot;)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Prepare Model</span></span><br><span class="line">config = CONFIGS[<span class="string">&quot;ViT-B_16&quot;</span>]</span><br><span class="line">model = VisionTransformer(config, num_classes=<span class="number">1000</span>, zero_head=<span class="literal">False</span>, img_size=<span class="number">224</span>, vis=<span class="literal">True</span>)</span><br><span class="line">model.load_from(np.load(<span class="string">&quot;attention_data/ViT-B_16-224.npz&quot;</span>))</span><br><span class="line">model.<span class="built_in">eval</span>()</span><br><span class="line"></span><br><span class="line">transform = transforms.Compose([</span><br><span class="line">    transforms.Resize((<span class="number">224</span>, <span class="number">224</span>)),</span><br><span class="line">    transforms.ToTensor(),</span><br><span class="line">    transforms.Normalize(mean=[<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>], std=[<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>]),</span><br><span class="line">])</span><br><span class="line">im = Image.<span class="built_in">open</span>(<span class="string">&quot;/data/dataset/ImageNet/train/n01440764/n01440764_10026.JPEG&quot;</span>)</span><br><span class="line">x = transform(im)</span><br><span class="line"></span><br><span class="line">logits, att_mat = model(x.unsqueeze(<span class="number">0</span>))</span><br><span class="line"></span><br><span class="line">att_mat = torch.stack(att_mat).squeeze(<span class="number">1</span>) <span class="comment"># torch.stack()进行扩维拼接</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Average the attention weights across all heads.</span></span><br><span class="line">att_mat = torch.mean(att_mat, dim=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># To account for residual connections, we add an identity matrix to the</span></span><br><span class="line"><span class="comment"># attention matrix and re-normalize the weights.</span></span><br><span class="line">residual_att = torch.eye(att_mat.size(<span class="number">1</span>))</span><br><span class="line">aug_att_mat = att_mat + residual_att</span><br><span class="line">aug_att_mat = aug_att_mat / aug_att_mat.<span class="built_in">sum</span>(dim=-<span class="number">1</span>).unsqueeze(-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Recursively multiply the weight matrices</span></span><br><span class="line">joint_attentions = torch.zeros(aug_att_mat.size())</span><br><span class="line">joint_attentions[<span class="number">0</span>] = aug_att_mat[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, aug_att_mat.size(<span class="number">0</span>)):</span><br><span class="line">    joint_attentions[n] = torch.matmul(aug_att_mat[n], joint_attentions[n-<span class="number">1</span>])</span><br><span class="line">    </span><br><span class="line"><span class="comment"># Attention from the output token to the input space.</span></span><br><span class="line">v = joint_attentions[-<span class="number">1</span>]</span><br><span class="line">grid_size = <span class="built_in">int</span>(np.sqrt(aug_att_mat.size(-<span class="number">1</span>)))</span><br><span class="line">mask = v[<span class="number">0</span>, <span class="number">1</span>:].reshape(grid_size, grid_size).detach().numpy()</span><br><span class="line">mask = cv2.resize(mask / mask.<span class="built_in">max</span>(), im.size)[..., np.newaxis]</span><br><span class="line">result = (mask * im).astype(<span class="string">&quot;uint8&quot;</span>)</span><br><span class="line"></span><br><span class="line">fig, (ax1, ax2) = plt.subplots(ncols=<span class="number">2</span>, figsize=(<span class="number">16</span>, <span class="number">16</span>))</span><br><span class="line"></span><br><span class="line">ax1.set_title(<span class="string">&#x27;Original&#x27;</span>)</span><br><span class="line">ax2.set_title(<span class="string">&#x27;Attention Map&#x27;</span>)</span><br><span class="line">_ = ax1.imshow(im)</span><br><span class="line">_ = ax2.imshow(result)</span><br><span class="line"></span><br><span class="line">fig.savefig(<span class="string">&#x27;output_image.png&#x27;</span>)</span><br><span class="line"></span><br><span class="line">probs = torch.nn.Softmax(dim=-<span class="number">1</span>)(logits)</span><br><span class="line">top5 = torch.argsort(probs, dim=-<span class="number">1</span>, descending=<span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Prediction Label and Attention Map!\n&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> top5[<span class="number">0</span>, :<span class="number">5</span>]:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;probs[<span class="number">0</span>, idx.item()]:<span class="number">.5</span>f&#125;</span> : <span class="subst">&#123;imagenet_labels[idx.item()]&#125;</span>&#x27;</span>, end=<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>生成的图片长这样:<br>
+<img src="output_image.png" alt="output_image"></p>
+<p>我们详细看看可视化代码里干了什么事情。</p>
+<p>前期的网络处理流程如下图所示。<br>
+<img src="net_struct.png" alt="ViT_Base_16 Net Structure"></p>
+<p>核心部分处理score matrix 和Attention map的代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">logits, att_mat = model(x.unsqueeze(<span class="number">0</span>))</span><br></pre></td></tr></table></figure>
+<p>此行代码预测并获取注意力矩阵, 此时若运行<code>print(len(att_mat))</code>, 我们会得到输出为<code>12</code>，代表模型输出的Attention Map共有12个。这个数字与Transformer Encoder Block的个数是一致的。即Transformer强制要求输入输出为同一维度，这样才可以级联好多个Transformer块进行不断地网络学习与拟合。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">att_mat = torch.stack(att_mat).squeeze(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>这是在对attention map list进行拼接，降维处理。这里给出<code>torch.stack</code> API的用法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">torch.stack(tensors, dim=0, *, out=None) → Tensor</span><br><span class="line">    Concatenates a sequence of tensors along a new dimension.</span><br><span class="line">    All tensors need to be of the same size.</span><br><span class="line">SEE ALSO</span><br><span class="line">    torch.cat(): concatenates the given sequence along an existing dimension.</span><br><span class="line">* Parameters: </span><br><span class="line">    tensors (sequence of Tensors) – sequence of tensors to concatenate</span><br><span class="line">    dim (int, optional) – dimension to insert. Has to be between 0 and the number of dimensions of concatenated tensors (inclusive). Default: 0</span><br><span class="line">* Keyword Arguments</span><br><span class="line">    out (Tensor, optional) – the output tensor.</span><br></pre></td></tr></table></figure>
+<p>不传入dim参数时默认为0，故将这个list以第1个维度进行拼接。之后再进行<code>squeeze(1)</code>操作，得到的是除去指定位置的维数为1的维度输出（这里比较绕QAQ）。运行<code>print(att_mat.shape)</code>,得到的输出是<code>torch.Size([12, 12, 197, 197])</code>。</p>
+<p>我猜测的数据流是这样的：<br>
+<img src="stack_and_squeeze.png" alt="Stack and Squeeze"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">att_mat = torch.mean(att_mat, dim=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>按照第二个维度（12）进行均值计算，最后得到的理论上是12张一样的平均过后的attention map。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">residual_att = torch.eye(att_mat.size(<span class="number">1</span>))</span><br><span class="line">aug_att_mat = att_mat + residual_att</span><br><span class="line">aug_att_mat = aug_att_mat / aug_att_mat.<span class="built_in">sum</span>(dim=-<span class="number">1</span>).unsqueeze(-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>(以下来源：ChatGPT)<br>
+在 ViT 中，注意力矩阵 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span> 表示每个token对其他token的注意力权重。通过添加单位矩阵 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi></mrow><annotation encoding="application/x-tex">I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span>：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>a</mi><mi>u</mi><msub><mi>g</mi><mrow><mi>a</mi><mi>t</mi><msub><mi>t</mi><mrow><mi>m</mi><mi>a</mi><mi>t</mi></mrow></msub></mrow></msub><mo>=</mo><mi>A</mi><mo>+</mo><mi>I</mi></mrow><annotation encoding="application/x-tex">aug_{att_{mat}}=A+I
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6807em;vertical-align:-0.2501em;"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">u</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">t</span><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2963em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">ma</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span></span></p>
+<p>其中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi></mrow><annotation encoding="application/x-tex">I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span> 是一个单位矩阵（对角线上元素为1，其他元素为0），我们<strong>确保了每个token对自己的注意力权重至少为1</strong>。这种方式可以看作是残差连接的一种形式，它<strong>保证了每个token的原始信息在经过多个注意力层后仍能保留</strong>。</p>
+<p>添加单位矩阵后，需要重新归一化注意力矩阵，使得每一行的和为1，这是因为在计算注意力时，我们通常希望每个token的注意力权重之和为1，以保持概率分布的性质。</p>
+<p>{aug_{att_{mat}}}=\frac{aug_{att_{mat}}}{\sum\(aug_{att_{mat}},dim=-1,keepdim=True\)}
+</p>
+<p><img src="re-norm.png" alt="re norm"></p>
+<p>通过这两步操作，我们得到了一个增强的注意力矩阵（augmented attention matrix），它不仅考虑了每个token对其他token的注意力权重，还保留了每个token对自身的注意力权重，从而能够更好地捕捉不同层之间的信息流和依赖关系。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">joint_attentions = torch.zeros(aug_att_mat.size()) <span class="comment"># 初始化联合注意力矩阵</span></span><br><span class="line">joint_attentions[<span class="number">0</span>] = aug_att_mat[<span class="number">0</span>] <span class="comment"># 设置第一层的联合注意力矩阵</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, aug_att_mat.size(<span class="number">0</span>)): <span class="comment"># 递归相乘</span></span><br><span class="line">    joint_attentions[n] = torch.matmul(aug_att_mat[n], joint_attentions[n-<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<p>这两行进行<strong>递归累乘</strong>操作。首先初始化了一个与增强注意力矩阵（aug_att_mat）尺寸相同的零矩阵，用于存储每层的联合注意力矩阵。在第一层时，联合注意力矩阵就是增强注意力矩阵本身。从第二层开始（n=1），通过递归地相乘当前层的增强注意力矩阵和前一层的联合注意力矩阵，来更新联合注意力矩阵。具体来说，当前层的联合注意力矩阵等于当前层的增强注意力矩阵乘以前一层的联合注意力矩阵。</p>
+<p>为什么要递归相乘？递归相乘的目的是为了累积每层注意力矩阵的影响。通过这种方式，最终得到的联合注意力矩阵能够综合考虑所有层次的注意力关系，捕捉输入token之间更复杂的依赖关系。</p>
+<p>用图表示joint_attn计算过程如下：<br>
+<img src="joint_Attn.png" alt="Joint Attention Calculation"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">v = joint_attentions[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>取最后一个作为整个模型的联合注意力矩阵.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">grid_size = <span class="built_in">int</span>(np.sqrt(aug_att_mat.size(-<span class="number">1</span>)))</span><br><span class="line">mask = v[<span class="number">0</span>, <span class="number">1</span>:].reshape(grid_size, grid_size).detach().numpy()</span><br><span class="line">mask = cv2.resize(mask / mask.<span class="built_in">max</span>(), im.size)[..., np.newaxis]</span><br><span class="line">result = (mask * im).astype(<span class="string">&quot;uint8&quot;</span>) </span><br></pre></td></tr></table></figure>
+<p>先计算每个Patch的边长，这里为14，再重塑注意力矩阵，提取最后一层的联合Attention Map中第一个token<code>[CLS]</code>对所有token的注意力权重, 将这个一维数组reshape为二维数组，形成一个网格，每个值表示对应位置的注意力权重。通过<code>cv2.resize</code>函数将注意力掩码调整到与原图像相同的大小。mask / mask.max() 将注意力掩码归一化到0-1之间。[…, np.newaxis] 为了使mask具有三个通道，这样可以与原图像进行逐像素乘法。</p>
+<p>计算过程如下图：<br>
+<img src="reshape_resize.png" alt="reshape and resize"></p>
+<p>接着我又改了一个代码块出来，能输出12个Block的特征图输出：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">attention_maps = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, aug_att_mat.shape[<span class="number">0</span>]):</span><br><span class="line">    tmp_attn_map = aug_att_mat[i]</span><br><span class="line">    grid_size = <span class="built_in">int</span>(np.sqrt(aug_att_mat.size(-<span class="number">1</span>)))</span><br><span class="line">    mask = tmp_attn_map[<span class="number">0</span>, <span class="number">1</span>:].reshape(grid_size, grid_size).detach().numpy()</span><br><span class="line">    <span class="comment"># print(mask.shape)</span></span><br><span class="line">    mask = cv2.resize(mask / mask.<span class="built_in">max</span>(), im.size)</span><br><span class="line">    mask = (mask * <span class="number">255</span>).astype(np.uint8)</span><br><span class="line">    heatmap = cv2.applyColorMap(mask, cv2.COLORMAP_JET)</span><br><span class="line">    output_filename = <span class="string">f&#x27;attention_mask_<span class="subst">&#123;i&#125;</span>.png&#x27;</span></span><br><span class="line">    attention_maps.append(heatmap)</span><br><span class="line">    <span class="comment"># cv2.imwrite(output_filename, heatmap)</span></span><br><span class="line">    </span><br><span class="line">map_height, map_width, _ = attention_maps[<span class="number">0</span>].shape</span><br><span class="line">num_maps = <span class="built_in">len</span>(attention_maps)</span><br><span class="line">canvas_height = map_height</span><br><span class="line">canvas_width = map_width * num_maps</span><br><span class="line"></span><br><span class="line">canvas = np.zeros((canvas_height, canvas_width, <span class="number">3</span>), dtype=np.uint8)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, heatmap <span class="keyword">in</span> <span class="built_in">enumerate</span>(attention_maps):</span><br><span class="line">    canvas[:, i * map_width:(i + <span class="number">1</span>) * map_width, :] = heatmap</span><br><span class="line"></span><br><span class="line">cv2.imwrite(<span class="string">&#x27;attention_maps_canvas.png&#x27;</span>, canvas)</span><br></pre></td></tr></table></figure>
+<p>输出的12张图并起来长这样：<br>
+<img src="attention_maps_canvas.png" alt="attention maps"><br>
+确实证明了ViT存在Attention Map中有Artifacts存在。</p>
+<h2 id="SNN-based-Transformer有没有类似的现象呢">SNN-based Transformer有没有类似的现象呢</h2>
+<p>要想得到类似ANN的Attention Map，我们需要知道在传统ViT中Attention Score矩阵是怎么算的。</p>
+<p>ViT中通过输入得到的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi></mrow><annotation encoding="application/x-tex">Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">Q</span></span></span></span> , <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span> , <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span></span></span> 计算得到attention score，公式如下：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>s</mi><mi>c</mi><mi>o</mi><mi>r</mi><mi>e</mi><mo>=</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><msqrt><mi>d</mi></msqrt></mfrac></mrow><annotation encoding="application/x-tex">score = \frac{QK^T}{\sqrt{d}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">score</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.4483em;vertical-align:-0.93em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5183em;"><span style="top:-2.1778em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord mathnormal">d</span></span></span><span style="top:-2.8922em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1078em;"><span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">Q</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.93em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">d</span></span></span></span> 为MHA的头的个数，再经过softmax得到有概率意义的attention map：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>m</mi><mi>a</mi><mi>p</mi><mo>=</mo><mtext mathvariant="bold">Softmax</mtext><mo stretchy="false">(</mo><mi>S</mi><mi>c</mi><mi>o</mi><mi>r</mi><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">map = \textbf{Softmax}(Score)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">p</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord textbf">Softmax</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">core</span><span class="mclose">)</span></span></span></span></span></p>
+<p>之后的处理就是同上面的步骤，最后得到可视化的attention map。</p>
+<p>在Spike-driven Transformer中，针对脉冲编码性质的输入而言，计算attention score的方式略有差别：以V2（Metaspikeformer）为例，该工作选用作者提出的四种SDSA（Spike-driven Self Attention）中的第三种（SDSA-3）</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mover accent="true"><mi>V</mi><mo>^</mo></mover><mi>S</mi></msub><mo>=</mo><mi>S</mi><mi>D</mi><mi>S</mi><msub><mi>A</mi><mn>3</mn></msub><mo stretchy="false">(</mo><msub><mi>Q</mi><mi>s</mi></msub><mo separator="true">,</mo><msub><mi>K</mi><mi>s</mi></msub><mo separator="true">,</mo><msub><mi>V</mi><mi>s</mi></msub><mo stretchy="false">)</mo><mo>=</mo><mi>S</mi><mi>N</mi><mo stretchy="false">(</mo><msub><mi>Q</mi><mi>s</mi></msub><mo stretchy="false">(</mo><msubsup><mi>K</mi><mi>s</mi><mi>T</mi></msubsup><msub><mi>V</mi><mi>s</mi></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>S</mi><mi>N</mi><mo stretchy="false">(</mo><mo stretchy="false">(</mo><msub><mi>Q</mi><mi>s</mi></msub><msub><mi>K</mi><mi>s</mi></msub><msup><mo stretchy="false">)</mo><mi>T</mi></msup><msub><mi>V</mi><mi>s</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\hat{V}_S = SDSA_3(Q_s,K_s,V_s) = SN(Q_s(K_s^TV_s)) = SN((Q_sK_s)^TV_s)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">Q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1413em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">SN</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">Q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-2.453em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1413em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">SN</span><span class="mopen">((</span><span class="mord"><span class="mord mathnormal">Q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>写到这里，我又翻出来了V1的文章，才发现作者们在附录里是有写怎么定义Attention Map的（笑死）</p>
+<p>作者在附录中指出，SDSA计算是一种Hard Attention，可以被理解成是在脉冲形式的Value上掩盖不重要的通道（channels）。</p>
+<p>关于Hard Attention(硬性注意力)和Soft Attention(软性注意力)的区别与联系参考<a href="https://allenwind.github.io/blog/9478/">漫谈注意力机制（二）：硬性注意力机制与软性注意力机制</a>。</p>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>S</mi></msub></mrow><annotation encoding="application/x-tex">V_S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>同样有时间(Time,T)和头数(Head,H)两个维度，在这两个维度上做平均，输出是每个LIF的脉冲发放率。换言之，Attention Score调控脉冲发放频率。</p>
+<p>在Spike-driven Transformer V1中，输入x(<code>torch.size([T,B,C,H,W])</code>)需要进行flatten(0,1)，即把第一，第二维度展平，成为一个维度</p>
+]]></content>
+      <tags>
+        <tag>前沿论文阅读</tag>
+        <tag>ViT</tag>
       </tags>
   </entry>
   <entry>
@@ -4286,94 +4374,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       </tags>
   </entry>
   <entry>
-    <title>VIT_Need_Regs_ICLR_2024</title>
-    <url>/2024/06/17/VIT-Need-Regs-ICLR-2024/</url>
-    <content><![CDATA[<h2 id="如何生成有一定可解释性的Attention-Map">如何生成有一定可解释性的Attention Map</h2>
-<p>参考Github Repo: <a href="https://github.com/jeonsworld/ViT-pytorch">jeonsworld/ViT-pytorch</a></p>
-<p><a href="http://xn--train-fg1hh3cxf22smm4b39h947dz8bu76j0hgba934o.py">我们先试着跑一跑仓库里的train.py</a>，本人写了一个脚本方便快速运行，作者也提供了预训练权重(.npz)。这里以ViT-B-16的模型为例：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">python train.py \</span><br><span class="line">    --dataset cifar10 \</span><br><span class="line">    --model_type ViT-B_16 \</span><br><span class="line">    --pretrained_dir &quot;checkpoint/imagenet21k+imagenet2012_ViT-B_16.npz&quot; \</span><br><span class="line">    --output_dir &quot;./outputs&quot; \</span><br><span class="line">    --img_size 224 \</span><br><span class="line">    --train_batch_size 256 \</span><br><span class="line">    --eval_batch_size 4 \</span><br><span class="line">    --name &quot;exp_1&quot; \</span><br><span class="line">    --eval_every 100 \</span><br><span class="line">    --learning_rate 3e-2 \</span><br><span class="line">    --weight_decay 0 \</span><br><span class="line">    --num_steps 10000 \</span><br><span class="line">    --decay_type cosine \</span><br><span class="line">    --warmup_steps 500 \</span><br><span class="line">    --max_grad_norm 1.0 \</span><br><span class="line">    --local_rank -1 \</span><br><span class="line">    --seed 42 \</span><br><span class="line">    --gradient_accumulation_steps 1 \</span><br><span class="line">    --fp16 \</span><br><span class="line">    --fp16_opt_level O2 \</span><br><span class="line">    --loss_scale 0</span><br></pre></td></tr></table></figure>
-<p>实践证明是能跑的，成功了第一步。</p>
-<p>下面就着重研究如何可视化.</p>
-<p>首先放出可视化脚本的代码:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> typing</span><br><span class="line"><span class="keyword">import</span> io</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> urllib.request <span class="keyword">import</span> urlretrieve</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> models.modeling <span class="keyword">import</span> VisionTransformer, CONFIGS</span><br><span class="line"></span><br><span class="line">os.makedirs(<span class="string">&quot;attention_data&quot;</span>, exist_ok=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(<span class="string">&quot;attention_data/ilsvrc2012_wordnet_lemmas.txt&quot;</span>):</span><br><span class="line">    urlretrieve(<span class="string">&quot;https://storage.googleapis.com/bit_models/ilsvrc2012_wordnet_lemmas.txt&quot;</span>, <span class="string">&quot;attention_data/ilsvrc2012_wordnet_lemmas.txt&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(<span class="string">&quot;attention_data/ViT-B_16-224.npz&quot;</span>):</span><br><span class="line">    urlretrieve(<span class="string">&quot;https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/ViT-B_16-224.npz&quot;</span>, <span class="string">&quot;attention_data/ViT-B_16-224.npz&quot;</span>)</span><br><span class="line"></span><br><span class="line">imagenet_labels = <span class="built_in">dict</span>(<span class="built_in">enumerate</span>(<span class="built_in">open</span>(<span class="string">&#x27;attention_data/ilsvrc2012_wordnet_lemmas.txt&#x27;</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># # Test Image</span></span><br><span class="line"><span class="comment"># img_url = &quot;https://images.mypetlife.co.kr/content/uploads/2019/04/09192811/welsh-corgi-1581119_960_720.jpg&quot;</span></span><br><span class="line"><span class="comment"># urlretrieve(img_url, &quot;attention_data/img.jpg&quot;)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Prepare Model</span></span><br><span class="line">config = CONFIGS[<span class="string">&quot;ViT-B_16&quot;</span>]</span><br><span class="line">model = VisionTransformer(config, num_classes=<span class="number">1000</span>, zero_head=<span class="literal">False</span>, img_size=<span class="number">224</span>, vis=<span class="literal">True</span>)</span><br><span class="line">model.load_from(np.load(<span class="string">&quot;attention_data/ViT-B_16-224.npz&quot;</span>))</span><br><span class="line">model.<span class="built_in">eval</span>()</span><br><span class="line"></span><br><span class="line">transform = transforms.Compose([</span><br><span class="line">    transforms.Resize((<span class="number">224</span>, <span class="number">224</span>)),</span><br><span class="line">    transforms.ToTensor(),</span><br><span class="line">    transforms.Normalize(mean=[<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>], std=[<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>]),</span><br><span class="line">])</span><br><span class="line">im = Image.<span class="built_in">open</span>(<span class="string">&quot;/data/dataset/ImageNet/train/n01440764/n01440764_10026.JPEG&quot;</span>)</span><br><span class="line">x = transform(im)</span><br><span class="line"></span><br><span class="line">logits, att_mat = model(x.unsqueeze(<span class="number">0</span>))</span><br><span class="line"></span><br><span class="line">att_mat = torch.stack(att_mat).squeeze(<span class="number">1</span>) <span class="comment"># torch.stack()进行扩维拼接</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Average the attention weights across all heads.</span></span><br><span class="line">att_mat = torch.mean(att_mat, dim=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># To account for residual connections, we add an identity matrix to the</span></span><br><span class="line"><span class="comment"># attention matrix and re-normalize the weights.</span></span><br><span class="line">residual_att = torch.eye(att_mat.size(<span class="number">1</span>))</span><br><span class="line">aug_att_mat = att_mat + residual_att</span><br><span class="line">aug_att_mat = aug_att_mat / aug_att_mat.<span class="built_in">sum</span>(dim=-<span class="number">1</span>).unsqueeze(-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Recursively multiply the weight matrices</span></span><br><span class="line">joint_attentions = torch.zeros(aug_att_mat.size())</span><br><span class="line">joint_attentions[<span class="number">0</span>] = aug_att_mat[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, aug_att_mat.size(<span class="number">0</span>)):</span><br><span class="line">    joint_attentions[n] = torch.matmul(aug_att_mat[n], joint_attentions[n-<span class="number">1</span>])</span><br><span class="line">    </span><br><span class="line"><span class="comment"># Attention from the output token to the input space.</span></span><br><span class="line">v = joint_attentions[-<span class="number">1</span>]</span><br><span class="line">grid_size = <span class="built_in">int</span>(np.sqrt(aug_att_mat.size(-<span class="number">1</span>)))</span><br><span class="line">mask = v[<span class="number">0</span>, <span class="number">1</span>:].reshape(grid_size, grid_size).detach().numpy()</span><br><span class="line">mask = cv2.resize(mask / mask.<span class="built_in">max</span>(), im.size)[..., np.newaxis]</span><br><span class="line">result = (mask * im).astype(<span class="string">&quot;uint8&quot;</span>)</span><br><span class="line"></span><br><span class="line">fig, (ax1, ax2) = plt.subplots(ncols=<span class="number">2</span>, figsize=(<span class="number">16</span>, <span class="number">16</span>))</span><br><span class="line"></span><br><span class="line">ax1.set_title(<span class="string">&#x27;Original&#x27;</span>)</span><br><span class="line">ax2.set_title(<span class="string">&#x27;Attention Map&#x27;</span>)</span><br><span class="line">_ = ax1.imshow(im)</span><br><span class="line">_ = ax2.imshow(result)</span><br><span class="line"></span><br><span class="line">fig.savefig(<span class="string">&#x27;output_image.png&#x27;</span>)</span><br><span class="line"></span><br><span class="line">probs = torch.nn.Softmax(dim=-<span class="number">1</span>)(logits)</span><br><span class="line">top5 = torch.argsort(probs, dim=-<span class="number">1</span>, descending=<span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Prediction Label and Attention Map!\n&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> top5[<span class="number">0</span>, :<span class="number">5</span>]:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;probs[<span class="number">0</span>, idx.item()]:<span class="number">.5</span>f&#125;</span> : <span class="subst">&#123;imagenet_labels[idx.item()]&#125;</span>&#x27;</span>, end=<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>生成的图片长这样:<br>
-<img src="output_image.png" alt="output_image"></p>
-<p>我们详细看看可视化代码里干了什么事情。</p>
-<p>前期的网络处理流程如下图所示。<br>
-<img src="net_struct.png" alt="ViT_Base_16 Net Structure"></p>
-<p>核心部分处理score matrix 和Attention map的代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">logits, att_mat = model(x.unsqueeze(<span class="number">0</span>))</span><br></pre></td></tr></table></figure>
-<p>此行代码预测并获取注意力矩阵, 此时若运行<code>print(len(att_mat))</code>, 我们会得到输出为<code>12</code>，代表模型输出的Attention Map共有12个。这个数字与Transformer Encoder Block的个数是一致的。即Transformer强制要求输入输出为同一维度，这样才可以级联好多个Transformer块进行不断地网络学习与拟合。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">att_mat = torch.stack(att_mat).squeeze(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>这是在对attention map list进行拼接，降维处理。这里给出<code>torch.stack</code> API的用法：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">torch.stack(tensors, dim=0, *, out=None) → Tensor</span><br><span class="line">    Concatenates a sequence of tensors along a new dimension.</span><br><span class="line">    All tensors need to be of the same size.</span><br><span class="line">SEE ALSO</span><br><span class="line">    torch.cat(): concatenates the given sequence along an existing dimension.</span><br><span class="line">* Parameters: </span><br><span class="line">    tensors (sequence of Tensors) – sequence of tensors to concatenate</span><br><span class="line">    dim (int, optional) – dimension to insert. Has to be between 0 and the number of dimensions of concatenated tensors (inclusive). Default: 0</span><br><span class="line">* Keyword Arguments</span><br><span class="line">    out (Tensor, optional) – the output tensor.</span><br></pre></td></tr></table></figure>
-<p>不传入dim参数时默认为0，故将这个list以第1个维度进行拼接。之后再进行<code>squeeze(1)</code>操作，得到的是除去指定位置的维数为1的维度输出（这里比较绕QAQ）。运行<code>print(att_mat.shape)</code>,得到的输出是<code>torch.Size([12, 12, 197, 197])</code>。</p>
-<p>我猜测的数据流是这样的：<br>
-<img src="stack_and_squeeze.png" alt="Stack and Squeeze"></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">att_mat = torch.mean(att_mat, dim=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>按照第二个维度（12）进行均值计算，最后得到的理论上是12张一样的平均过后的attention map。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">residual_att = torch.eye(att_mat.size(<span class="number">1</span>))</span><br><span class="line">aug_att_mat = att_mat + residual_att</span><br><span class="line">aug_att_mat = aug_att_mat / aug_att_mat.<span class="built_in">sum</span>(dim=-<span class="number">1</span>).unsqueeze(-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>(以下来源：ChatGPT)<br>
-在 ViT 中，注意力矩阵 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span> 表示每个token对其他token的注意力权重。通过添加单位矩阵 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi></mrow><annotation encoding="application/x-tex">I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span>：</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>a</mi><mi>u</mi><msub><mi>g</mi><mrow><mi>a</mi><mi>t</mi><msub><mi>t</mi><mrow><mi>m</mi><mi>a</mi><mi>t</mi></mrow></msub></mrow></msub><mo>=</mo><mi>A</mi><mo>+</mo><mi>I</mi></mrow><annotation encoding="application/x-tex">aug_{att_{mat}}=A+I
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6807em;vertical-align:-0.2501em;"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">u</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">t</span><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2963em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">ma</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span></span></p>
-<p>其中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi></mrow><annotation encoding="application/x-tex">I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span> 是一个单位矩阵（对角线上元素为1，其他元素为0），我们<strong>确保了每个token对自己的注意力权重至少为1</strong>。这种方式可以看作是残差连接的一种形式，它<strong>保证了每个token的原始信息在经过多个注意力层后仍能保留</strong>。</p>
-<p>添加单位矩阵后，需要重新归一化注意力矩阵，使得每一行的和为1，这是因为在计算注意力时，我们通常希望每个token的注意力权重之和为1，以保持概率分布的性质。</p>
-<p>{aug_{att_{mat}}}=\frac{aug_{att_{mat}}}{\sum\(aug_{att_{mat}},dim=-1,keepdim=True\)}
-</p>
-<p><img src="re-norm.png" alt="re norm"></p>
-<p>通过这两步操作，我们得到了一个增强的注意力矩阵（augmented attention matrix），它不仅考虑了每个token对其他token的注意力权重，还保留了每个token对自身的注意力权重，从而能够更好地捕捉不同层之间的信息流和依赖关系。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">joint_attentions = torch.zeros(aug_att_mat.size()) <span class="comment"># 初始化联合注意力矩阵</span></span><br><span class="line">joint_attentions[<span class="number">0</span>] = aug_att_mat[<span class="number">0</span>] <span class="comment"># 设置第一层的联合注意力矩阵</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, aug_att_mat.size(<span class="number">0</span>)): <span class="comment"># 递归相乘</span></span><br><span class="line">    joint_attentions[n] = torch.matmul(aug_att_mat[n], joint_attentions[n-<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
-<p>这两行进行<strong>递归累乘</strong>操作。首先初始化了一个与增强注意力矩阵（aug_att_mat）尺寸相同的零矩阵，用于存储每层的联合注意力矩阵。在第一层时，联合注意力矩阵就是增强注意力矩阵本身。从第二层开始（n=1），通过递归地相乘当前层的增强注意力矩阵和前一层的联合注意力矩阵，来更新联合注意力矩阵。具体来说，当前层的联合注意力矩阵等于当前层的增强注意力矩阵乘以前一层的联合注意力矩阵。</p>
-<p>为什么要递归相乘？递归相乘的目的是为了累积每层注意力矩阵的影响。通过这种方式，最终得到的联合注意力矩阵能够综合考虑所有层次的注意力关系，捕捉输入token之间更复杂的依赖关系。</p>
-<p>用图表示joint_attn计算过程如下：<br>
-<img src="joint_Attn.png" alt="Joint Attention Calculation"></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">v = joint_attentions[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-<p>取最后一个作为整个模型的联合注意力矩阵.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">grid_size = <span class="built_in">int</span>(np.sqrt(aug_att_mat.size(-<span class="number">1</span>)))</span><br><span class="line">mask = v[<span class="number">0</span>, <span class="number">1</span>:].reshape(grid_size, grid_size).detach().numpy()</span><br><span class="line">mask = cv2.resize(mask / mask.<span class="built_in">max</span>(), im.size)[..., np.newaxis]</span><br><span class="line">result = (mask * im).astype(<span class="string">&quot;uint8&quot;</span>) </span><br></pre></td></tr></table></figure>
-<p>先计算每个Patch的边长，这里为14，再重塑注意力矩阵，提取最后一层的联合Attention Map中第一个token<code>[CLS]</code>对所有token的注意力权重, 将这个一维数组reshape为二维数组，形成一个网格，每个值表示对应位置的注意力权重。通过<code>cv2.resize</code>函数将注意力掩码调整到与原图像相同的大小。mask / mask.max() 将注意力掩码归一化到0-1之间。[…, np.newaxis] 为了使mask具有三个通道，这样可以与原图像进行逐像素乘法。</p>
-<p>计算过程如下图：<br>
-<img src="reshape_resize.png" alt="reshape and resize"></p>
-<p>接着我又改了一个代码块出来，能输出12个Block的特征图输出：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">attention_maps = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, aug_att_mat.shape[<span class="number">0</span>]):</span><br><span class="line">    tmp_attn_map = aug_att_mat[i]</span><br><span class="line">    grid_size = <span class="built_in">int</span>(np.sqrt(aug_att_mat.size(-<span class="number">1</span>)))</span><br><span class="line">    mask = tmp_attn_map[<span class="number">0</span>, <span class="number">1</span>:].reshape(grid_size, grid_size).detach().numpy()</span><br><span class="line">    <span class="comment"># print(mask.shape)</span></span><br><span class="line">    mask = cv2.resize(mask / mask.<span class="built_in">max</span>(), im.size)</span><br><span class="line">    mask = (mask * <span class="number">255</span>).astype(np.uint8)</span><br><span class="line">    heatmap = cv2.applyColorMap(mask, cv2.COLORMAP_JET)</span><br><span class="line">    output_filename = <span class="string">f&#x27;attention_mask_<span class="subst">&#123;i&#125;</span>.png&#x27;</span></span><br><span class="line">    attention_maps.append(heatmap)</span><br><span class="line">    <span class="comment"># cv2.imwrite(output_filename, heatmap)</span></span><br><span class="line">    </span><br><span class="line">map_height, map_width, _ = attention_maps[<span class="number">0</span>].shape</span><br><span class="line">num_maps = <span class="built_in">len</span>(attention_maps)</span><br><span class="line">canvas_height = map_height</span><br><span class="line">canvas_width = map_width * num_maps</span><br><span class="line"></span><br><span class="line">canvas = np.zeros((canvas_height, canvas_width, <span class="number">3</span>), dtype=np.uint8)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, heatmap <span class="keyword">in</span> <span class="built_in">enumerate</span>(attention_maps):</span><br><span class="line">    canvas[:, i * map_width:(i + <span class="number">1</span>) * map_width, :] = heatmap</span><br><span class="line"></span><br><span class="line">cv2.imwrite(<span class="string">&#x27;attention_maps_canvas.png&#x27;</span>, canvas)</span><br></pre></td></tr></table></figure>
-<p>输出的12张图并起来长这样：<br>
-<img src="attention_maps_canvas.png" alt="attention maps"><br>
-确实证明了ViT存在Attention Map中有Artifacts存在。</p>
-<h2 id="SNN-based-Transformer有没有类似的现象呢">SNN-based Transformer有没有类似的现象呢</h2>
-<p>要想得到类似ANN的Attention Map，我们需要知道在传统ViT中Attention Score矩阵是怎么算的。</p>
-<p>ViT中通过输入得到的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi></mrow><annotation encoding="application/x-tex">Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">Q</span></span></span></span> , <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span> , <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span></span></span> 计算得到attention score，公式如下：</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>s</mi><mi>c</mi><mi>o</mi><mi>r</mi><mi>e</mi><mo>=</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><msqrt><mi>d</mi></msqrt></mfrac></mrow><annotation encoding="application/x-tex">score = \frac{QK^T}{\sqrt{d}}
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">score</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.4483em;vertical-align:-0.93em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5183em;"><span style="top:-2.1778em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord mathnormal">d</span></span></span><span style="top:-2.8922em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
-c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
-c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
-c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
-s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
-c69,-144,104.5,-217.7,106.5,-221
-l0 -0
-c5.3,-9.3,12,-14,20,-14
-H400000v40H845.2724
-s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
-c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
-M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1078em;"><span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">Q</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.93em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
-<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">d</span></span></span></span> 为MHA的头的个数，再经过softmax得到有概率意义的attention map：</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>m</mi><mi>a</mi><mi>p</mi><mo>=</mo><mtext mathvariant="bold">Softmax</mtext><mo stretchy="false">(</mo><mi>S</mi><mi>c</mi><mi>o</mi><mi>r</mi><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">map = \textbf{Softmax}(Score)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">p</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord textbf">Softmax</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">core</span><span class="mclose">)</span></span></span></span></span></p>
-<p>之后的处理就是同上面的步骤，最后得到可视化的attention map。</p>
-<p>在Spike-driven Transformer中，针对脉冲编码性质的输入而言，计算attention score的方式略有差别：以V2（Metaspikeformer）为例，该工作选用作者提出的四种SDSA（Spike-driven Self Attention）中的第三种（SDSA-3）</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mover accent="true"><mi>V</mi><mo>^</mo></mover><mi>S</mi></msub><mo>=</mo><mi>S</mi><mi>D</mi><mi>S</mi><msub><mi>A</mi><mn>3</mn></msub><mo stretchy="false">(</mo><msub><mi>Q</mi><mi>s</mi></msub><mo separator="true">,</mo><msub><mi>K</mi><mi>s</mi></msub><mo separator="true">,</mo><msub><mi>V</mi><mi>s</mi></msub><mo stretchy="false">)</mo><mo>=</mo><mi>S</mi><mi>N</mi><mo stretchy="false">(</mo><msub><mi>Q</mi><mi>s</mi></msub><mo stretchy="false">(</mo><msubsup><mi>K</mi><mi>s</mi><mi>T</mi></msubsup><msub><mi>V</mi><mi>s</mi></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>S</mi><mi>N</mi><mo stretchy="false">(</mo><mo stretchy="false">(</mo><msub><mi>Q</mi><mi>s</mi></msub><msub><mi>K</mi><mi>s</mi></msub><msup><mo stretchy="false">)</mo><mi>T</mi></msup><msub><mi>V</mi><mi>s</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\hat{V}_S = SDSA_3(Q_s,K_s,V_s) = SN(Q_s(K_s^TV_s)) = SN((Q_sK_s)^TV_s)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">Q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1413em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">SN</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">Q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-2.453em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1413em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">SN</span><span class="mopen">((</span><span class="mord"><span class="mord mathnormal">Q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
-<p>写到这里，我又翻出来了V1的文章，才发现作者们在附录里是有写怎么定义Attention Map的（笑死）</p>
-<p>作者在附录中指出，SDSA计算是一种Hard Attention，可以被理解成是在脉冲形式的Value上掩盖不重要的通道（channels）。</p>
-<p>关于Hard Attention(硬性注意力)和Soft Attention(软性注意力)的区别与联系参考<a href="https://allenwind.github.io/blog/9478/">漫谈注意力机制（二）：硬性注意力机制与软性注意力机制</a>。</p>
-<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>S</mi></msub></mrow><annotation encoding="application/x-tex">V_S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>同样有时间(Time,T)和头数(Head,H)两个维度，在这两个维度上做平均，输出是每个LIF的脉冲发放率。换言之，Attention Score调控脉冲发放频率。</p>
-<p>在Spike-driven Transformer V1中，输入x(<code>torch.size([T,B,C,H,W])</code>)需要进行flatten(0,1)，即把第一，第二维度展平，成为一个维度</p>
-]]></content>
-      <tags>
-        <tag>前沿论文阅读</tag>
-        <tag>ViT</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ARM-Linux-MQTT移植</title>
     <url>/2024/04/30/arm-linux-mqtt/</url>
     <content><![CDATA[<h2 id="在ZYNQ-7020-PS端使用paho-mqtt实现设备侧开发连接华为云IoTDA服务">在ZYNQ 7020 PS端使用paho.mqtt实现设备侧开发连接华为云IoTDA服务</h2>
@@ -4822,6 +4822,17 @@ GN 允许两个或多个蓝牙设备成为 ad-hoc 网络的一部分。</p>
       </tags>
   </entry>
   <entry>
+    <title>关于振荡电路</title>
+    <url>/2023/04/16/%E5%85%B3%E4%BA%8E%E6%8C%AF%E8%8D%A1%E7%94%B5%E8%B7%AF/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>学习日志</category>
+      </categories>
+      <tags>
+        <tag>电子设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>关于DNN，DP，EKF，Fourier Operator，Koopman Operator</title>
     <url>/2023/04/05/%E5%85%B3%E4%BA%8EDNN%EF%BC%8CDP%EF%BC%8CEKF%EF%BC%8CFourier-Operator%EF%BC%8CKoopman-Operator/</url>
     <content><![CDATA[<h1>英文缩写解释</h1>
@@ -5207,17 +5218,6 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </tags>
   </entry>
   <entry>
-    <title>关于振荡电路</title>
-    <url>/2023/04/16/%E5%85%B3%E4%BA%8E%E6%8C%AF%E8%8D%A1%E7%94%B5%E8%B7%AF/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>学习日志</category>
-      </categories>
-      <tags>
-        <tag>电子设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>明月湖二三事</title>
     <url>/2023/04/06/%E6%98%8E%E6%9C%88%E6%B9%96/</url>
     <content><![CDATA[<h1><strong>学院派创业者</strong>面临的<strong>挑战</strong></h1>
@@ -5470,13 +5470,8 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </tags>
   </entry>
   <entry>
-    <title>fcircle</title>
-    <url>/fcircle/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>categories</title>
-    <url>/categories/index.html</url>
+    <title>album</title>
+    <url>/album/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -5485,13 +5480,8 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title></title>
-    <url>/json/album_detail.json</url>
-    <content><![CDATA[[{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0556.jpg","alt":"IMG_0556.jpg","title":"这是title"},{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0472.jpg","alt":"IMG_0472.jpg"},{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0453.jpg","alt":""},{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0931.jpg","alt":""}]]]></content>
-  </entry>
-  <entry>
-    <title>album</title>
-    <url>/album/index.html</url>
+    <title>categories</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -5500,8 +5490,23 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
     <content><![CDATA[]]></content>
   </entry>
   <entry>
+    <title>fcircle</title>
+    <url>/fcircle/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>essay</title>
     <url>/essay/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/json/album_detail.json</url>
+    <content><![CDATA[[{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0556.jpg","alt":"IMG_0556.jpg","title":"这是title"},{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0472.jpg","alt":"IMG_0472.jpg"},{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0453.jpg","alt":""},{"url":"https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/IMG_0931.jpg","alt":""}]]]></content>
+  </entry>
+  <entry>
+    <title>link</title>
+    <url>/link/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -5515,18 +5520,13 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>worldScenery</title>
-    <url>/wordScenery/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>link</title>
-    <url>/link/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>tags</title>
     <url>/tags/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>worldScenery</title>
+    <url>/wordScenery/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
