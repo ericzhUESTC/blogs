@@ -429,6 +429,104 @@ Qt的安装参见官方文档：<a href="https://doc.qt.io/qt-5/windows.html#ins
       </tags>
   </entry>
   <entry>
+    <title>2023_SummerMiniCamp_走进机器人的世界</title>
+    <url>/2023/07/03/2023-SummerMiniCamp/</url>
+    <content><![CDATA[<h2 id="1-先修知识">1. 先修知识</h2>
+<ol>
+<li>
+<p>基本的英文：在机器人方面，目前基本上没有非常合适的中文教材可以推荐。写得深入浅出的教材大都是国外的，大家必须学会阅读英文教材。这个过程一开始肯定是痛苦的，但是，基本上坚持一个月就会习惯了。</p>
+</li>
+<li>
+<p>学会使用 VPN。原因同上，基本上有用的资料都需要通过 Goolge 或 Youtube 获取。</p>
+</li>
+<li>
+<p>线性代数：所有的空间变换、机器人相关计算都依赖于线性代数，甚至需要有一些基本的「线性空间」思维。对于线性代数，我首推 Prof. Gilbert Strang 的《Linear Algebra》，在 Youtube 和网易公开课上可以找到视频。这门课一开始就引导大家从空间的角度看待问题，而不只强调如何计算。而且，网易公开课上有中文字幕，对于初学者也还算友好。</p>
+</li>
+<li>
+<p>微积分：机器人里，所有涉及到导数、积分、优化的地方，都需要用到微积分。所以，这门数学课也是一开始就绕不开的。我没有太好的视频推荐，不妨也看看 Gilbert Strange 的《微积分重点》 (Highlights of Calculus)？</p>
+</li>
+<li>
+<p>理论力学：机器人学就是每天与力打交道。但是一般机器人教材里都不会仔细推导空间变换、虚功原理、拉格朗日等力学理论，而且这些东西又相对抽象，很多初学者的自学过程就是被截杀在动力学章节的。当然，这部分我也没有太好的推荐资料，学堂在线上有清华高云峰老师的《理论力学》公开课，也可以参考一下。</p>
+</li>
+<li>
+<p>Matlab or Python：这两个都是非常容易上手，且非常方便数据可视化的编程语言。大家在学习机器人学的过程中，能非常容易地通过这类脚本语言实现一些算法，从而用于验证自己的推导结果。当然，这两部分只要掌握基本的矩阵操作和可视化操作就可以了。其他更高级的用法可以之后再学习。Coursera 上很容易找到这两门语言的入门课程 Matlab、Python。</p>
+</li>
+<li>
+<p>控制理论：机器人学是离不开控制的，但是机器人学教材一般不会过多介绍这块。当然，目前大多数工业机器人都还是使用比较简单的算法。但是，作为研究者，有必要了解一些基本的控制理论，例如 OGAS、PID、状态方程、可观性、可控性、李雅普诺夫、最优控制、一点点非线性控制与一点点智能控制等。这部分可以在 Youtube 上看看 Brian Douglas 的视频。</p>
+</li>
+<li>
+<p>数字电路与模拟电路：机器人是一门实践科学，只有当你把你推导的公式写成代码、并最终让实际机器人按照你的想法动起来的时候，才说明你掌握了相关知识。数电模电的知识可以让你对逻辑电路有个基本了解，不至于后面连为什么电机前面要加一个驱动器都不知道；同时，在身边没有实际机器人的情况下，自己搭个小电路做一些控制实验也是非常方便的。这块知识可以随便找本教材看看，例如我当时用的是唐庆玉老师的教材。</p>
+</li>
+<li>
+<p>一点点单片机：要想搭建简单的控制电路，只有数电模电知识是不够的，还要能将这些知识转换成实际的电路，并且能运行控制代码，那么就需要会单片机。对于单片机，可以网上随便买一些带伺服电机控制教程的最小系统板，要是你不知道下载器是啥，先去看教程。学学 Arduino 或 STM32，最终返璞归真回到51单片机，51 1T=12T永远的神，当然，如果能参加个 RoboMaster 或者飞思卡尔智能车大赛什么的是最好了，可以对嵌入式的各个模块有个基本了解。</p>
+</li>
+<li>
+<p>Linux 和 C 语言：现在有了电路部分，我们需要将公式代码变成电路指令，这就涉及嵌入式的编程了。这块建议学一点 C 语言。嵌入式对 C 的要求其实并不高，随便学点语法就够了，例如《C语言入门》。但是，如果未来想做一些更加上层的工作，最好一开始就把 C 学好。学编程，Linux 是个不错的选择个鬼，LINUX是一坨大便，你学LINUX的时间，别人都完成了很多其他的事情，而且学了有啥用，没啥用，所以，这时候，可以尝试安装个 Linux 系统，在上面学习 C 语言。认识一下命令行，makefile,gcc,gdb，然后你就可以被顺利退学了。记住，使用图形化的都是弱小的生物，不要使用带图形界面的发行版。</p>
+</li>
+<li>
+<p>基本的3D设计：在制作实验平台的时候，经常会遇到需要加工设计小零件的情况，这时候掌握一个3D设计软件可以大大提高开发速度，例如 SolidWorks 就是个不错的选择。配合上 3D 打印机之类的工具就可以实现快速原型设计了。（即使没有 3D 打印机，在网上也可以很容易找到 3D 打印服务，把你设计的 3D 文件发过去就可以了）</p>
+</li>
+</ol>
+<p>上面这些知识，基本是一个大三学生应该达到的水平。如果对上述几部分有了基本了解，就可以开始看机器人学的知识了。</p>
+<h2 id="2-小车？">2. 小车？</h2>
+<p>如果你对电子设计很好奇，小车是一个非常好的项目起点，因为他融合了非常多的数理工学的知识：基本数学、线性代数、控制原理、李群李代数、模拟电路分析、数字电路、嵌入式开发，等等。。。</p>
+<h2 id="设计一个小车的最开始步骤？">设计一个小车的最开始步骤？</h2>
+<p>一个小车包括外壳，电机，轮子，电机驱动/控制电路，主控制器，电源，传感器，等等。。。这些都是一个小车的基本组成部分。那么，我们可以从这些部分开始，逐步深入。</p>
+<h3 id="轮子？">轮子？</h3>
+<ol>
+<li>直轮</li>
+<li>麦克纳姆轮</li>
+<li>履带</li>
+</ol>
+<h3 id="电机？">电机？</h3>
+<ol>
+<li>有刷电机</li>
+<li>无刷电机</li>
+<li>伺服电机</li>
+<li>步进电机</li>
+<li>…</li>
+</ol>
+<h3 id="电机驱动-控制电路？">电机驱动/控制电路？</h3>
+<ol>
+<li>为什么需要？（这个问题应该从哪些方面考虑？）</li>
+<li>怎么驱动？（基于IR2104+IRF3205—4mos单电机驱动、L298N双H桥电机驱动模块、100A双路 超大功率H桥 光耦隔离、带有SN755410电动机驱动器IC的步进高效电机驱动器、L293D双桥驱动电机驱动、MC33932双H桥4A电机驱动板）</li>
+<li>怎么控制？（PWM、PID、电流控制、速度控制、位置控制、力）</li>
+<li>电机驱动电路的设计？（电机驱动电路的设计，需要考虑哪些因素？）</li>
+</ol>
+<h3 id="电源？">电源？</h3>
+<ol>
+<li>为什么需要？（从哪些方面考虑）</li>
+<li>怎么设计？（电源的设计，需要考虑哪些因素？）</li>
+<li>电源的类型（开关电源、BUCK、BOOST、LDO、电荷泵、etc.）</li>
+</ol>
+<h3 id="传感器？">传感器？</h3>
+<ol>
+<li>发挥自己的IMAGINATION！！！</li>
+<li>传感器类型（红外、超声波、激光雷达、IMU、摄像头、etc.）</li>
+</ol>
+<h3 id="主控制器？">主控制器？</h3>
+<ol>
+<li>微控制器、微处理器、片上系统、嵌入式系统、单片机、FPGA、DSP、ARM、AVR、STM32、Arduino、Raspberry Pi、etc.</li>
+<li>为什么需要？（从哪些方面考虑）</li>
+<li>你将面临什么挑战？</li>
+</ol>
+<h3 id="外壳？">外壳？</h3>
+<ol>
+<li>外壳怎么设计？需要考虑什么？</li>
+<li>外壳的材料？（塑料、金属、木头、etc.）</li>
+<li>需要的工具？（SolidWorks，CAD，嘉立创，etc.）</li>
+</ol>
+<h2 id="3-Q-A">3. Q&amp;A?</h2>
+<h2 id="4-准备汇报！！！（加油吧少年）">4. 准备汇报！！！（加油吧少年）</h2>
+]]></content>
+      <categories>
+        <category>杂项</category>
+      </categories>
+      <tags>
+        <tag>机器人</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hi3861开发板使用与第六届全国大学生嵌入式竞赛海思赛道</title>
     <url>/2023/03/27/03-Hi3861-Embedded-Competition/</url>
     <content><![CDATA[<h1>参考资料</h1>
@@ -847,104 +945,6 @@ ref:<a href="https://item.taobao.com/item.htm?spm=a21n57.1.0.0.7b90523cKNbIy1&am
       <tags>
         <tag>海思</tag>
         <tag>嵌入式大赛</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2023_SummerMiniCamp_走进机器人的世界</title>
-    <url>/2023/07/03/2023-SummerMiniCamp/</url>
-    <content><![CDATA[<h2 id="1-先修知识">1. 先修知识</h2>
-<ol>
-<li>
-<p>基本的英文：在机器人方面，目前基本上没有非常合适的中文教材可以推荐。写得深入浅出的教材大都是国外的，大家必须学会阅读英文教材。这个过程一开始肯定是痛苦的，但是，基本上坚持一个月就会习惯了。</p>
-</li>
-<li>
-<p>学会使用 VPN。原因同上，基本上有用的资料都需要通过 Goolge 或 Youtube 获取。</p>
-</li>
-<li>
-<p>线性代数：所有的空间变换、机器人相关计算都依赖于线性代数，甚至需要有一些基本的「线性空间」思维。对于线性代数，我首推 Prof. Gilbert Strang 的《Linear Algebra》，在 Youtube 和网易公开课上可以找到视频。这门课一开始就引导大家从空间的角度看待问题，而不只强调如何计算。而且，网易公开课上有中文字幕，对于初学者也还算友好。</p>
-</li>
-<li>
-<p>微积分：机器人里，所有涉及到导数、积分、优化的地方，都需要用到微积分。所以，这门数学课也是一开始就绕不开的。我没有太好的视频推荐，不妨也看看 Gilbert Strange 的《微积分重点》 (Highlights of Calculus)？</p>
-</li>
-<li>
-<p>理论力学：机器人学就是每天与力打交道。但是一般机器人教材里都不会仔细推导空间变换、虚功原理、拉格朗日等力学理论，而且这些东西又相对抽象，很多初学者的自学过程就是被截杀在动力学章节的。当然，这部分我也没有太好的推荐资料，学堂在线上有清华高云峰老师的《理论力学》公开课，也可以参考一下。</p>
-</li>
-<li>
-<p>Matlab or Python：这两个都是非常容易上手，且非常方便数据可视化的编程语言。大家在学习机器人学的过程中，能非常容易地通过这类脚本语言实现一些算法，从而用于验证自己的推导结果。当然，这两部分只要掌握基本的矩阵操作和可视化操作就可以了。其他更高级的用法可以之后再学习。Coursera 上很容易找到这两门语言的入门课程 Matlab、Python。</p>
-</li>
-<li>
-<p>控制理论：机器人学是离不开控制的，但是机器人学教材一般不会过多介绍这块。当然，目前大多数工业机器人都还是使用比较简单的算法。但是，作为研究者，有必要了解一些基本的控制理论，例如 OGAS、PID、状态方程、可观性、可控性、李雅普诺夫、最优控制、一点点非线性控制与一点点智能控制等。这部分可以在 Youtube 上看看 Brian Douglas 的视频。</p>
-</li>
-<li>
-<p>数字电路与模拟电路：机器人是一门实践科学，只有当你把你推导的公式写成代码、并最终让实际机器人按照你的想法动起来的时候，才说明你掌握了相关知识。数电模电的知识可以让你对逻辑电路有个基本了解，不至于后面连为什么电机前面要加一个驱动器都不知道；同时，在身边没有实际机器人的情况下，自己搭个小电路做一些控制实验也是非常方便的。这块知识可以随便找本教材看看，例如我当时用的是唐庆玉老师的教材。</p>
-</li>
-<li>
-<p>一点点单片机：要想搭建简单的控制电路，只有数电模电知识是不够的，还要能将这些知识转换成实际的电路，并且能运行控制代码，那么就需要会单片机。对于单片机，可以网上随便买一些带伺服电机控制教程的最小系统板，要是你不知道下载器是啥，先去看教程。学学 Arduino 或 STM32，最终返璞归真回到51单片机，51 1T=12T永远的神，当然，如果能参加个 RoboMaster 或者飞思卡尔智能车大赛什么的是最好了，可以对嵌入式的各个模块有个基本了解。</p>
-</li>
-<li>
-<p>Linux 和 C 语言：现在有了电路部分，我们需要将公式代码变成电路指令，这就涉及嵌入式的编程了。这块建议学一点 C 语言。嵌入式对 C 的要求其实并不高，随便学点语法就够了，例如《C语言入门》。但是，如果未来想做一些更加上层的工作，最好一开始就把 C 学好。学编程，Linux 是个不错的选择个鬼，LINUX是一坨大便，你学LINUX的时间，别人都完成了很多其他的事情，而且学了有啥用，没啥用，所以，这时候，可以尝试安装个 Linux 系统，在上面学习 C 语言。认识一下命令行，makefile,gcc,gdb，然后你就可以被顺利退学了。记住，使用图形化的都是弱小的生物，不要使用带图形界面的发行版。</p>
-</li>
-<li>
-<p>基本的3D设计：在制作实验平台的时候，经常会遇到需要加工设计小零件的情况，这时候掌握一个3D设计软件可以大大提高开发速度，例如 SolidWorks 就是个不错的选择。配合上 3D 打印机之类的工具就可以实现快速原型设计了。（即使没有 3D 打印机，在网上也可以很容易找到 3D 打印服务，把你设计的 3D 文件发过去就可以了）</p>
-</li>
-</ol>
-<p>上面这些知识，基本是一个大三学生应该达到的水平。如果对上述几部分有了基本了解，就可以开始看机器人学的知识了。</p>
-<h2 id="2-小车？">2. 小车？</h2>
-<p>如果你对电子设计很好奇，小车是一个非常好的项目起点，因为他融合了非常多的数理工学的知识：基本数学、线性代数、控制原理、李群李代数、模拟电路分析、数字电路、嵌入式开发，等等。。。</p>
-<h2 id="设计一个小车的最开始步骤？">设计一个小车的最开始步骤？</h2>
-<p>一个小车包括外壳，电机，轮子，电机驱动/控制电路，主控制器，电源，传感器，等等。。。这些都是一个小车的基本组成部分。那么，我们可以从这些部分开始，逐步深入。</p>
-<h3 id="轮子？">轮子？</h3>
-<ol>
-<li>直轮</li>
-<li>麦克纳姆轮</li>
-<li>履带</li>
-</ol>
-<h3 id="电机？">电机？</h3>
-<ol>
-<li>有刷电机</li>
-<li>无刷电机</li>
-<li>伺服电机</li>
-<li>步进电机</li>
-<li>…</li>
-</ol>
-<h3 id="电机驱动-控制电路？">电机驱动/控制电路？</h3>
-<ol>
-<li>为什么需要？（这个问题应该从哪些方面考虑？）</li>
-<li>怎么驱动？（基于IR2104+IRF3205—4mos单电机驱动、L298N双H桥电机驱动模块、100A双路 超大功率H桥 光耦隔离、带有SN755410电动机驱动器IC的步进高效电机驱动器、L293D双桥驱动电机驱动、MC33932双H桥4A电机驱动板）</li>
-<li>怎么控制？（PWM、PID、电流控制、速度控制、位置控制、力）</li>
-<li>电机驱动电路的设计？（电机驱动电路的设计，需要考虑哪些因素？）</li>
-</ol>
-<h3 id="电源？">电源？</h3>
-<ol>
-<li>为什么需要？（从哪些方面考虑）</li>
-<li>怎么设计？（电源的设计，需要考虑哪些因素？）</li>
-<li>电源的类型（开关电源、BUCK、BOOST、LDO、电荷泵、etc.）</li>
-</ol>
-<h3 id="传感器？">传感器？</h3>
-<ol>
-<li>发挥自己的IMAGINATION！！！</li>
-<li>传感器类型（红外、超声波、激光雷达、IMU、摄像头、etc.）</li>
-</ol>
-<h3 id="主控制器？">主控制器？</h3>
-<ol>
-<li>微控制器、微处理器、片上系统、嵌入式系统、单片机、FPGA、DSP、ARM、AVR、STM32、Arduino、Raspberry Pi、etc.</li>
-<li>为什么需要？（从哪些方面考虑）</li>
-<li>你将面临什么挑战？</li>
-</ol>
-<h3 id="外壳？">外壳？</h3>
-<ol>
-<li>外壳怎么设计？需要考虑什么？</li>
-<li>外壳的材料？（塑料、金属、木头、etc.）</li>
-<li>需要的工具？（SolidWorks，CAD，嘉立创，etc.）</li>
-</ol>
-<h2 id="3-Q-A">3. Q&amp;A?</h2>
-<h2 id="4-准备汇报！！！（加油吧少年）">4. 准备汇报！！！（加油吧少年）</h2>
-]]></content>
-      <categories>
-        <category>杂项</category>
-      </categories>
-      <tags>
-        <tag>机器人</tag>
       </tags>
   </entry>
   <entry>
@@ -2396,11 +2396,6 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </tags>
   </entry>
   <entry>
-    <title>Graduation_Project_Design</title>
-    <url>/2024/06/30/Graduation-Project-Design/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>FPGA_System_Design</title>
     <url>/2024/06/29/FPGA-System-Design/</url>
     <content><![CDATA[<h2 id="00-学习在PL端使用OV7725摄像头">00. 学习在PL端使用OV7725摄像头</h2>
@@ -2659,6 +2654,11 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </tags>
   </entry>
   <entry>
+    <title>Graduation_Project_Design</title>
+    <url>/2024/06/30/Graduation-Project-Design/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>Notes for Comp_Network</title>
     <url>/2023/05/25/Notes-for-Comp-Network/</url>
     <content><![CDATA[<span id="more"></span>
@@ -2797,6 +2797,17 @@ PSK：相移键控:</p>
       <tags>
         <tag>OneOS</tag>
         <tag>ESP8266</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>STELLAR_HPCA_2024</title>
+    <url>/2024/06/17/STELLAR-HPCA-2024/</url>
+    <content><![CDATA[]]></content>
+      <tags>
+        <tag>前沿论文阅读</tag>
+        <tag>FPGA</tag>
+        <tag>SNN</tag>
+        <tag>计算机体系架构</tag>
       </tags>
   </entry>
   <entry>
@@ -3256,17 +3267,6 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </categories>
       <tags>
         <tag>Deep Learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>STELLAR_HPCA_2024</title>
-    <url>/2024/06/17/STELLAR-HPCA-2024/</url>
-    <content><![CDATA[]]></content>
-      <tags>
-        <tag>前沿论文阅读</tag>
-        <tag>FPGA</tag>
-        <tag>SNN</tag>
-        <tag>计算机体系架构</tag>
       </tags>
   </entry>
   <entry>
@@ -5211,6 +5211,17 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </tags>
   </entry>
   <entry>
+    <title>关于振荡电路</title>
+    <url>/2023/04/16/%E5%85%B3%E4%BA%8E%E6%8C%AF%E8%8D%A1%E7%94%B5%E8%B7%AF/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>学习日志</category>
+      </categories>
+      <tags>
+        <tag>电子设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>明月湖二三事</title>
     <url>/2023/04/06/%E6%98%8E%E6%9C%88%E6%B9%96/</url>
     <content><![CDATA[<h1><strong>学院派创业者</strong>面临的<strong>挑战</strong></h1>
@@ -5273,17 +5284,6 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </categories>
       <tags>
         <tag>创业</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于振荡电路</title>
-    <url>/2023/04/16/%E5%85%B3%E4%BA%8E%E6%8C%AF%E8%8D%A1%E7%94%B5%E8%B7%AF/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>学习日志</category>
-      </categories>
-      <tags>
-        <tag>电子设计</tag>
       </tags>
   </entry>
   <entry>
@@ -5474,13 +5474,13 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </tags>
   </entry>
   <entry>
-    <title>album</title>
-    <url>/album/index.html</url>
+    <title>about</title>
+    <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>categories</title>
-    <url>/categories/index.html</url>
+    <title>album</title>
+    <url>/album/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -5489,8 +5489,13 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>about</title>
-    <url>/about/index.html</url>
+    <title>essay</title>
+    <url>/essay/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>categories</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -5509,18 +5514,13 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
     <content><![CDATA[[{"name":"青花瓷","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/青花瓷/青花瓷.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002eFUFm2XYZ7z_2.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/青花瓷/青花瓷.lrc"},{"name":"稻香","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/稻香/稻香.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/稻香/稻香.lrc"},{"name":"晴天","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/晴天/晴天.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000MkMni19ClKG_3.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/晴天/晴天.lrc"},{"name":"七里香","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/七里香/七里香.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000003DFRzD192KKD_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/七里香/七里香.lrc"},{"name":"花海","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/花海/花海.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/花海/花海.lrc"},{"name":"反方向的钟","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/反方向的钟/反方向的钟.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000f01724fd7TH_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/反方向的钟/反方向的钟.lrc"},{"name":"兰亭序","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/兰亭序/兰亭序.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/兰亭序/兰亭序.lrc"},{"name":"说好的辛福呢","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/说好的辛福呢/说好的辛福呢.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/说好的辛福呢/说好的幸福呢.lrc"},{"name":"等你下课 (with 杨瑞代)","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/等你下课/等你下课.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000003bSL0v4bpKAx_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/等你下课/等你下课.lrc"},{"name":"我落泪情绪零碎","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/我落泪情绪零碎/我落泪情绪零碎.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000bviBl4FjTpO_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/我落泪情绪零碎/我落泪情绪零碎.lrc"},{"name":"听妈妈的话","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/听妈妈的话/听妈妈的话.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002jLGWe16Tf1H_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.2/听妈妈的话/听妈妈的话.lrc"},{"name":"明明就","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/明明就/明明就.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000003Ow85E3pnoqi_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/明明就/明明就.lrc"},{"name":"我是如此相信","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/我是如此相信/我是如此相信.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000001hGx1Z0so1YX_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/我是如此相信/我是如此相信.lrc"},{"name":"发如雪","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/发如雪/发如雪.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M0000024bjiL2aocxT_3.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/发如雪/发如雪.lrc"},{"name":"以父之名","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/以父之名/以父之名.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000MkMni19ClKG_3.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/以父之名/以父之名.lrc"},{"name":"园游会","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/园游会/园游会.flac","cover":"https://y.qq.com/music/photo_new/T002R300x300M000003DFRzD192KKD_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.3/园游会/园游会.lrc"},{"name":"本草纲目","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/本草纲目/本草纲目.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000002jLGWe16Tf1H_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/本草纲目/本草纲目.lrc"},{"name":"龙卷风","artist":"周杰伦","url":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/龙卷风/龙卷风.mp3","cover":"https://y.qq.com/music/photo_new/T002R300x300M000000f01724fd7TH_1.jpg?max_age=2592000","lrc":"https://npm.elemecdn.com/anzhiyu-music@1.0.4/龙卷风/龙卷风.lrc"}]]]></content>
   </entry>
   <entry>
-    <title>essay</title>
-    <url>/essay/index.html</url>
+    <title>music</title>
+    <url>/music/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>link</title>
     <url>/link/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>music</title>
-    <url>/music/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
