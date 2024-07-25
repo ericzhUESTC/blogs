@@ -4561,26 +4561,6 @@ u_c = \mathrm{clamp}(\frac{u_{nl}}{\alpha}, -1, 1)
       </tags>
   </entry>
   <entry>
-    <title>For Starters——WELCOME! and some basic operations of Hexo</title>
-    <url>/2024/07/23/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="ericzhang1412.github.io">EricZhang’s Blog</a>!</p>
-<h2 id="Quick-Start">Quick Start</h2>
-<span id="more"></span>
-<h3 id="Create-a-new-post">Create a new post</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;My New Post&quot;</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server">Run server</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files">Generate static files</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>《互联网设计与演化》阅读笔记</title>
     <url>/2023/03/27/%E3%80%8A%E4%BA%92%E8%81%94%E7%BD%91%E8%AE%BE%E8%AE%A1%E4%B8%8E%E6%BC%94%E5%8C%96%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h1>从因特网到交际</h1>
