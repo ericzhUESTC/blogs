@@ -7291,7 +7291,19 @@ blockquote.pullquote.right {
     left: 50%;
     transform: translate(35px, 45px);
   }
-  
+
+  .logo.large {
+    font-size: 2rem; /* 大字体 */
+    font-family: Helvetica;
+    text-align: center;
+    }
+
+    .small {
+    font-size: 1rem; /* 小字体 */
+    font-family: Helvetica;
+    text-align: center;
+    }
+
   .author-content {
     display: flex;
     flex-wrap: wrap;
