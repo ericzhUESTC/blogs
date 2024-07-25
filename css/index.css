@@ -7262,7 +7262,12 @@ blockquote.pullquote.right {
   #web_bg ~ .page:has(#about-page) {
     background: var(--anzhiyu-background);
   }
-  
+  /* About 页面容器样式 */
+  .about-page {
+      width: 1500px; /* 设定最大宽度 */
+      margin: 0 auto; /* 使容器居中 */
+      padding: 0 20px; /* 添加内边距 */
+  }
   #about-page .author-box {
     position: relative;
   }
@@ -7559,7 +7564,7 @@ blockquote.pullquote.right {
   }
   .author-content-item.myphoto img {
     position: absolute;
-    /* min-width: 100%; */
+    max-width: 50%;
     object-fit: contain;
     transition: 0.6s;
     animation: coverIn 2s ease-out forwards;
@@ -7578,7 +7583,7 @@ blockquote.pullquote.right {
   }
   
   .author-content-item.map {
-    background: url(https://img02.anheyu.com/adminuploads/1/2022/09/24/632e6f48981d8.jpg) no-repeat center;
+    background: url(https://cdn.jsdelivr.net/gh/EricZhang1412/PicGoStorage@master/img/20240725174721.png) no-repeat center;
     min-height: 160px;
     max-height: 400px;
     position: relative;
@@ -7589,7 +7594,7 @@ blockquote.pullquote.right {
     transition: 1s ease-in-out;
   }
   [data-theme="dark"] .author-content-item.map {
-    background: url(https://img02.anheyu.com/adminuploads/1/2022/09/26/6330ebf1f3e65.jpg) no-repeat center;
+    background: url(https://cdn.jsdelivr.net/gh/EricZhang1412/PicGoStorage@master/img/20240725174721.png) no-repeat center;
     background-size: 100%;
   }
   
@@ -7952,7 +7957,7 @@ blockquote.pullquote.right {
   }
   
   .author-content-item.like-music {
-    background: url(https://p2.music.126.net/Mrg1i7DwcwjWBvQPIMt_Mg==/79164837213438.jpg) no-repeat top;
+    background: url(https://cdn.jsdelivr.net/gh/EricZhang1412/PicGoStorage@master/img/3296335862389938.jpg) no-repeat top;
     background-size: cover;
     min-height: 400px;
     color: var(--anzhiyu-white);
