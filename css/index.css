@@ -7560,7 +7560,7 @@ blockquote.pullquote.right {
   .author-content-item.myphoto img {
     position: absolute;
     min-width: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: 0.6s;
     animation: coverIn 2s ease-out forwards;
     transition: transform 2s ease-out !important;
