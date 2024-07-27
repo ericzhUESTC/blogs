@@ -411,30 +411,6 @@ Qt的安装参见官方文档：<a href="https://doc.qt.io/qt-5/windows.html#ins
       </tags>
   </entry>
   <entry>
-    <title>2023_NUEDC</title>
-    <url>/2024/03/16/2023-NUEDC/</url>
-    <content><![CDATA[<h1>2023 NUEDC Question C</h1>
-
-
-	<div class="row">
-    <embed src="review.pdf" width="100%" height="550" type="application/pdf">
-	</div>
-
-
-
-<p>(项目链接在报告里有写的喵)  &lt;----(你喵个锤锤子)</p>
-]]></content>
-      <categories>
-        <category>项目记录</category>
-      </categories>
-      <tags>
-        <tag>NUEDC</tag>
-        <tag>精密仪器仪表</tag>
-        <tag>精密测量</tag>
-        <tag>电子设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hi3861开发板使用与第六届全国大学生嵌入式竞赛海思赛道</title>
     <url>/2023/03/27/03-Hi3861-Embedded-Competition/</url>
     <content><![CDATA[<h1>参考资料</h1>
@@ -952,6 +928,30 @@ ref:<a href="https://item.taobao.com/item.htm?spm=a21n57.1.0.0.7b90523cKNbIy1&am
       </categories>
       <tags>
         <tag>机器人</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2023_NUEDC</title>
+    <url>/2024/03/16/2023-NUEDC/</url>
+    <content><![CDATA[<h1>2023 NUEDC Question C</h1>
+
+
+	<div class="row">
+    <embed src="review.pdf" width="100%" height="550" type="application/pdf">
+	</div>
+
+
+
+<p>(项目链接在报告里有写的喵)  &lt;----(你喵个锤锤子)</p>
+]]></content>
+      <categories>
+        <category>项目记录</category>
+      </categories>
+      <tags>
+        <tag>NUEDC</tag>
+        <tag>精密仪器仪表</tag>
+        <tag>精密测量</tag>
+        <tag>电子设计</tag>
       </tags>
   </entry>
   <entry>
@@ -2255,217 +2255,6 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </tags>
   </entry>
   <entry>
-    <title>FPGA_System_Design</title>
-    <url>/2024/06/29/FPGA-System-Design/</url>
-    <content><![CDATA[<h2 id="00-学习在PL端使用OV7725摄像头">00. 学习在PL端使用OV7725摄像头</h2>
-<p>拿到摄像头，我们先来研究它的引脚：<br>
-<img src="ov7725_block_design.png" alt="OV7725功能框图"></p>
-<p>输入端口：</p>
-<table>
-<thead>
-<tr>
-<th>Port</th>
-<th>Function</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>XCLK</td>
-<td>系统时钟输入</td>
-</tr>
-<tr>
-<td>FSIN</td>
-<td>帧同步信号输入</td>
-</tr>
-<tr>
-<td>RSTB</td>
-<td>系统reset信号输入，低电平有效</td>
-</tr>
-<tr>
-<td>PWDN</td>
-<td>关机模式选择</td>
-</tr>
-<tr>
-<td>SCL</td>
-<td>SCCB协议时钟输入(类似IIC)</td>
-</tr>
-<tr>
-<td>SDA</td>
-<td>SCCB协议数据输入(类似IIC)</td>
-</tr>
-</tbody>
-</table>
-<p>输出端口：</p>
-<table>
-<thead>
-<tr>
-<th>Port</th>
-<th>Function</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>HREF</td>
-<td>行同步信号输出</td>
-</tr>
-<tr>
-<td>PCLK</td>
-<td>像素时钟输出</td>
-</tr>
-<tr>
-<td>VSYNC</td>
-<td>垂直同步信号输出</td>
-</tr>
-<tr>
-<td>D[9:0]</td>
-<td>10-bit RGB数据</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Step-1-读出OV7725的RGB数据并拼成一帧图像">Step 1. 读出OV7725的RGB数据并拼成一帧图像</h3>
-<p>假设摄像头正常工作，自身产生的24MHz的PCLK作为输出给到读取数据的模块中。一系列像素同步信号（VSYNC，HREF）和本身的RGB像素信息也同样传给模块中。作为时序控制电路应有RST_n信号。所以该Verilog模块的输入输出端口就很清晰了（如下图）</p>
-<p><img src="ov7725_data.svg" alt="Diagram" title="Diagram"></p>
-<h4 id="Ports">Ports</h4>
-<table>
-<thead>
-<tr>
-<th>Port name</th>
-<th>Direction</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>sys_rst_n</td>
-<td>input</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_pclk</td>
-<td>input</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_href</td>
-<td>input</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_vsync</td>
-<td>input</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_data</td>
-<td>input</td>
-<td>wire [ 7:0]</td>
-</tr>
-<tr>
-<td>ov7725_wr_en</td>
-<td>output</td>
-<td>wire</td>
-</tr>
-<tr>
-<td>ov7725_data_out</td>
-<td>output</td>
-<td>wire [15:0]</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Signals">Signals</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pic_flag</td>
-<td>wire</td>
-<td></td>
-</tr>
-<tr>
-<td>ov7725_vsync_dly</td>
-<td>reg</td>
-<td></td>
-</tr>
-<tr>
-<td>cnt_pic</td>
-<td>reg [3:0]</td>
-<td></td>
-</tr>
-<tr>
-<td>pic_valid</td>
-<td>reg</td>
-<td></td>
-</tr>
-<tr>
-<td>pic_data_reg</td>
-<td>reg [7:0]</td>
-<td></td>
-</tr>
-<tr>
-<td>data_out_reg</td>
-<td>reg [15:0]</td>
-<td></td>
-</tr>
-<tr>
-<td>data_flag</td>
-<td>reg</td>
-<td></td>
-</tr>
-<tr>
-<td>data_flag_dly1</td>
-<td>reg</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h4 id="Constants">Constants</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Value</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PIC_WAIT</td>
-<td></td>
-<td>4’d10</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-]]></content>
-      <categories>
-        <category>项目记录</category>
-      </categories>
-      <tags>
-        <tag>FPGA</tag>
-        <tag>系统设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Graduation_Project_Design</title>
-    <url>/2024/06/30/Graduation-Project-Design/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>项目记录</category>
-      </categories>
-      <tags>
-        <tag>FPGA</tag>
-        <tag>毕业设计</tag>
-        <tag>遥感图像</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Event-based VFI</title>
     <url>/2024/07/13/Event-based-Video-Frame-Interpolation/</url>
     <content><![CDATA[<h2 id="Reference">Reference</h2>
@@ -2683,6 +2472,234 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </tags>
   </entry>
   <entry>
+    <title>FPGA_System_Design</title>
+    <url>/2024/06/29/FPGA-System-Design/</url>
+    <content><![CDATA[<h2 id="00-学习在PL端使用OV7725摄像头">00. 学习在PL端使用OV7725摄像头</h2>
+<p>拿到摄像头，我们先来研究它的引脚：<br>
+<img src="ov7725_block_design.png" alt="OV7725功能框图"></p>
+<p>输入端口：</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XCLK</td>
+<td>系统时钟输入</td>
+</tr>
+<tr>
+<td>FSIN</td>
+<td>帧同步信号输入</td>
+</tr>
+<tr>
+<td>RSTB</td>
+<td>系统reset信号输入，低电平有效</td>
+</tr>
+<tr>
+<td>PWDN</td>
+<td>关机模式选择</td>
+</tr>
+<tr>
+<td>SCL</td>
+<td>SCCB协议时钟输入(类似IIC)</td>
+</tr>
+<tr>
+<td>SDA</td>
+<td>SCCB协议数据输入(类似IIC)</td>
+</tr>
+</tbody>
+</table>
+<p>输出端口：</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HREF</td>
+<td>行同步信号输出</td>
+</tr>
+<tr>
+<td>PCLK</td>
+<td>像素时钟输出</td>
+</tr>
+<tr>
+<td>VSYNC</td>
+<td>垂直同步信号输出</td>
+</tr>
+<tr>
+<td>D[9:0]</td>
+<td>10-bit RGB数据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Step-1-读出OV7725的RGB数据并拼成一帧图像">Step 1. 读出OV7725的RGB数据并拼成一帧图像</h3>
+<p>假设摄像头正常工作，自身产生的24MHz的PCLK作为输出给到读取数据的模块中。一系列像素同步信号（VSYNC，HREF）和本身的RGB像素信息也同样传给模块中。作为时序控制电路应有RST_n信号。所以该Verilog模块的输入输出端口就很清晰了（如下图）</p>
+<p><img src="ov7725_data.svg" alt="Diagram" title="Diagram"></p>
+<h4 id="Ports">Ports</h4>
+<table>
+<thead>
+<tr>
+<th>Port name</th>
+<th>Direction</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sys_rst_n</td>
+<td>input</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_pclk</td>
+<td>input</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_href</td>
+<td>input</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_vsync</td>
+<td>input</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_data</td>
+<td>input</td>
+<td>wire [ 7:0]</td>
+</tr>
+<tr>
+<td>ov7725_wr_en</td>
+<td>output</td>
+<td>wire</td>
+</tr>
+<tr>
+<td>ov7725_data_out</td>
+<td>output</td>
+<td>wire [15:0]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Signals">Signals</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pic_flag</td>
+<td>wire</td>
+<td></td>
+</tr>
+<tr>
+<td>ov7725_vsync_dly</td>
+<td>reg</td>
+<td></td>
+</tr>
+<tr>
+<td>cnt_pic</td>
+<td>reg [3:0]</td>
+<td></td>
+</tr>
+<tr>
+<td>pic_valid</td>
+<td>reg</td>
+<td></td>
+</tr>
+<tr>
+<td>pic_data_reg</td>
+<td>reg [7:0]</td>
+<td></td>
+</tr>
+<tr>
+<td>data_out_reg</td>
+<td>reg [15:0]</td>
+<td></td>
+</tr>
+<tr>
+<td>data_flag</td>
+<td>reg</td>
+<td></td>
+</tr>
+<tr>
+<td>data_flag_dly1</td>
+<td>reg</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="Constants">Constants</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PIC_WAIT</td>
+<td></td>
+<td>4’d10</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+]]></content>
+      <categories>
+        <category>项目记录</category>
+      </categories>
+      <tags>
+        <tag>FPGA</tag>
+        <tag>系统设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>毕业设计（一）文献阅读</title>
+    <url>/2024/06/30/Graduation-Project-Design/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>项目记录</category>
+      </categories>
+      <tags>
+        <tag>FPGA</tag>
+        <tag>毕业设计</tag>
+        <tag>遥感图像</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>OneOS 启物 v1.2 开发板的Wifi模块开发</title>
+    <url>/2023/03/28/OneOS-%E5%90%AF%E7%89%A9-v1-2-%E5%BC%80%E5%8F%91%E6%9D%BF%E7%9A%84Wifi%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91/</url>
+    <content><![CDATA[<h1>一 IAR 开发环境搭建</h1>
+<p>不得不说，Mindmotion这家公司是真的令人迷惑，v1.0.6的固件包只有F3270，v1.0.5的固件包我能找到的只有F3273G和3273E系列，根本没有F3277的影子，所以果断弃之用IAR。</p>
+<h1>二 亿些使用中的问题</h1>
+<h2 id="ESP8266无法连接WiFi">ESP8266无法连接WiFi</h2>
+<p>因为自己的手机热点没有把AP band调成2.4GHz</p>
+]]></content>
+      <categories>
+        <category>项目记录</category>
+      </categories>
+      <tags>
+        <tag>OneOS</tag>
+        <tag>ESP8266</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Notes for Comp_Network</title>
     <url>/2023/05/25/Notes-for-Comp-Network/</url>
     <content><![CDATA[<span id="more"></span>
@@ -2807,20 +2824,17 @@ PSK：相移键控:</p>
       </tags>
   </entry>
   <entry>
-    <title>OneOS 启物 v1.2 开发板的Wifi模块开发</title>
-    <url>/2023/03/28/OneOS-%E5%90%AF%E7%89%A9-v1-2-%E5%BC%80%E5%8F%91%E6%9D%BF%E7%9A%84Wifi%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91/</url>
-    <content><![CDATA[<h1>一 IAR 开发环境搭建</h1>
-<p>不得不说，Mindmotion这家公司是真的令人迷惑，v1.0.6的固件包只有F3270，v1.0.5的固件包我能找到的只有F3273G和3273E系列，根本没有F3277的影子，所以果断弃之用IAR。</p>
-<h1>二 亿些使用中的问题</h1>
-<h2 id="ESP8266无法连接WiFi">ESP8266无法连接WiFi</h2>
-<p>因为自己的手机热点没有把AP band调成2.4GHz</p>
-]]></content>
+    <title>STELLAR_HPCA_2024</title>
+    <url>/2024/06/17/STELLAR-HPCA-2024/</url>
+    <content><![CDATA[]]></content>
       <categories>
-        <category>项目记录</category>
+        <category>学习日志</category>
       </categories>
       <tags>
-        <tag>OneOS</tag>
-        <tag>ESP8266</tag>
+        <tag>前沿论文阅读</tag>
+        <tag>FPGA</tag>
+        <tag>SNN</tag>
+        <tag>计算机体系架构</tag>
       </tags>
   </entry>
   <entry>
@@ -3280,20 +3294,6 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
       </categories>
       <tags>
         <tag>Deep Learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>STELLAR_HPCA_2024</title>
-    <url>/2024/06/17/STELLAR-HPCA-2024/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>学习日志</category>
-      </categories>
-      <tags>
-        <tag>FPGA</tag>
-        <tag>前沿论文阅读</tag>
-        <tag>SNN</tag>
-        <tag>计算机体系架构</tag>
       </tags>
   </entry>
   <entry>
@@ -4404,78 +4404,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       </tags>
   </entry>
   <entry>
-    <title>EMS-YOLO的魔改记录</title>
-    <url>/2024/07/23/ems-yolo-upgraded/</url>
-    <content><![CDATA[<h1>EMS-YOLO的工程结构</h1>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">EMS-YOLO</span><br><span class="line">├─ .ipynb_checkpoints</span><br><span class="line">├─ LICENSE</span><br><span class="line">├─ README.md</span><br><span class="line">├─ __pycache__</span><br><span class="line">├─ data</span><br><span class="line">├─ detect.py</span><br><span class="line">├─ environment.yml</span><br><span class="line">├─ export.py</span><br><span class="line">├─ firerate10_5.npy</span><br><span class="line">├─ g1-resnet</span><br><span class="line">├─ hubconf.py</span><br><span class="line">├─ models               # 网络模型文件</span><br><span class="line">│  ├─ __init__.py</span><br><span class="line">│  ├─ common.py</span><br><span class="line">│  ├─ common_origin.py</span><br><span class="line">│  ├─ experimental.py</span><br><span class="line">│  ├─ res10-ee.yaml</span><br><span class="line">│  ├─ res18-ee.yaml</span><br><span class="line">│  ├─ res18-eebk.yaml</span><br><span class="line">│  ├─ res18-sew.yaml</span><br><span class="line">│  ├─ resnet10.yaml</span><br><span class="line">│  ├─ resnet18.yaml</span><br><span class="line">│  ├─ resnet34-cat.yaml</span><br><span class="line">│  ├─ resnet34.yaml</span><br><span class="line">│  ├─ tf.py</span><br><span class="line">│  └─ yolo.py</span><br><span class="line">├─ requirements.txt</span><br><span class="line">├─ running_log.log</span><br><span class="line">├─ runs</span><br><span class="line">├─ size10_5.npy</span><br><span class="line">├─ train.py</span><br><span class="line">├─ train.sh</span><br><span class="line">├─ utils</span><br><span class="line">│  ├─ augmentations.py</span><br><span class="line">│  ├─ autoanchor.py</span><br><span class="line">│  ├─ autobatch.py</span><br><span class="line">│  ├─ callbacks.py</span><br><span class="line">│  ├─ datasets.py</span><br><span class="line">│  ├─ downloads.py</span><br><span class="line">│  ├─ general.py</span><br><span class="line">│  ├─ loggers</span><br><span class="line">│  │  ├─ __init__.py</span><br><span class="line">│  │  ├─ __pycache__</span><br><span class="line">│  │  └─ wandb</span><br><span class="line">│  │     ├─ __init__.py</span><br><span class="line">│  │     ├─ __pycache__</span><br><span class="line">│  │     ├─ log_dataset.py</span><br><span class="line">│  │     ├─ sweep.py</span><br><span class="line">│  │     ├─ sweep.yaml</span><br><span class="line">│  │     └─ wandb_utils.py</span><br><span class="line">│  ├─ loss.py</span><br><span class="line">│  ├─ metrics.py</span><br><span class="line">│  ├─ plots.py</span><br><span class="line">│  └─ torch_utils.py</span><br><span class="line">├─ val.py</span><br><span class="line">├─ visi_img.py</span><br><span class="line">└─ wandb</span><br></pre></td></tr></table></figure>
-<p>其中，<code>models/common.py</code>放了很多YOLO的基本模块定义。让我们来看一看这些模块的功能：</p>
-<h2 id="1-二值量化">1. 二值量化</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">BinaryQuantize</span>(<span class="title class_ inherited__">Function</span>):</span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">ctx, <span class="built_in">input</span>, k, t</span>):</span><br><span class="line">        ctx.save_for_backward(<span class="built_in">input</span>, k, t)</span><br><span class="line">        out = torch.sign(<span class="built_in">input</span>)</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">backward</span>(<span class="params">ctx, grad_output</span>):</span><br><span class="line">        <span class="built_in">input</span>, k, t = ctx.saved_tensors</span><br><span class="line">        grad_input = k * t * (<span class="number">1</span> - torch.<span class="built_in">pow</span>(torch.tanh(<span class="built_in">input</span> * t), <span class="number">2</span>)) * grad_output</span><br><span class="line">        <span class="keyword">return</span> grad_input, <span class="literal">None</span>, <span class="literal">None</span></span><br></pre></td></tr></table></figure>
-<h3 id="功能">功能</h3>
-<p>前向传播时以零为界输出二值化后的张量，即</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow><mi>i</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false">(</mo><msub><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{out}_i=\mathrm{sgn}(\mathrm{input}_i)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">out</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathrm">sgn</span></span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord mathrm">input</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2175em;"><span style="top:-2.4559em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2441em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
-<p>反向传播貌似使用了某种代理梯度（surrogate gradient）来计算<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>x</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{\partial y}{\partial x}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2772em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal mtight">x</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4461em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>:</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left right" columnspacing="0em 1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>L</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>x</mi></mrow></mfrac></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>L</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow></mfrac><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>x</mi></mrow></mfrac><mtext> </mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mo>=</mo><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>L</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow></mfrac><mi>k</mi><mi>t</mi><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">h</mi></mrow><mn>2</mn></msup><mo stretchy="false">(</mo><mi>t</mi><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
-\frac{\partial L}{\partial x} &amp;= \frac{\partial L}{\partial y} \frac{\partial y}{\partial x} \ &amp;= \frac{\partial L}{\partial y} kt(1-\mathrm{tanh}^2(tx))
-\end{aligned}
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.5519em;vertical-align:-1.0259em;"></span><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5259em;"><span style="top:-3.5259em;"><span class="pstrut" style="height:3.3714em;"></span><span class="mord"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">x</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.0259em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5259em;"><span style="top:-3.5259em;"><span class="pstrut" style="height:3.3714em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">x</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace"> </span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.0259em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:1em;"></span><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5259em;"><span style="top:-3.5259em;"><span class="pstrut" style="height:3.3714em;"></span><span class="mord"><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">t</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">tanh</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8984em;"><span style="top:-3.1473em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mord mathnormal">x</span><span class="mclose">))</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.0259em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
-<h2 id="2-SNN-qConv2d-量化二维SNN卷积">2. SNN-qConv2d(量化二维SNN卷积)</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Snn_Conv2d_quant</span>(nn.Conv2d):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, in_channels, out_channels, kernel_size, stride=<span class="number">1</span>,</span></span><br><span class="line"><span class="params">                 padding=<span class="number">0</span>, dilation=<span class="number">1</span>, groups=<span class="number">1</span>,</span></span><br><span class="line"><span class="params">                 bias=<span class="literal">False</span>, padding_mode=<span class="string">&#x27;zeros&#x27;</span>, marker=<span class="string">&#x27;b&#x27;</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(Snn_Conv2d_quant, <span class="variable language_">self</span>).__init__(in_channels, out_channels, kernel_size, stride, padding, dilation, groups, bias, padding_mode)</span><br><span class="line">        <span class="variable language_">self</span>.marker = marker</span><br><span class="line">        <span class="variable language_">self</span>.k = torch.tensor([<span class="number">10</span>]).<span class="built_in">float</span>().cuda()</span><br><span class="line">        <span class="variable language_">self</span>.t = torch.tensor([<span class="number">0.1</span>]).<span class="built_in">float</span>().cuda()</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, <span class="built_in">input</span></span>):</span><br><span class="line">        w = <span class="variable language_">self</span>.weight</span><br><span class="line">        bw = w - w.view(w.size(<span class="number">0</span>), -<span class="number">1</span>).mean(-<span class="number">1</span>).view(w.size(<span class="number">0</span>), <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        bw = bw / bw.view(bw.size(<span class="number">0</span>), -<span class="number">1</span>).std(-<span class="number">1</span>).view(bw.size(<span class="number">0</span>), <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        sw = torch.<span class="built_in">pow</span>(torch.tensor([<span class="number">2</span>]*bw.size(<span class="number">0</span>)).to(<span class="built_in">input</span>.device).<span class="built_in">float</span>(), (torch.log(bw.<span class="built_in">abs</span>().view(bw.size(<span class="number">0</span>), -<span class="number">1</span>).mean(-<span class="number">1</span>)) / math.log(<span class="number">2</span>)).<span class="built_in">round</span>().<span class="built_in">float</span>()).view(bw.size(<span class="number">0</span>), <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).detach()</span><br><span class="line">        w = BinaryQuantize().apply(bw,<span class="variable language_">self</span>.k,<span class="variable language_">self</span>.t)</span><br><span class="line">        <span class="comment"># w = BinaryQuantize().apply(w)</span></span><br><span class="line">        weight = w * sw</span><br><span class="line">        <span class="comment"># weight = self.weight#</span></span><br><span class="line">        <span class="comment"># print(self.padding[0],&#x27;=======&#x27;)</span></span><br><span class="line">        h = (<span class="built_in">input</span>.size()[<span class="number">3</span>]-<span class="variable language_">self</span>.kernel_size[<span class="number">0</span>]+<span class="number">2</span>*<span class="variable language_">self</span>.padding[<span class="number">0</span>])//<span class="variable language_">self</span>.stride[<span class="number">0</span>]+<span class="number">1</span></span><br><span class="line">        w = (<span class="built_in">input</span>.size()[<span class="number">4</span>]-<span class="variable language_">self</span>.kernel_size[<span class="number">0</span>]+<span class="number">2</span>*<span class="variable language_">self</span>.padding[<span class="number">0</span>])//<span class="variable language_">self</span>.stride[<span class="number">0</span>]+<span class="number">1</span></span><br><span class="line">        c1 = torch.zeros(time_window, <span class="built_in">input</span>.size()[<span class="number">1</span>], <span class="variable language_">self</span>.out_channels, h, w, device=<span class="built_in">input</span>.device)</span><br><span class="line">        <span class="comment"># print(weight.size(),&#x27;=====weight====&#x27;)</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(time_window):</span><br><span class="line">            c1[i] = F.conv2d(<span class="built_in">input</span>[i], weight, <span class="variable language_">self</span>.bias, <span class="variable language_">self</span>.stride, <span class="variable language_">self</span>.padding, <span class="variable language_">self</span>.dilation, <span class="variable language_">self</span>.groups)</span><br><span class="line">        <span class="keyword">return</span> c1</span><br></pre></td></tr></table></figure>
-<p>该模块继承经典的<code>nn.Conv2d</code>, 前传过程中将权重标准化，计算量化缩放因子，二值化处理，再送到卷积层中处理。<br>
-<img src="https://cdn.jsdelivr.net/gh/EricZhang1412/PicGoStorage@master/img/20240723171417.png"/></p>
-<h2 id="3-膜电压正负二值（-1，1）量化">3. 膜电压正负二值（-1，1）量化</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">u_q</span>(<span class="params">u, b, alpha</span>):</span><br><span class="line">    u = torch.tanh(u)</span><br><span class="line">    <span class="comment"># alpha = u.data.abs().max()</span></span><br><span class="line">    u = torch.clamp(u/alpha,<span class="built_in">min</span>=-<span class="number">1</span>,<span class="built_in">max</span>=<span class="number">1</span>)</span><br><span class="line">    u = u*(<span class="number">2</span>**(b-<span class="number">1</span>)-<span class="number">1</span>)</span><br><span class="line">    u_hat = (u.<span class="built_in">round</span>()-u).detach()+u</span><br><span class="line">    <span class="keyword">return</span> u_hat*alpha/(<span class="number">2</span>**(b-<span class="number">1</span>)-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="step-1-非线性映射到-1-1">step.1 非线性映射到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(-1, 1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">−</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span></h3>
-<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mrow><mi>n</mi><mi>l</mi></mrow></msub><mo>=</mo><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">h</mi></mrow><mo stretchy="false">(</mo><mi>u</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">
-u_{nl} = \mathrm{tanh}(u)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathrm">tanh</span></span><span class="mopen">(</span><span class="mord mathnormal">u</span><span class="mclose">)</span></span></span></span></p>
-<h3 id="step-2-截断处理">step.2 截断处理</h3>
-<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mi>c</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">p</mi></mrow><mo stretchy="false">(</mo><mfrac><msub><mi>u</mi><mrow><mi>n</mi><mi>l</mi></mrow></msub><mi>α</mi></mfrac><mo separator="true">,</mo><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">
-u_c = \mathrm{clamp}(\frac{u_{nl}}{\alpha}, -1, 1)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.095em;vertical-align:-0.345em;"></span><span class="mord"><span class="mord mathrm">clamp</span></span><span class="mopen">(</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7173em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0037em;">α</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4159em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">−</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span></p>
-<h3 id="step-3-量化">step.3 量化</h3>
-<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><msub><mi>u</mi><mi>c</mi></msub><mo stretchy="true">‾</mo></mover><mo>=</mo><msub><mi>u</mi><mi>c</mi></msub><mo>×</mo><mo stretchy="false">(</mo><msup><mn>2</mn><mrow><mi>b</mi><mo>−</mo><mn>1</mn></mrow></msup><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\overline{u_c} = u_c \times (2^{b-1}-1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7806em;vertical-align:-0.15em;"></span><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6306em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.5506em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0991em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span><br>
-<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mi>R</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi></mrow><mrow><mo stretchy="false">(</mo><mover accent="true"><msub><mi>u</mi><mi>c</mi></msub><mo stretchy="true">‾</mo></mover><mo stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex">u_R = \mathrm{round}{(\overline{u_c})}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.00773em;">R</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathrm">round</span></span><span class="mord"><span class="mopen">(</span><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6306em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.5506em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><br>
-<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>u</mi><mo>^</mo></mover><mo>=</mo><msub><mi>u</mi><mi>R</mi></msub><mo>∗</mo><mi>α</mi><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><msup><mn>2</mn><mrow><mi>b</mi><mo>−</mo><mn>1</mn></mrow></msup><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\hat{u} = u_R * \alpha / (2^{b-1}-1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">u</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6153em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.00773em;">R</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0991em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord">/</span><span class="mopen">(</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span></p>
-<h2 id="4-放电函数">4. 放电函数</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">lens = <span class="number">0.5</span>  <span class="comment"># 0.5 # hyper-parameters of approximate function</span></span><br><span class="line">thresh = <span class="number">0.5</span>  <span class="comment"># 0.5 # neuronal threshold</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ActFun</span>(torch.autograd.Function):</span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">ctx, <span class="built_in">input</span></span>):</span><br><span class="line">        ctx.save_for_backward(<span class="built_in">input</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">input</span>.gt(thresh).<span class="built_in">float</span>()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">backward</span>(<span class="params">ctx, grad_output</span>):</span><br><span class="line">        <span class="built_in">input</span>, = ctx.saved_tensors</span><br><span class="line">        grad_input = grad_output.clone()</span><br><span class="line">        temp = <span class="built_in">abs</span>(<span class="built_in">input</span> - thresh) &lt; lens</span><br><span class="line">        temp = temp / (<span class="number">2</span> * lens)</span><br><span class="line">        <span class="keyword">return</span> grad_input * temp.<span class="built_in">float</span>()</span><br></pre></td></tr></table></figure>
-<p>前向传播时输出脉冲（比阈值大的输出1，否则为0），反传过程中梯度近似为放电为1，不放电为0。</p>
-<h2 id="5-自定义的Conv-BN-LIF卷积层">5. 自定义的Conv-BN-LIF卷积层</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Conv</span>(nn.Module):</span><br><span class="line">    <span class="comment"># Standard convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k, s, p=<span class="literal">None</span>, g=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, padding, groups</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = Snn_Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = batch_norm_2d(c2)</span><br><span class="line">        <span class="variable language_">self</span>.act = mem_update(act=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.act(<span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x)))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward_fuse</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.act(<span class="variable language_">self</span>.conv(x))</span><br></pre></td></tr></table></figure>
-<h2 id="6-使用SiLU激活函数的卷积层">6. 使用SiLU激活函数的卷积层</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Conv_A</span>(nn.Module):</span><br><span class="line">    <span class="comment"># Standard convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k, s, p=<span class="literal">None</span>, g=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, padding, groups</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = Snn_Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = batch_norm_2d(c2)</span><br><span class="line">        <span class="variable language_">self</span>.act = nn.SiLU() <span class="keyword">if</span> act <span class="keyword">is</span> <span class="literal">True</span> <span class="keyword">else</span> (act <span class="keyword">if</span> <span class="built_in">isinstance</span>(act, nn.Module) <span class="keyword">else</span> nn.Identity())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.act(<span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x)))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward_fuse</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.act(<span class="variable language_">self</span>.conv(x))</span><br></pre></td></tr></table></figure>
-<h2 id="7-不使用激活函数的卷积层">7. 不使用激活函数的卷积层</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Conv_1</span>(nn.Module):</span><br><span class="line">    <span class="comment"># Standard convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k, s, p=<span class="literal">None</span>, g=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, padding, groups</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = Snn_Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = batch_norm_2d(c2)</span><br><span class="line">        <span class="comment">#self.act = mem_update() if act is True else (act if isinstance(act, nn.Module) else nn.Identity())</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward_fuse</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.conv(x)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Conv_2</span>(nn.Module):</span><br><span class="line">    <span class="comment"># Standard convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k, s, p=<span class="literal">None</span>, g=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, padding, groups</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = Snn_Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = batch_norm_2d(c2)</span><br><span class="line">        <span class="comment">#self.act = mem_update() if act is True else (act if isinstance(act, nn.Module) else nn.Identity())</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward_fuse</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.conv(x)</span><br></pre></td></tr></table></figure>
-<h2 id="8-魔改过的BatchNorm层">8. 魔改过的BatchNorm层</h2>
-<p>不同之处在于初始化权重不同.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">batch_norm_2d</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num_features, eps=<span class="number">1e-5</span>, momentum=<span class="number">0.1</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(batch_norm_2d, <span class="variable language_">self</span>).__init__() <span class="comment">#num_features=16</span></span><br><span class="line">        <span class="variable language_">self</span>.bn = BatchNorm3d1(num_features)  <span class="comment"># input (N,C,D,H,W) imension batch norm on (N,D,H,W) slice. spatio-temporal Batch Normalization</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, <span class="built_in">input</span></span>):</span><br><span class="line">        y = <span class="built_in">input</span>.transpose(<span class="number">0</span>, <span class="number">2</span>).contiguous().transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous()</span><br><span class="line">        y = <span class="variable language_">self</span>.bn(y)</span><br><span class="line">        <span class="keyword">return</span> y.contiguous().transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous().transpose(<span class="number">0</span>, <span class="number">2</span>)  <span class="comment"># </span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">batch_norm_2d1</span>(nn.Module):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num_features, eps=<span class="number">1e-5</span>, momentum=<span class="number">0.1</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(batch_norm_2d1, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.bn = BatchNorm3d2(num_features)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, <span class="built_in">input</span></span>):</span><br><span class="line">        y = <span class="built_in">input</span>.transpose(<span class="number">0</span>, <span class="number">2</span>).contiguous().transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous()</span><br><span class="line">        y = <span class="variable language_">self</span>.bn(y)</span><br><span class="line">        <span class="keyword">return</span> y.contiguous().transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous().transpose(<span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BatchNorm3d1</span>(torch.nn.BatchNorm3d):<span class="comment">#5</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">reset_parameters</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.reset_running_stats()</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.affine:</span><br><span class="line">            nn.init.constant_(<span class="variable language_">self</span>.weight, thresh)<span class="comment">#</span></span><br><span class="line">            nn.init.zeros_(<span class="variable language_">self</span>.bias)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BatchNorm3d2</span>(torch.nn.BatchNorm3d):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">reset_parameters</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.reset_running_stats()</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.affine:</span><br><span class="line">  </span><br><span class="line">            nn.init.constant_(<span class="variable language_">self</span>.weight, <span class="number">0.2</span>*thresh)           </span><br><span class="line">            nn.init.zeros_(<span class="variable language_">self</span>.bias)</span><br></pre></td></tr></table></figure>
-<h2 id="9-对输入的每个时间步应用的-MaxPool2d-池化操作">9. 对输入的每个时间步应用的 MaxPool2d 池化操作</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Pools</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,kernel_size,stride,padding=<span class="number">0</span>,dilation=<span class="number">1</span></span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.kernel_size=kernel_size</span><br><span class="line">        <span class="variable language_">self</span>.stride = stride</span><br><span class="line">        <span class="variable language_">self</span>.padding = padding</span><br><span class="line">        <span class="variable language_">self</span>.dilation = dilation</span><br><span class="line">        <span class="variable language_">self</span>.pool=nn.MaxPool2d(kernel_size=<span class="variable language_">self</span>.kernel_size,stride=<span class="variable language_">self</span>.stride,padding=<span class="variable language_">self</span>.padding)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self,<span class="built_in">input</span></span>):</span><br><span class="line">        h=<span class="built_in">int</span>((<span class="built_in">input</span>.size()[<span class="number">3</span>]+<span class="number">2</span>*<span class="variable language_">self</span>.padding-<span class="variable language_">self</span>.dilation*(<span class="variable language_">self</span>.kernel_size-<span class="number">1</span>)-<span class="number">1</span>)/<span class="variable language_">self</span>.stride+<span class="number">1</span>)</span><br><span class="line">        w=<span class="built_in">int</span>((<span class="built_in">input</span>.size()[<span class="number">4</span>]+<span class="number">2</span>*<span class="variable language_">self</span>.padding - <span class="variable language_">self</span>.dilation*(<span class="variable language_">self</span>.kernel_size-<span class="number">1</span>)-<span class="number">1</span>)/<span class="variable language_">self</span>.stride+<span class="number">1</span>)</span><br><span class="line">        c1 = torch.zeros(time_window, <span class="built_in">input</span>.size()[<span class="number">1</span>],<span class="built_in">input</span>.size()[<span class="number">2</span>],h,w,device=<span class="built_in">input</span>.device)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(time_window):</span><br><span class="line">            c1[i]=<span class="variable language_">self</span>.pool(<span class="built_in">input</span>[i])</span><br><span class="line">        <span class="keyword">return</span> c1</span><br></pre></td></tr></table></figure>
-<h2 id="10-对输入的每个时间步应用的-ZeroPad2d-填充操作">10. 对输入的每个时间步应用的 ZeroPad2d 填充操作</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">zeropad</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,padding</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.padding=padding</span><br><span class="line">        <span class="variable language_">self</span>.pad=nn.ZeroPad2d(padding=<span class="variable language_">self</span>.padding)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self,<span class="built_in">input</span></span>):</span><br><span class="line">        h=<span class="built_in">input</span>.size()[<span class="number">3</span>]+<span class="variable language_">self</span>.padding[<span class="number">2</span>]+<span class="variable language_">self</span>.padding[<span class="number">3</span>]</span><br><span class="line">        w=<span class="built_in">input</span>.size()[<span class="number">4</span>]+<span class="variable language_">self</span>.padding[<span class="number">0</span>]+<span class="variable language_">self</span>.padding[<span class="number">1</span>]</span><br><span class="line">        c1=torch.zeros(time_window,<span class="built_in">input</span>.size()[<span class="number">1</span>],<span class="built_in">input</span>.size()[<span class="number">2</span>],h,w,device=<span class="built_in">input</span>.device )</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(time_window):</span><br><span class="line">            c1[i]=<span class="variable language_">self</span>.pad(<span class="built_in">input</span>[i])</span><br><span class="line">        <span class="keyword">return</span> c1 </span><br></pre></td></tr></table></figure>
-<h2 id="11-对输入的每个时间步应用的UpSample操作">11. 对输入的每个时间步应用的UpSample操作</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Sample</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,size=<span class="literal">None</span>,scale_factor=<span class="literal">None</span>,mode=<span class="string">&#x27;nearset&#x27;</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(Sample, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.scale_factor=scale_factor</span><br><span class="line">        <span class="variable language_">self</span>.mode=mode</span><br><span class="line">        <span class="variable language_">self</span>.size = size</span><br><span class="line">        <span class="variable language_">self</span>.up=nn.Upsample(<span class="variable language_">self</span>.size,<span class="variable language_">self</span>.scale_factor,mode=<span class="variable language_">self</span>.mode)</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self,<span class="built_in">input</span></span>):</span><br><span class="line">        <span class="comment"># self.cpu()</span></span><br><span class="line">        temp=torch.zeros(time_window,<span class="built_in">input</span>.size()[<span class="number">1</span>],<span class="built_in">input</span>.size()[<span class="number">2</span>],<span class="built_in">input</span>.size()[<span class="number">3</span>]*<span class="variable language_">self</span>.scale_factor,<span class="built_in">input</span>.size()[<span class="number">4</span>]*<span class="variable language_">self</span>.scale_factor, device=<span class="built_in">input</span>.device)</span><br><span class="line">        <span class="comment"># print(temp.device,&#x27;-----&#x27;)</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(time_window):</span><br><span class="line">            </span><br><span class="line">            temp[i]=<span class="variable language_">self</span>.up(<span class="built_in">input</span>[i])</span><br><span class="line"></span><br><span class="line">            <span class="comment"># temp[i]= F.interpolate(input[i], scale_factor=self.scale_factor,mode=&#x27;nearest&#x27;)</span></span><br><span class="line">        <span class="keyword">return</span> temp</span><br></pre></td></tr></table></figure>
-<h2 id="12-逐通道卷积">12. 逐通道卷积</h2>
-<p>继承Conv类，设置卷积组数g为输入和输出通道数的<strong>最大公约数</strong>。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DWConv</span>(<span class="title class_ inherited__">Conv</span>):</span><br><span class="line">    <span class="comment"># Depth-wise convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k=<span class="number">1</span>, s=<span class="number">1</span>, d=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, dilation, activation</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;Initializes depth-wise convolution with optional activation; parameters are channel in/out, kernel, stride,</span></span><br><span class="line"><span class="string">        dilation.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__(c1, c2, k, s, g=math.gcd(c1, c2), d=d, act=act)</span><br></pre></td></tr></table></figure>
-<h1>Ultralytics中的Tiny-YOLOv3的Backbone结构</h1>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">                 from  n    params  module                                  arguments                     </span><br><span class="line">  0                -1  1       464  models.common.Conv                      [3, 16, 3, 1]                 </span><br><span class="line">  1                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line">  2                -1  1      4672  models.common.Conv                      [16, 32, 3, 1]                </span><br><span class="line">  3                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line">  4                -1  1     18560  models.common.Conv                      [32, 64, 3, 1]                </span><br><span class="line">  5                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line">  6                -1  1     73984  models.common.Conv                      [64, 128, 3, 1]               </span><br><span class="line">  7                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line">  8                -1  1    295424  models.common.Conv                      [128, 256, 3, 1]              </span><br><span class="line">  9                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line"> 10                -1  1   1180672  models.common.Conv                      [256, 512, 3, 1]              </span><br><span class="line"> 11                -1  1         0  torch.nn.modules.padding.ZeroPad2d      [[0, 1, 0, 1]]                </span><br><span class="line"> 12                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 1, 0]                     </span><br><span class="line"> 13                -1  1   4720640  models.common.Conv                      [512, 1024, 3, 1]             </span><br><span class="line"> 14                -1  1    262656  models.common.Conv                      [1024, 256, 1, 1]             </span><br><span class="line"> 15                -1  1   1180672  models.common.Conv                      [256, 512, 3, 1]              </span><br><span class="line"> 16                -2  1     33024  models.common.Conv                      [256, 128, 1, 1]              </span><br><span class="line"> 17                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#x27;nearest&#x27;]          </span><br><span class="line"> 18           [-1, 8]  1         0  models.common.Concat                    [1]                           </span><br><span class="line"> 19                -1  1    885248  models.common.Conv                      [384, 256, 3, 1]              </span><br><span class="line"> 20          [19, 15]  1    196350  models.yolo.Detect                      [80, [[10, 14, 23, 27, 37, 58], [81, 82, 135, 169, 344, 319]], [256, 512]]</span><br><span class="line">yolov3-tiny summary: 49 layers, 8852366 parameters, 8852366 gradients, 13.3 GFLOPs</span><br></pre></td></tr></table></figure>
-<p><code>.yaml</code>文件中对于模型的描述如下:</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># YOLOv3-tiny backbone</span></span><br><span class="line"><span class="attr">backbone:</span></span><br><span class="line">  <span class="comment"># [from, number, module, args]</span></span><br><span class="line">  [</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">16</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 0</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 1-P1/2</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">32</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 3-P2/4</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">64</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 5-P3/8</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">128</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 7-P4/16</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">256</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 9-P5/32</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">512</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.ZeroPad2d</span>, [[<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]]], <span class="comment"># 11</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]], <span class="comment"># 12</span></span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># YOLOv3-tiny head</span></span><br><span class="line"><span class="attr">head:</span> [</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">1024</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">256</span>, <span class="number">1</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">512</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 15 (P5/32-large)</span></span><br><span class="line"></span><br><span class="line">    [<span class="number">-2</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">128</span>, <span class="number">1</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.Upsample</span>, [<span class="string">None</span>, <span class="number">2</span>, <span class="string">&quot;nearest&quot;</span>]],</span><br><span class="line">    [[<span class="number">-1</span>, <span class="number">8</span>], <span class="number">1</span>, <span class="string">Concat</span>, [<span class="number">1</span>]], <span class="comment"># cat backbone P4</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">256</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 19 (P4/16-medium)</span></span><br><span class="line"></span><br><span class="line">    [[<span class="number">19</span>, <span class="number">15</span>], <span class="number">1</span>, <span class="string">Detect</span>, [<span class="string">nc</span>, <span class="string">anchors</span>]], <span class="comment"># Detect(P4, P5)</span></span><br><span class="line">  ]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>原始的Tiny-YOLOv3的Backbone中只有Conv、MaxPool2d、ZeroPad2d三种模块，head中有Conv、UpSample和Concat三种模块。而EMS-YOLO的作者们已经为我们改好了带有时间步的各个模块。于是一个大胆的想法油然而生：暴力替换</p>
-<p>替换之后的yaml文件如下：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">nc:</span> <span class="number">80</span>  <span class="comment"># number of classes</span></span><br><span class="line"><span class="attr">depth_multiple:</span> <span class="number">1.0</span>  <span class="comment"># model depth multiple</span></span><br><span class="line"><span class="attr">width_multiple:</span> <span class="number">1.0</span>  <span class="comment"># layer channel multiple</span></span><br><span class="line"><span class="attr">anchors:</span></span><br><span class="line">  <span class="bullet">-</span> [<span class="number">10</span>,<span class="number">14</span>, <span class="number">23</span>,<span class="number">27</span>, <span class="number">37</span>,<span class="number">58</span>]  <span class="comment"># P4/16</span></span><br><span class="line">  <span class="bullet">-</span> [<span class="number">81</span>,<span class="number">82</span>, <span class="number">135</span>,<span class="number">169</span>, <span class="number">344</span>,<span class="number">319</span>]  <span class="comment"># P5/32</span></span><br><span class="line"><span class="comment"># -------上面的配置和经典的一样-------</span></span><br><span class="line"><span class="comment"># YOLOv3-tiny backbone</span></span><br><span class="line"><span class="attr">backbone:</span></span><br><span class="line">  <span class="comment"># [from, number, module, args]</span></span><br><span class="line">  [</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">16</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 0</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 1-P1/2</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">32</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 3-P2/4</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">64</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 5-P3/8</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">128</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 7-P4/16</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">256</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 9-P5/32</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">512</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">zeropad</span>, [[<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]]], <span class="comment"># 11</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]], <span class="comment"># 12</span></span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># YOLOv3-tiny head</span></span><br><span class="line"><span class="attr">head:</span> [</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">1024</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">256</span>, <span class="number">1</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">512</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 15 (P5/32-large)</span></span><br><span class="line"></span><br><span class="line">    [<span class="number">-2</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">128</span>, <span class="number">1</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Sample</span>, [<span class="string">None</span>, <span class="number">2</span>, <span class="string">&quot;nearest&quot;</span>]],</span><br><span class="line">    [[<span class="number">-1</span>, <span class="number">8</span>], <span class="number">1</span>, <span class="string">Concat</span>, [<span class="number">2</span>]], <span class="comment"># cat backbone P4</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">256</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 19 (P4/16-medium)</span></span><br><span class="line"></span><br><span class="line">    [[<span class="number">19</span>, <span class="number">15</span>], <span class="number">1</span>, <span class="string">Detect</span>, [<span class="string">nc</span>, <span class="string">anchors</span>]], <span class="comment"># Detect(P4, P5)</span></span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>项目记录</category>
-      </categories>
-      <tags>
-        <tag>SNN</tag>
-        <tag>EMS-YOLO</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ARM-Linux-MQTT移植</title>
     <url>/2024/04/30/arm-linux-mqtt/</url>
     <content><![CDATA[<h2 id="在ZYNQ-7020-PS端使用paho-mqtt实现设备侧开发连接华为云IoTDA服务">在ZYNQ 7020 PS端使用paho.mqtt实现设备侧开发连接华为云IoTDA服务</h2>
@@ -4591,6 +4519,78 @@ u_c = \mathrm{clamp}(\frac{u_{nl}}{\alpha}, -1, 1)
         <tag>ARM</tag>
         <tag>ZYNQ</tag>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>EMS-YOLO的魔改记录</title>
+    <url>/2024/07/23/ems-yolo-upgraded/</url>
+    <content><![CDATA[<h1>EMS-YOLO的工程结构</h1>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">EMS-YOLO</span><br><span class="line">├─ .ipynb_checkpoints</span><br><span class="line">├─ LICENSE</span><br><span class="line">├─ README.md</span><br><span class="line">├─ __pycache__</span><br><span class="line">├─ data</span><br><span class="line">├─ detect.py</span><br><span class="line">├─ environment.yml</span><br><span class="line">├─ export.py</span><br><span class="line">├─ firerate10_5.npy</span><br><span class="line">├─ g1-resnet</span><br><span class="line">├─ hubconf.py</span><br><span class="line">├─ models               # 网络模型文件</span><br><span class="line">│  ├─ __init__.py</span><br><span class="line">│  ├─ common.py</span><br><span class="line">│  ├─ common_origin.py</span><br><span class="line">│  ├─ experimental.py</span><br><span class="line">│  ├─ res10-ee.yaml</span><br><span class="line">│  ├─ res18-ee.yaml</span><br><span class="line">│  ├─ res18-eebk.yaml</span><br><span class="line">│  ├─ res18-sew.yaml</span><br><span class="line">│  ├─ resnet10.yaml</span><br><span class="line">│  ├─ resnet18.yaml</span><br><span class="line">│  ├─ resnet34-cat.yaml</span><br><span class="line">│  ├─ resnet34.yaml</span><br><span class="line">│  ├─ tf.py</span><br><span class="line">│  └─ yolo.py</span><br><span class="line">├─ requirements.txt</span><br><span class="line">├─ running_log.log</span><br><span class="line">├─ runs</span><br><span class="line">├─ size10_5.npy</span><br><span class="line">├─ train.py</span><br><span class="line">├─ train.sh</span><br><span class="line">├─ utils</span><br><span class="line">│  ├─ augmentations.py</span><br><span class="line">│  ├─ autoanchor.py</span><br><span class="line">│  ├─ autobatch.py</span><br><span class="line">│  ├─ callbacks.py</span><br><span class="line">│  ├─ datasets.py</span><br><span class="line">│  ├─ downloads.py</span><br><span class="line">│  ├─ general.py</span><br><span class="line">│  ├─ loggers</span><br><span class="line">│  │  ├─ __init__.py</span><br><span class="line">│  │  ├─ __pycache__</span><br><span class="line">│  │  └─ wandb</span><br><span class="line">│  │     ├─ __init__.py</span><br><span class="line">│  │     ├─ __pycache__</span><br><span class="line">│  │     ├─ log_dataset.py</span><br><span class="line">│  │     ├─ sweep.py</span><br><span class="line">│  │     ├─ sweep.yaml</span><br><span class="line">│  │     └─ wandb_utils.py</span><br><span class="line">│  ├─ loss.py</span><br><span class="line">│  ├─ metrics.py</span><br><span class="line">│  ├─ plots.py</span><br><span class="line">│  └─ torch_utils.py</span><br><span class="line">├─ val.py</span><br><span class="line">├─ visi_img.py</span><br><span class="line">└─ wandb</span><br></pre></td></tr></table></figure>
+<p>其中，<code>models/common.py</code>放了很多YOLO的基本模块定义。让我们来看一看这些模块的功能：</p>
+<h2 id="1-二值量化">1. 二值量化</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">BinaryQuantize</span>(<span class="title class_ inherited__">Function</span>):</span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">ctx, <span class="built_in">input</span>, k, t</span>):</span><br><span class="line">        ctx.save_for_backward(<span class="built_in">input</span>, k, t)</span><br><span class="line">        out = torch.sign(<span class="built_in">input</span>)</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">backward</span>(<span class="params">ctx, grad_output</span>):</span><br><span class="line">        <span class="built_in">input</span>, k, t = ctx.saved_tensors</span><br><span class="line">        grad_input = k * t * (<span class="number">1</span> - torch.<span class="built_in">pow</span>(torch.tanh(<span class="built_in">input</span> * t), <span class="number">2</span>)) * grad_output</span><br><span class="line">        <span class="keyword">return</span> grad_input, <span class="literal">None</span>, <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<h3 id="功能">功能</h3>
+<p>前向传播时以零为界输出二值化后的张量，即</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow><mi>i</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false">(</mo><msub><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{out}_i=\mathrm{sgn}(\mathrm{input}_i)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">out</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathrm">sgn</span></span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord mathrm">input</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2175em;"><span style="top:-2.4559em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2441em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>反向传播貌似使用了某种代理梯度（surrogate gradient）来计算<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>x</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{\partial y}{\partial x}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2772em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal mtight">x</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4461em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left right" columnspacing="0em 1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>L</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>x</mi></mrow></mfrac></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>L</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow></mfrac><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>x</mi></mrow></mfrac><mtext> </mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mo>=</mo><mfrac><mrow><mi mathvariant="normal">∂</mi><mi>L</mi></mrow><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow></mfrac><mi>k</mi><mi>t</mi><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">h</mi></mrow><mn>2</mn></msup><mo stretchy="false">(</mo><mi>t</mi><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
+\frac{\partial L}{\partial x} &amp;= \frac{\partial L}{\partial y} \frac{\partial y}{\partial x} \ &amp;= \frac{\partial L}{\partial y} kt(1-\mathrm{tanh}^2(tx))
+\end{aligned}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.5519em;vertical-align:-1.0259em;"></span><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5259em;"><span style="top:-3.5259em;"><span class="pstrut" style="height:3.3714em;"></span><span class="mord"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">x</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.0259em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5259em;"><span style="top:-3.5259em;"><span class="pstrut" style="height:3.3714em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">x</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace"> </span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.0259em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:1em;"></span><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5259em;"><span style="top:-3.5259em;"><span class="pstrut" style="height:3.3714em;"></span><span class="mord"><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord mathnormal">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">t</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">tanh</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8984em;"><span style="top:-3.1473em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mord mathnormal">x</span><span class="mclose">))</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.0259em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
+<h2 id="2-SNN-qConv2d-量化二维SNN卷积">2. SNN-qConv2d(量化二维SNN卷积)</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Snn_Conv2d_quant</span>(nn.Conv2d):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, in_channels, out_channels, kernel_size, stride=<span class="number">1</span>,</span></span><br><span class="line"><span class="params">                 padding=<span class="number">0</span>, dilation=<span class="number">1</span>, groups=<span class="number">1</span>,</span></span><br><span class="line"><span class="params">                 bias=<span class="literal">False</span>, padding_mode=<span class="string">&#x27;zeros&#x27;</span>, marker=<span class="string">&#x27;b&#x27;</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(Snn_Conv2d_quant, <span class="variable language_">self</span>).__init__(in_channels, out_channels, kernel_size, stride, padding, dilation, groups, bias, padding_mode)</span><br><span class="line">        <span class="variable language_">self</span>.marker = marker</span><br><span class="line">        <span class="variable language_">self</span>.k = torch.tensor([<span class="number">10</span>]).<span class="built_in">float</span>().cuda()</span><br><span class="line">        <span class="variable language_">self</span>.t = torch.tensor([<span class="number">0.1</span>]).<span class="built_in">float</span>().cuda()</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, <span class="built_in">input</span></span>):</span><br><span class="line">        w = <span class="variable language_">self</span>.weight</span><br><span class="line">        bw = w - w.view(w.size(<span class="number">0</span>), -<span class="number">1</span>).mean(-<span class="number">1</span>).view(w.size(<span class="number">0</span>), <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        bw = bw / bw.view(bw.size(<span class="number">0</span>), -<span class="number">1</span>).std(-<span class="number">1</span>).view(bw.size(<span class="number">0</span>), <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        sw = torch.<span class="built_in">pow</span>(torch.tensor([<span class="number">2</span>]*bw.size(<span class="number">0</span>)).to(<span class="built_in">input</span>.device).<span class="built_in">float</span>(), (torch.log(bw.<span class="built_in">abs</span>().view(bw.size(<span class="number">0</span>), -<span class="number">1</span>).mean(-<span class="number">1</span>)) / math.log(<span class="number">2</span>)).<span class="built_in">round</span>().<span class="built_in">float</span>()).view(bw.size(<span class="number">0</span>), <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).detach()</span><br><span class="line">        w = BinaryQuantize().apply(bw,<span class="variable language_">self</span>.k,<span class="variable language_">self</span>.t)</span><br><span class="line">        <span class="comment"># w = BinaryQuantize().apply(w)</span></span><br><span class="line">        weight = w * sw</span><br><span class="line">        <span class="comment"># weight = self.weight#</span></span><br><span class="line">        <span class="comment"># print(self.padding[0],&#x27;=======&#x27;)</span></span><br><span class="line">        h = (<span class="built_in">input</span>.size()[<span class="number">3</span>]-<span class="variable language_">self</span>.kernel_size[<span class="number">0</span>]+<span class="number">2</span>*<span class="variable language_">self</span>.padding[<span class="number">0</span>])//<span class="variable language_">self</span>.stride[<span class="number">0</span>]+<span class="number">1</span></span><br><span class="line">        w = (<span class="built_in">input</span>.size()[<span class="number">4</span>]-<span class="variable language_">self</span>.kernel_size[<span class="number">0</span>]+<span class="number">2</span>*<span class="variable language_">self</span>.padding[<span class="number">0</span>])//<span class="variable language_">self</span>.stride[<span class="number">0</span>]+<span class="number">1</span></span><br><span class="line">        c1 = torch.zeros(time_window, <span class="built_in">input</span>.size()[<span class="number">1</span>], <span class="variable language_">self</span>.out_channels, h, w, device=<span class="built_in">input</span>.device)</span><br><span class="line">        <span class="comment"># print(weight.size(),&#x27;=====weight====&#x27;)</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(time_window):</span><br><span class="line">            c1[i] = F.conv2d(<span class="built_in">input</span>[i], weight, <span class="variable language_">self</span>.bias, <span class="variable language_">self</span>.stride, <span class="variable language_">self</span>.padding, <span class="variable language_">self</span>.dilation, <span class="variable language_">self</span>.groups)</span><br><span class="line">        <span class="keyword">return</span> c1</span><br></pre></td></tr></table></figure>
+<p>该模块继承经典的<code>nn.Conv2d</code>, 前传过程中将权重标准化，计算量化缩放因子，二值化处理，再送到卷积层中处理。<br>
+<img src="https://cdn.jsdelivr.net/gh/EricZhang1412/PicGoStorage@master/img/20240723171417.png"/></p>
+<h2 id="3-膜电压正负二值（-1，1）量化">3. 膜电压正负二值（-1，1）量化</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">u_q</span>(<span class="params">u, b, alpha</span>):</span><br><span class="line">    u = torch.tanh(u)</span><br><span class="line">    <span class="comment"># alpha = u.data.abs().max()</span></span><br><span class="line">    u = torch.clamp(u/alpha,<span class="built_in">min</span>=-<span class="number">1</span>,<span class="built_in">max</span>=<span class="number">1</span>)</span><br><span class="line">    u = u*(<span class="number">2</span>**(b-<span class="number">1</span>)-<span class="number">1</span>)</span><br><span class="line">    u_hat = (u.<span class="built_in">round</span>()-u).detach()+u</span><br><span class="line">    <span class="keyword">return</span> u_hat*alpha/(<span class="number">2</span>**(b-<span class="number">1</span>)-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="step-1-非线性映射到-1-1">step.1 非线性映射到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(-1, 1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">−</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span></h3>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mrow><mi>n</mi><mi>l</mi></mrow></msub><mo>=</mo><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">h</mi></mrow><mo stretchy="false">(</mo><mi>u</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">
+u_{nl} = \mathrm{tanh}(u)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathrm">tanh</span></span><span class="mopen">(</span><span class="mord mathnormal">u</span><span class="mclose">)</span></span></span></span></p>
+<h3 id="step-2-截断处理">step.2 截断处理</h3>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mi>c</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">p</mi></mrow><mo stretchy="false">(</mo><mfrac><msub><mi>u</mi><mrow><mi>n</mi><mi>l</mi></mrow></msub><mi>α</mi></mfrac><mo separator="true">,</mo><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">
+u_c = \mathrm{clamp}(\frac{u_{nl}}{\alpha}, -1, 1)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.095em;vertical-align:-0.345em;"></span><span class="mord"><span class="mord mathrm">clamp</span></span><span class="mopen">(</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7173em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0037em;">α</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4159em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">−</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span></p>
+<h3 id="step-3-量化">step.3 量化</h3>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><msub><mi>u</mi><mi>c</mi></msub><mo stretchy="true">‾</mo></mover><mo>=</mo><msub><mi>u</mi><mi>c</mi></msub><mo>×</mo><mo stretchy="false">(</mo><msup><mn>2</mn><mrow><mi>b</mi><mo>−</mo><mn>1</mn></mrow></msup><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\overline{u_c} = u_c \times (2^{b-1}-1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7806em;vertical-align:-0.15em;"></span><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6306em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.5506em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0991em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span><br>
+<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mi>R</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi></mrow><mrow><mo stretchy="false">(</mo><mover accent="true"><msub><mi>u</mi><mi>c</mi></msub><mo stretchy="true">‾</mo></mover><mo stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex">u_R = \mathrm{round}{(\overline{u_c})}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.00773em;">R</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathrm">round</span></span><span class="mord"><span class="mopen">(</span><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6306em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.5506em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><br>
+<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>u</mi><mo>^</mo></mover><mo>=</mo><msub><mi>u</mi><mi>R</mi></msub><mo>∗</mo><mi>α</mi><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><msup><mn>2</mn><mrow><mi>b</mi><mo>−</mo><mn>1</mn></mrow></msup><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\hat{u} = u_R * \alpha / (2^{b-1}-1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">u</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6153em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.00773em;">R</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0991em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord">/</span><span class="mopen">(</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span></p>
+<h2 id="4-放电函数">4. 放电函数</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">lens = <span class="number">0.5</span>  <span class="comment"># 0.5 # hyper-parameters of approximate function</span></span><br><span class="line">thresh = <span class="number">0.5</span>  <span class="comment"># 0.5 # neuronal threshold</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ActFun</span>(torch.autograd.Function):</span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">ctx, <span class="built_in">input</span></span>):</span><br><span class="line">        ctx.save_for_backward(<span class="built_in">input</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">input</span>.gt(thresh).<span class="built_in">float</span>()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">backward</span>(<span class="params">ctx, grad_output</span>):</span><br><span class="line">        <span class="built_in">input</span>, = ctx.saved_tensors</span><br><span class="line">        grad_input = grad_output.clone()</span><br><span class="line">        temp = <span class="built_in">abs</span>(<span class="built_in">input</span> - thresh) &lt; lens</span><br><span class="line">        temp = temp / (<span class="number">2</span> * lens)</span><br><span class="line">        <span class="keyword">return</span> grad_input * temp.<span class="built_in">float</span>()</span><br></pre></td></tr></table></figure>
+<p>前向传播时输出脉冲（比阈值大的输出1，否则为0），反传过程中梯度近似为放电为1，不放电为0。</p>
+<h2 id="5-自定义的Conv-BN-LIF卷积层">5. 自定义的Conv-BN-LIF卷积层</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Conv</span>(nn.Module):</span><br><span class="line">    <span class="comment"># Standard convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k, s, p=<span class="literal">None</span>, g=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, padding, groups</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = Snn_Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = batch_norm_2d(c2)</span><br><span class="line">        <span class="variable language_">self</span>.act = mem_update(act=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.act(<span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x)))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward_fuse</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.act(<span class="variable language_">self</span>.conv(x))</span><br></pre></td></tr></table></figure>
+<h2 id="6-使用SiLU激活函数的卷积层">6. 使用SiLU激活函数的卷积层</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Conv_A</span>(nn.Module):</span><br><span class="line">    <span class="comment"># Standard convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k, s, p=<span class="literal">None</span>, g=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, padding, groups</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = Snn_Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = batch_norm_2d(c2)</span><br><span class="line">        <span class="variable language_">self</span>.act = nn.SiLU() <span class="keyword">if</span> act <span class="keyword">is</span> <span class="literal">True</span> <span class="keyword">else</span> (act <span class="keyword">if</span> <span class="built_in">isinstance</span>(act, nn.Module) <span class="keyword">else</span> nn.Identity())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.act(<span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x)))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward_fuse</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.act(<span class="variable language_">self</span>.conv(x))</span><br></pre></td></tr></table></figure>
+<h2 id="7-不使用激活函数的卷积层">7. 不使用激活函数的卷积层</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Conv_1</span>(nn.Module):</span><br><span class="line">    <span class="comment"># Standard convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k, s, p=<span class="literal">None</span>, g=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, padding, groups</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = Snn_Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = batch_norm_2d(c2)</span><br><span class="line">        <span class="comment">#self.act = mem_update() if act is True else (act if isinstance(act, nn.Module) else nn.Identity())</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward_fuse</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.conv(x)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Conv_2</span>(nn.Module):</span><br><span class="line">    <span class="comment"># Standard convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k, s, p=<span class="literal">None</span>, g=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, padding, groups</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = Snn_Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = batch_norm_2d(c2)</span><br><span class="line">        <span class="comment">#self.act = mem_update() if act is True else (act if isinstance(act, nn.Module) else nn.Identity())</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward_fuse</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.conv(x)</span><br></pre></td></tr></table></figure>
+<h2 id="8-魔改过的BatchNorm层">8. 魔改过的BatchNorm层</h2>
+<p>不同之处在于初始化权重不同.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">batch_norm_2d</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num_features, eps=<span class="number">1e-5</span>, momentum=<span class="number">0.1</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(batch_norm_2d, <span class="variable language_">self</span>).__init__() <span class="comment">#num_features=16</span></span><br><span class="line">        <span class="variable language_">self</span>.bn = BatchNorm3d1(num_features)  <span class="comment"># input (N,C,D,H,W) imension batch norm on (N,D,H,W) slice. spatio-temporal Batch Normalization</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, <span class="built_in">input</span></span>):</span><br><span class="line">        y = <span class="built_in">input</span>.transpose(<span class="number">0</span>, <span class="number">2</span>).contiguous().transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous()</span><br><span class="line">        y = <span class="variable language_">self</span>.bn(y)</span><br><span class="line">        <span class="keyword">return</span> y.contiguous().transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous().transpose(<span class="number">0</span>, <span class="number">2</span>)  <span class="comment"># </span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">batch_norm_2d1</span>(nn.Module):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num_features, eps=<span class="number">1e-5</span>, momentum=<span class="number">0.1</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(batch_norm_2d1, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.bn = BatchNorm3d2(num_features)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, <span class="built_in">input</span></span>):</span><br><span class="line">        y = <span class="built_in">input</span>.transpose(<span class="number">0</span>, <span class="number">2</span>).contiguous().transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous()</span><br><span class="line">        y = <span class="variable language_">self</span>.bn(y)</span><br><span class="line">        <span class="keyword">return</span> y.contiguous().transpose(<span class="number">0</span>, <span class="number">1</span>).contiguous().transpose(<span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BatchNorm3d1</span>(torch.nn.BatchNorm3d):<span class="comment">#5</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">reset_parameters</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.reset_running_stats()</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.affine:</span><br><span class="line">            nn.init.constant_(<span class="variable language_">self</span>.weight, thresh)<span class="comment">#</span></span><br><span class="line">            nn.init.zeros_(<span class="variable language_">self</span>.bias)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BatchNorm3d2</span>(torch.nn.BatchNorm3d):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">reset_parameters</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.reset_running_stats()</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.affine:</span><br><span class="line">  </span><br><span class="line">            nn.init.constant_(<span class="variable language_">self</span>.weight, <span class="number">0.2</span>*thresh)           </span><br><span class="line">            nn.init.zeros_(<span class="variable language_">self</span>.bias)</span><br></pre></td></tr></table></figure>
+<h2 id="9-对输入的每个时间步应用的-MaxPool2d-池化操作">9. 对输入的每个时间步应用的 MaxPool2d 池化操作</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Pools</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,kernel_size,stride,padding=<span class="number">0</span>,dilation=<span class="number">1</span></span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.kernel_size=kernel_size</span><br><span class="line">        <span class="variable language_">self</span>.stride = stride</span><br><span class="line">        <span class="variable language_">self</span>.padding = padding</span><br><span class="line">        <span class="variable language_">self</span>.dilation = dilation</span><br><span class="line">        <span class="variable language_">self</span>.pool=nn.MaxPool2d(kernel_size=<span class="variable language_">self</span>.kernel_size,stride=<span class="variable language_">self</span>.stride,padding=<span class="variable language_">self</span>.padding)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self,<span class="built_in">input</span></span>):</span><br><span class="line">        h=<span class="built_in">int</span>((<span class="built_in">input</span>.size()[<span class="number">3</span>]+<span class="number">2</span>*<span class="variable language_">self</span>.padding-<span class="variable language_">self</span>.dilation*(<span class="variable language_">self</span>.kernel_size-<span class="number">1</span>)-<span class="number">1</span>)/<span class="variable language_">self</span>.stride+<span class="number">1</span>)</span><br><span class="line">        w=<span class="built_in">int</span>((<span class="built_in">input</span>.size()[<span class="number">4</span>]+<span class="number">2</span>*<span class="variable language_">self</span>.padding - <span class="variable language_">self</span>.dilation*(<span class="variable language_">self</span>.kernel_size-<span class="number">1</span>)-<span class="number">1</span>)/<span class="variable language_">self</span>.stride+<span class="number">1</span>)</span><br><span class="line">        c1 = torch.zeros(time_window, <span class="built_in">input</span>.size()[<span class="number">1</span>],<span class="built_in">input</span>.size()[<span class="number">2</span>],h,w,device=<span class="built_in">input</span>.device)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(time_window):</span><br><span class="line">            c1[i]=<span class="variable language_">self</span>.pool(<span class="built_in">input</span>[i])</span><br><span class="line">        <span class="keyword">return</span> c1</span><br></pre></td></tr></table></figure>
+<h2 id="10-对输入的每个时间步应用的-ZeroPad2d-填充操作">10. 对输入的每个时间步应用的 ZeroPad2d 填充操作</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">zeropad</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,padding</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.padding=padding</span><br><span class="line">        <span class="variable language_">self</span>.pad=nn.ZeroPad2d(padding=<span class="variable language_">self</span>.padding)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self,<span class="built_in">input</span></span>):</span><br><span class="line">        h=<span class="built_in">input</span>.size()[<span class="number">3</span>]+<span class="variable language_">self</span>.padding[<span class="number">2</span>]+<span class="variable language_">self</span>.padding[<span class="number">3</span>]</span><br><span class="line">        w=<span class="built_in">input</span>.size()[<span class="number">4</span>]+<span class="variable language_">self</span>.padding[<span class="number">0</span>]+<span class="variable language_">self</span>.padding[<span class="number">1</span>]</span><br><span class="line">        c1=torch.zeros(time_window,<span class="built_in">input</span>.size()[<span class="number">1</span>],<span class="built_in">input</span>.size()[<span class="number">2</span>],h,w,device=<span class="built_in">input</span>.device )</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(time_window):</span><br><span class="line">            c1[i]=<span class="variable language_">self</span>.pad(<span class="built_in">input</span>[i])</span><br><span class="line">        <span class="keyword">return</span> c1 </span><br></pre></td></tr></table></figure>
+<h2 id="11-对输入的每个时间步应用的UpSample操作">11. 对输入的每个时间步应用的UpSample操作</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Sample</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,size=<span class="literal">None</span>,scale_factor=<span class="literal">None</span>,mode=<span class="string">&#x27;nearset&#x27;</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(Sample, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.scale_factor=scale_factor</span><br><span class="line">        <span class="variable language_">self</span>.mode=mode</span><br><span class="line">        <span class="variable language_">self</span>.size = size</span><br><span class="line">        <span class="variable language_">self</span>.up=nn.Upsample(<span class="variable language_">self</span>.size,<span class="variable language_">self</span>.scale_factor,mode=<span class="variable language_">self</span>.mode)</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self,<span class="built_in">input</span></span>):</span><br><span class="line">        <span class="comment"># self.cpu()</span></span><br><span class="line">        temp=torch.zeros(time_window,<span class="built_in">input</span>.size()[<span class="number">1</span>],<span class="built_in">input</span>.size()[<span class="number">2</span>],<span class="built_in">input</span>.size()[<span class="number">3</span>]*<span class="variable language_">self</span>.scale_factor,<span class="built_in">input</span>.size()[<span class="number">4</span>]*<span class="variable language_">self</span>.scale_factor, device=<span class="built_in">input</span>.device)</span><br><span class="line">        <span class="comment"># print(temp.device,&#x27;-----&#x27;)</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(time_window):</span><br><span class="line">            </span><br><span class="line">            temp[i]=<span class="variable language_">self</span>.up(<span class="built_in">input</span>[i])</span><br><span class="line"></span><br><span class="line">            <span class="comment"># temp[i]= F.interpolate(input[i], scale_factor=self.scale_factor,mode=&#x27;nearest&#x27;)</span></span><br><span class="line">        <span class="keyword">return</span> temp</span><br></pre></td></tr></table></figure>
+<h2 id="12-逐通道卷积">12. 逐通道卷积</h2>
+<p>继承Conv类，设置卷积组数g为输入和输出通道数的<strong>最大公约数</strong>。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DWConv</span>(<span class="title class_ inherited__">Conv</span>):</span><br><span class="line">    <span class="comment"># Depth-wise convolution</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, c1, c2, k=<span class="number">1</span>, s=<span class="number">1</span>, d=<span class="number">1</span>, act=<span class="literal">True</span></span>):  <span class="comment"># ch_in, ch_out, kernel, stride, dilation, activation</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;Initializes depth-wise convolution with optional activation; parameters are channel in/out, kernel, stride,</span></span><br><span class="line"><span class="string">        dilation.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__(c1, c2, k, s, g=math.gcd(c1, c2), d=d, act=act)</span><br></pre></td></tr></table></figure>
+<h1>Ultralytics中的Tiny-YOLOv3的Backbone结构</h1>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">                 from  n    params  module                                  arguments                     </span><br><span class="line">  0                -1  1       464  models.common.Conv                      [3, 16, 3, 1]                 </span><br><span class="line">  1                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line">  2                -1  1      4672  models.common.Conv                      [16, 32, 3, 1]                </span><br><span class="line">  3                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line">  4                -1  1     18560  models.common.Conv                      [32, 64, 3, 1]                </span><br><span class="line">  5                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line">  6                -1  1     73984  models.common.Conv                      [64, 128, 3, 1]               </span><br><span class="line">  7                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line">  8                -1  1    295424  models.common.Conv                      [128, 256, 3, 1]              </span><br><span class="line">  9                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 2, 0]                     </span><br><span class="line"> 10                -1  1   1180672  models.common.Conv                      [256, 512, 3, 1]              </span><br><span class="line"> 11                -1  1         0  torch.nn.modules.padding.ZeroPad2d      [[0, 1, 0, 1]]                </span><br><span class="line"> 12                -1  1         0  torch.nn.modules.pooling.MaxPool2d      [2, 1, 0]                     </span><br><span class="line"> 13                -1  1   4720640  models.common.Conv                      [512, 1024, 3, 1]             </span><br><span class="line"> 14                -1  1    262656  models.common.Conv                      [1024, 256, 1, 1]             </span><br><span class="line"> 15                -1  1   1180672  models.common.Conv                      [256, 512, 3, 1]              </span><br><span class="line"> 16                -2  1     33024  models.common.Conv                      [256, 128, 1, 1]              </span><br><span class="line"> 17                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#x27;nearest&#x27;]          </span><br><span class="line"> 18           [-1, 8]  1         0  models.common.Concat                    [1]                           </span><br><span class="line"> 19                -1  1    885248  models.common.Conv                      [384, 256, 3, 1]              </span><br><span class="line"> 20          [19, 15]  1    196350  models.yolo.Detect                      [80, [[10, 14, 23, 27, 37, 58], [81, 82, 135, 169, 344, 319]], [256, 512]]</span><br><span class="line">yolov3-tiny summary: 49 layers, 8852366 parameters, 8852366 gradients, 13.3 GFLOPs</span><br></pre></td></tr></table></figure>
+<p><code>.yaml</code>文件中对于模型的描述如下:</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># YOLOv3-tiny backbone</span></span><br><span class="line"><span class="attr">backbone:</span></span><br><span class="line">  <span class="comment"># [from, number, module, args]</span></span><br><span class="line">  [</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">16</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 0</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 1-P1/2</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">32</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 3-P2/4</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">64</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 5-P3/8</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">128</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 7-P4/16</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">256</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 9-P5/32</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">512</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.ZeroPad2d</span>, [[<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]]], <span class="comment"># 11</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.MaxPool2d</span>, [<span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]], <span class="comment"># 12</span></span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># YOLOv3-tiny head</span></span><br><span class="line"><span class="attr">head:</span> [</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">1024</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">256</span>, <span class="number">1</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">512</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 15 (P5/32-large)</span></span><br><span class="line"></span><br><span class="line">    [<span class="number">-2</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">128</span>, <span class="number">1</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">nn.Upsample</span>, [<span class="string">None</span>, <span class="number">2</span>, <span class="string">&quot;nearest&quot;</span>]],</span><br><span class="line">    [[<span class="number">-1</span>, <span class="number">8</span>], <span class="number">1</span>, <span class="string">Concat</span>, [<span class="number">1</span>]], <span class="comment"># cat backbone P4</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv</span>, [<span class="number">256</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 19 (P4/16-medium)</span></span><br><span class="line"></span><br><span class="line">    [[<span class="number">19</span>, <span class="number">15</span>], <span class="number">1</span>, <span class="string">Detect</span>, [<span class="string">nc</span>, <span class="string">anchors</span>]], <span class="comment"># Detect(P4, P5)</span></span><br><span class="line">  ]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>原始的Tiny-YOLOv3的Backbone中只有Conv、MaxPool2d、ZeroPad2d三种模块，head中有Conv、UpSample和Concat三种模块。而EMS-YOLO的作者们已经为我们改好了带有时间步的各个模块。于是一个大胆的想法油然而生：暴力替换</p>
+<p>替换之后的yaml文件如下：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">nc:</span> <span class="number">80</span>  <span class="comment"># number of classes</span></span><br><span class="line"><span class="attr">depth_multiple:</span> <span class="number">1.0</span>  <span class="comment"># model depth multiple</span></span><br><span class="line"><span class="attr">width_multiple:</span> <span class="number">1.0</span>  <span class="comment"># layer channel multiple</span></span><br><span class="line"><span class="attr">anchors:</span></span><br><span class="line">  <span class="bullet">-</span> [<span class="number">10</span>,<span class="number">14</span>, <span class="number">23</span>,<span class="number">27</span>, <span class="number">37</span>,<span class="number">58</span>]  <span class="comment"># P4/16</span></span><br><span class="line">  <span class="bullet">-</span> [<span class="number">81</span>,<span class="number">82</span>, <span class="number">135</span>,<span class="number">169</span>, <span class="number">344</span>,<span class="number">319</span>]  <span class="comment"># P5/32</span></span><br><span class="line"><span class="comment"># -------上面的配置和经典的一样-------</span></span><br><span class="line"><span class="comment"># YOLOv3-tiny backbone</span></span><br><span class="line"><span class="attr">backbone:</span></span><br><span class="line">  <span class="comment"># [from, number, module, args]</span></span><br><span class="line">  [</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">16</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 0</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 1-P1/2</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">32</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 3-P2/4</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">64</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 5-P3/8</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">128</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 7-P4/16</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">256</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]], <span class="comment"># 9-P5/32</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">512</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">zeropad</span>, [[<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]]], <span class="comment"># 11</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Pools</span>, [<span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]], <span class="comment"># 12</span></span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># YOLOv3-tiny head</span></span><br><span class="line"><span class="attr">head:</span> [</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">1024</span>, <span class="number">3</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">256</span>, <span class="number">1</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">512</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 15 (P5/32-large)</span></span><br><span class="line"></span><br><span class="line">    [<span class="number">-2</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">128</span>, <span class="number">1</span>, <span class="number">1</span>]],</span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Sample</span>, [<span class="string">None</span>, <span class="number">2</span>, <span class="string">&quot;nearest&quot;</span>]],</span><br><span class="line">    [[<span class="number">-1</span>, <span class="number">8</span>], <span class="number">1</span>, <span class="string">Concat</span>, [<span class="number">2</span>]], <span class="comment"># cat backbone P4</span></span><br><span class="line">    [<span class="number">-1</span>, <span class="number">1</span>, <span class="string">Conv_2</span>, [<span class="number">256</span>, <span class="number">3</span>, <span class="number">1</span>]], <span class="comment"># 19 (P4/16-medium)</span></span><br><span class="line"></span><br><span class="line">    [[<span class="number">19</span>, <span class="number">15</span>], <span class="number">1</span>, <span class="string">Detect</span>, [<span class="string">nc</span>, <span class="string">anchors</span>]], <span class="comment"># Detect(P4, P5)</span></span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>项目记录</category>
+      </categories>
+      <tags>
+        <tag>SNN</tag>
+        <tag>EMS-YOLO</tag>
       </tags>
   </entry>
   <entry>
@@ -4836,83 +4836,6 @@ GN 允许两个或多个蓝牙设备成为 ad-hoc 网络的一部分。</p>
       </categories>
       <tags>
         <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于振荡电路</title>
-    <url>/2023/04/16/%E5%85%B3%E4%BA%8E%E6%8C%AF%E8%8D%A1%E7%94%B5%E8%B7%AF/</url>
-    <content><![CDATA[<p>天坑！！！！！！</p>
-]]></content>
-      <categories>
-        <category>学习日志</category>
-      </categories>
-      <tags>
-        <tag>电子设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>明月湖二三事</title>
-    <url>/2023/04/06/%E6%98%8E%E6%9C%88%E6%B9%96/</url>
-    <content><![CDATA[<h1><strong>学院派创业者</strong>面临的<strong>挑战</strong></h1>
-<h2 id="Where-is-the-Challenge？">Where is the Challenge？</h2>
-<span id="more"></span>
-<ol>
-<li>创业死亡谷<br>
-<img src="01.jpg" alt="fig01"></li>
-</ol>
-<ul>
-<li>探索期：产品定义风险：伪需求，小众市场，技术不成熟</li>
-<li>天使期：量产风险</li>
-<li>成长期：you are safe.</li>
-<li>成熟期：you are safe.</li>
-</ul>
-<h2 id="资金需求">资金需求</h2>
-<p>省流：会被骗</p>
-<h2 id="目标导向">目标导向</h2>
-<p>学术评价体系不明朗，高效团队思想不纯</p>
-<h2 id="资源获取">资源获取</h2>
-<p>学校不给力，学术界不给力，社会不给力</p>
-<h2 id="人生DDL">人生DDL</h2>
-<p>升学压力、工作压力、家庭压力</p>
-<h1>创业起点的二选一</h1>
-<h2 id="独立闭环-or-创投模式">独立闭环 or 创投模式</h2>
-<h1>What is <strong>INNOVATION</strong>?</h1>
-<h2 id="模式创新">模式创新</h2>
-<h3 id="盈利模式创新">盈利模式创新</h3>
-<h3 id="网络资源整合创新">网络资源整合创新</h3>
-<h3 id="组织结构创新">组织结构创新</h3>
-<p>跨部门协同的工作</p>
-<h3 id="流程创新">流程创新</h3>
-<h2 id="体验创新">体验创新</h2>
-<h3 id="服务创新">服务创新</h3>
-<h3 id="渠道创新">渠道创新</h3>
-<h3 id="品牌创新">品牌创新</h3>
-<p>受众明确</p>
-<h3 id="用户交互创新">用户交互创新</h3>
-<h2 id="产品创新">产品创新</h2>
-<h3 id="产品表现创新">产品表现创新</h3>
-<p>Spotify的无缝音乐流</p>
-<h3 id="产品生态创新">产品生态创新</h3>
-<p>iPhone给用户创造什么价值；PikaBoost Ebike Conversion Kit；扫地机器人：问题边界的再定义</p>
-<h1>What is DESIGN THINKING？</h1>
-<h2 id="硬科技创新-VS-软科技创新">硬科技创新 VS 软科技创新</h2>
-<h2 id="设计思维的本质">设计思维的本质</h2>
-<p><strong>思维方式</strong>:用以人为本的角度重新定义问题<br>
-<strong>方法论&amp;工具：</strong></p>
-<p><strong>特征</strong>:以人为本、偏向行动、激进合作、建模文化、秀，不要说、相信过程<br>
-<img src="02.jpg" alt="fig02"></p>
-<h2 id="设计思维发展历程">设计思维发展历程</h2>
-<p>Stanford D School-&gt;IDEO-&gt;Google Design Sprint</p>
-<h2 id="互联网-项目商业化的难题与反思">互联网+项目商业化的难题与反思</h2>
-<p>基础研究-&gt;应用研究-&gt;<strong>产品定义</strong>-&gt;产品研发-&gt;产品导入-&gt;产品规模化</p>
-<h1>明月湖基地是干嘛的</h1>
-<p>wow~ ⊙o⊙</p>
-]]></content>
-      <categories>
-        <category>杂项</category>
-      </categories>
-      <tags>
-        <tag>创业</tag>
       </tags>
   </entry>
   <entry>
@@ -5301,6 +5224,83 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </tags>
   </entry>
   <entry>
+    <title>关于振荡电路</title>
+    <url>/2023/04/16/%E5%85%B3%E4%BA%8E%E6%8C%AF%E8%8D%A1%E7%94%B5%E8%B7%AF/</url>
+    <content><![CDATA[<p>天坑！！！！！！</p>
+]]></content>
+      <categories>
+        <category>学习日志</category>
+      </categories>
+      <tags>
+        <tag>电子设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>明月湖二三事</title>
+    <url>/2023/04/06/%E6%98%8E%E6%9C%88%E6%B9%96/</url>
+    <content><![CDATA[<h1><strong>学院派创业者</strong>面临的<strong>挑战</strong></h1>
+<h2 id="Where-is-the-Challenge？">Where is the Challenge？</h2>
+<span id="more"></span>
+<ol>
+<li>创业死亡谷<br>
+<img src="01.jpg" alt="fig01"></li>
+</ol>
+<ul>
+<li>探索期：产品定义风险：伪需求，小众市场，技术不成熟</li>
+<li>天使期：量产风险</li>
+<li>成长期：you are safe.</li>
+<li>成熟期：you are safe.</li>
+</ul>
+<h2 id="资金需求">资金需求</h2>
+<p>省流：会被骗</p>
+<h2 id="目标导向">目标导向</h2>
+<p>学术评价体系不明朗，高效团队思想不纯</p>
+<h2 id="资源获取">资源获取</h2>
+<p>学校不给力，学术界不给力，社会不给力</p>
+<h2 id="人生DDL">人生DDL</h2>
+<p>升学压力、工作压力、家庭压力</p>
+<h1>创业起点的二选一</h1>
+<h2 id="独立闭环-or-创投模式">独立闭环 or 创投模式</h2>
+<h1>What is <strong>INNOVATION</strong>?</h1>
+<h2 id="模式创新">模式创新</h2>
+<h3 id="盈利模式创新">盈利模式创新</h3>
+<h3 id="网络资源整合创新">网络资源整合创新</h3>
+<h3 id="组织结构创新">组织结构创新</h3>
+<p>跨部门协同的工作</p>
+<h3 id="流程创新">流程创新</h3>
+<h2 id="体验创新">体验创新</h2>
+<h3 id="服务创新">服务创新</h3>
+<h3 id="渠道创新">渠道创新</h3>
+<h3 id="品牌创新">品牌创新</h3>
+<p>受众明确</p>
+<h3 id="用户交互创新">用户交互创新</h3>
+<h2 id="产品创新">产品创新</h2>
+<h3 id="产品表现创新">产品表现创新</h3>
+<p>Spotify的无缝音乐流</p>
+<h3 id="产品生态创新">产品生态创新</h3>
+<p>iPhone给用户创造什么价值；PikaBoost Ebike Conversion Kit；扫地机器人：问题边界的再定义</p>
+<h1>What is DESIGN THINKING？</h1>
+<h2 id="硬科技创新-VS-软科技创新">硬科技创新 VS 软科技创新</h2>
+<h2 id="设计思维的本质">设计思维的本质</h2>
+<p><strong>思维方式</strong>:用以人为本的角度重新定义问题<br>
+<strong>方法论&amp;工具：</strong></p>
+<p><strong>特征</strong>:以人为本、偏向行动、激进合作、建模文化、秀，不要说、相信过程<br>
+<img src="02.jpg" alt="fig02"></p>
+<h2 id="设计思维发展历程">设计思维发展历程</h2>
+<p>Stanford D School-&gt;IDEO-&gt;Google Design Sprint</p>
+<h2 id="互联网-项目商业化的难题与反思">互联网+项目商业化的难题与反思</h2>
+<p>基础研究-&gt;应用研究-&gt;<strong>产品定义</strong>-&gt;产品研发-&gt;产品导入-&gt;产品规模化</p>
+<h1>明月湖基地是干嘛的</h1>
+<p>wow~ ⊙o⊙</p>
+]]></content>
+      <categories>
+        <category>杂项</category>
+      </categories>
+      <tags>
+        <tag>创业</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>校史馆的二三事</title>
     <url>/2023/04/06/%E6%A0%A1%E5%8F%B2%E9%A6%86%E7%9A%84%E4%BA%8C%E4%B8%89%E4%BA%8B/</url>
     <content><![CDATA[<h1>校史馆解说词(2023 年 3 月)</h1>
@@ -5488,6 +5488,11 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </tags>
   </entry>
   <entry>
+    <title>album</title>
+    <url>/album/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>about</title>
     <url>/about/index.html</url>
     <content><![CDATA[]]></content>
@@ -5498,13 +5503,8 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>album</title>
-    <url>/album/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>dailyPhoto</title>
-    <url>/dailyPhoto/index.html</url>
+    <title>essay</title>
+    <url>/essay/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -5513,18 +5513,18 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>essay</title>
-    <url>/essay/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>link</title>
-    <url>/link/index.html</url>
+    <title>dailyPhoto</title>
+    <url>/dailyPhoto/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>tags</title>
     <url>/tags/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>link</title>
+    <url>/link/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
