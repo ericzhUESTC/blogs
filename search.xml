@@ -2796,7 +2796,25 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   <entry>
     <title>毕业设计（二）文献阅读 [ICML 2022] Monarch：Expressive Structured Matrices for Efficient and Accurate Training</title>
     <url>/2024/07/28/MonarchMatrices/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h2 id="参考文献与Slides">参考文献与Slides</h2>
+<p>(带标注，仅供参考)</p>
+
+
+	<div class="row">
+    <embed src="paper.pdf" width="100%" height="550" type="application/pdf">
+	</div>
+
+
+
+
+
+	<div class="row">
+    <embed src="slides.pdf" width="100%" height="550" type="application/pdf">
+	</div>
+
+
+
+]]></content>
       <categories>
         <category>毕业设计</category>
       </categories>
