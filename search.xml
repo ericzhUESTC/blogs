@@ -5701,6 +5701,135 @@ E{\bold{\alpha}(n)\bold{\alpha}^H(k)} = \bold{O}, k = 1,2,\dots,n-1
       </tags>
   </entry>
   <entry>
+    <title>如何写好一篇学术论文</title>
+    <url>/2024/08/21/Essay-writing/</url>
+    <content><![CDATA[<h2 id="论文写作之三剑客">论文写作之三剑客</h2>
+<h3 id="1-写作前准备下面三个问题">1. 写作前准备下面三个问题</h3>
+<ol>
+<li>
+<p>想好解决什么问题</p>
+</li>
+<li>
+<p>为了解决这个问题，我提出了什么方法/方案</p>
+</li>
+<li>
+<p>实验结果是否能证明方案可行</p>
+</li>
+</ol>
+<h3 id="2-写作中切记">2. 写作中切记</h3>
+<ol>
+<li>
+<p>站在巨人的肩膀上，广泛搜集文献并速览</p>
+</li>
+<li>
+<p>在已有的好的逻辑的文章的基础上进行合理“抄袭”/反写，不照搬照抄，而是学习别人的行文逻辑</p>
+</li>
+<li>
+<p>注意上下文段落的衔接。完整的一个部分应遵循“一条龙”的逻辑原则（尤其注意每一段的第一句话，最后一句话是否能在逻辑上紧密联系）</p>
+</li>
+</ol>
+]]></content>
+  </entry>
+  <entry>
+    <title>Digital VLSI Design (RTL2GDS) Notes I</title>
+    <url>/2024/08/12/VLSI-Design/</url>
+    <content><![CDATA[<h2 id="1-Introduction">1. Introduction</h2>
+<p>学习路线：Design Abstraction-&gt;Design Automation(EDA)-&gt;Design Re-use(IP);</p>
+<h3 id="General-Design-Approach">General Design Approach</h3>
+<p>Divide and conquer</p>
+<ul>
+<li>分解问题</li>
+<li>数学建模</li>
+<li>合理使用工具链</li>
+<li>验证测试</li>
+<li>再思考（回到开头）</li>
+</ul>
+<h3 id="设计的抽象化">设计的抽象化</h3>
+<ul>
+<li>系统级（system level）</li>
+<li>寄存器传递层级（RTL，register transfer level）-&gt;Verilog/SpinalHDL</li>
+<li>门级（gate level）</li>
+<li>三极管层级（transistor level）</li>
+<li>布局（layout level）</li>
+<li>掩膜（mask level）</li>
+</ul>
+<p>或者在VLSI的实际设计过程中，分为以下级别：</p>
+<ul>
+<li>应用级</li>
+<li>算法级</li>
+<li>编程语言层</li>
+<li>操作系统/虚拟机层</li>
+<li>指令集结构层</li>
+<li>微架构层</li>
+<li>RTL</li>
+<li>电路</li>
+<li>元件（三极管）</li>
+<li>物理定律</li>
+</ul>
+<p>EDAs in VLSI</p>
+<ul>
+<li>RTL
+<ul>
+<li>Verilog</li>
+</ul>
+</li>
+<li>Synthesis
+<ul>
+<li>Cadence Genus</li>
+</ul>
+</li>
+<li>Place and route
+<ul>
+<li>Candence Innovus</li>
+<li>Static Timing Analysis: Tempus</li>
+<li>Power Estimation: Voltus</li>
+<li>Parasitic Extraction: QRC</li>
+<li>Clock Tree Synthesis: CCOpt</li>
+</ul>
+</li>
+</ul>
+<p>Chip design flow</p>
+<ul>
+<li>Definition &amp; Planning</li>
+<li>Design &amp; verification</li>
+<li>Logic Synthesis</li>
+<li>Physical Design</li>
+<li>Signoff and Tapeout</li>
+<li>Silicon Validation</li>
+</ul>
+<h2 id="2-Verilog">2. Verilog</h2>
+<p>关于硬件描述语言需要知道的几个事实：</p>
+<ol>
+<li>指令并行</li>
+<li>指令触发依靠事件（Events）</li>
+<li>敏感信号列表定义什么时候指令发生</li>
+<li>不同的仿真器会得到不一样的结果（bad）</li>
+</ol>
+<p>三种代码风格：</p>
+<ul>
+<li>
+<p>for Device Under Test(DUT)</p>
+<ol>
+<li>GTL（Gate Level，Netlist，Structural code）</li>
+<li>RTL</li>
+</ol>
+</li>
+<li>
+<p>for testbench</p>
+<ol start="3">
+<li>Behavioral(Testbench)</li>
+</ol>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>学习日志</category>
+      </categories>
+      <tags>
+        <tag>VLSI</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>about</title>
     <url>/about/index.html</url>
     <content><![CDATA[]]></content>
